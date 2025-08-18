@@ -1,1 +1,15 @@
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'PretendardVariable';
+  --color-purple-50: #efe6ff;
+  --color-purple-100: #b48aff;
+  --color-purple-200: #b48aff;
+  --color-purple-300: #9254fe;
+  --color-purple-400: #7d33fe;
+  --color-purple-500: #5d00fe;
+  --color-purple-600: #5500e7;
+  --color-purple-700: #4200b4;
+  --color-purple-800: #33008c;
+  --color-purple-900: #27006b;
+}
