@@ -25,15 +25,24 @@ export default function DefaultLayout({
   noPadding = false,
   debugFrame = false,
 }: DefaultLayoutProps) {
+  const style = {
+    '--mobile-w': `${MOBILE_BASE.W}px`,
+    '--mobile-h': `${MOBILE_BASE.H}px`,
+    '--header-h': `${MOBILE_BASE.HEADER_H}px`,
+    '--nav-h': `${MOBILE_BASE.NAV_H}px`,
+    '--side': `${MOBILE_BASE.SIDE}px`,
+  } as React.CSSProperties;
+
   return (
     <div className="w-full min-h-[100dvh] flex justify-center bg-gray-15">
       <div
+        style={style}
         className={[
-          `w-full max-w-[${MOBILE_BASE.W}px] min-h-[${MOBILE_BASE.H}px] bg-white`,
+          `w-full max-w-[var(--mobile-w)] min-h-[var(--mobile-h)] bg-white`,
           debugFrame
             ? 'rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_20px_40px_rgba(0,0,0,0.06)]'
             : '',
-          noPadding ? 'px-0' : `px-[${MOBILE_BASE.SIDE}px]`,
+          noPadding ? 'px-0' : `px-[var(--side)]`,
         ].join(' ')}
       >
         {/* Header */}
@@ -48,8 +57,8 @@ export default function DefaultLayout({
           className={`w-full`}
           style={{
             minHeight: hasBottomNav
-              ? `calc(${MOBILE_BASE.H}px - ${MOBILE_BASE.HEADER_H}px - ${MOBILE_BASE.NAV_H}px)`
-              : `calc(${MOBILE_BASE.H}px - ${MOBILE_BASE.HEADER_H}px)`,
+              ? `calc(var(--mobile-h) - var(--header-h) - var(--nav-h))`
+              : `calc(var(--mobile-h) - var(--header-h))`,
           }}
         >
           {children}
