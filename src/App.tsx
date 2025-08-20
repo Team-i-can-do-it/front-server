@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import DefaultLayout from './components/layout/DefaultLayout';
 import LoginPage from './page/LoginPage';
@@ -9,7 +9,7 @@ import TopicSelectPage from './page/compose/TopicSelectPage';
 import TopicWritePage from './page/compose/TopicWritePage';
 import ResultPage from './page/compose/ResultPage';
 
-function App() {
+export default function App() {
   return (
     <>
       <ScrollToTop />
@@ -26,14 +26,15 @@ function App() {
 
         {/* 글쓰기 플로우 */}
         <Route element={<DefaultLayout hasBottomNav={false} />}>
-          <Route path="/compose/:mode"></Route>
-          <Route index element={<TopicSelectPage />} />
-          <Route path="write" element={<TopicWritePage />} />
-          <Route path="result" element={<ResultPage />} />
+          <Route path="/compose/:mode">
+            <Route index element={<TopicSelectPage />} />
+            <Route path="write" element={<TopicWritePage />} />
+            <Route path="result" element={<ResultPage />} />
+          </Route>
         </Route>
+
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );
 }
-
-export default App;
