@@ -1,7 +1,8 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 interface DefaultLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   header?: React.ReactNode;
   bottomNav?: React.ReactNode;
   hasBottomNav?: boolean;
@@ -33,6 +34,8 @@ export default function DefaultLayout({
     '--side': `${MOBILE_BASE.SIDE}px`,
   } as React.CSSProperties;
 
+  const showBottomNav = hasBottomNav && !!bottomNav;
+
   return (
     <div className="w-full min-h-[100dvh] flex justify-center bg-gray-15">
       <div
@@ -56,16 +59,16 @@ export default function DefaultLayout({
         <main
           className={`w-full`}
           style={{
-            minHeight: hasBottomNav
+            minHeight: showBottomNav
               ? `calc(var(--mobile-h) - var(--header-h) - var(--nav-h))`
               : `calc(var(--mobile-h) - var(--header-h))`,
           }}
         >
-          {children}
+          {children ?? <Outlet />}
         </main>
 
         {/* Bottom Nav + 노치별 패딩값 */}
-        {hasBottomNav && bottomNav && (
+        {showBottomNav && (
           <div
             className="w-full h-[64px] border-t border-gray-200"
             style={{

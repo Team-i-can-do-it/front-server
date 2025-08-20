@@ -1,7 +1,16 @@
+import { useNavigate } from 'react-router-dom';
+
 import loginImage from '../assets/loginImage.svg';
 import googleLogo from '../assets/googleLogo.svg';
 
 export default function MainPage() {
+  const navigate = useNavigate();
+
+  const handleGoogleLogin = () => {
+    console.log('구글 로그인 버튼 클릭');
+    navigate('/home');
+  };
+
   return (
     <>
       <div>
@@ -20,7 +29,7 @@ export default function MainPage() {
           </div>
           <div>
             <button
-              onClick={() => console.log('구글 로그인 버튼 클릭')}
+              onClick={handleGoogleLogin}
               className="flex items-center justify-center bg-violet-50 text-violet-500 w-80 h-12 p-4 rounded-xl
             text-base font-semibold gap-2 cursor-pointer"
             >
