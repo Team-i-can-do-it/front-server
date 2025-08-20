@@ -7,7 +7,7 @@ export default function MainPage() {
       <div>
         <div className="flex flex-col items-center justify-center mt-32">
           <div>
-            <img src={mainImage} alt="메인 이미지"></img>
+            <img src={mainImage} alt="메인 이미지" className="w-61 h-40"></img>
           </div>
           <div className="flex flex-col text-center gap-6 mb-32">
             <p className="text-[24px] font-semibold">
@@ -21,7 +21,7 @@ export default function MainPage() {
           <div>
             <button
               onClick={() => console.log('구글 로그인 버튼 클릭')}
-              className="flex items-center justify-center bg-violet-50 text-violet-800 w-80 h-12 p-4 rounded-xl
+              className="flex items-center justify-center bg-violet-50 text-violet-500 w-80 h-12 p-4 rounded-xl
             text-base font-semibold gap-2 cursor-pointer"
             >
               <img
