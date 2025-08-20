@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import DefaultLayout from './components/layout/DefaultLayout';
-import MainPage from './page/MainPage';
+import LoginPage from './page/LoginPage';
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
           path="/"
           element={
             <DefaultLayout>
-              <MainPage />
+              <LoginPage />
             </DefaultLayout>
           }
         />
