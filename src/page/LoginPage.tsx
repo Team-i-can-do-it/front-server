@@ -14,7 +14,7 @@ export default function MainPage() {
   return (
     <>
       <div>
-        <div className="flex flex-col items-center justify-center mt-32">
+        <div className="flex flex-col items-center justify-center min-h-[100dvh]">
           <div>
             <img src={loginImage} alt="메인 이미지" className="w-61 h-40"></img>
           </div>

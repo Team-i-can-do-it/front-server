@@ -5,6 +5,7 @@ interface DefaultLayoutProps {
   children?: React.ReactNode;
   header?: React.ReactNode;
   bottomNav?: React.ReactNode;
+  navFixed?: boolean;
   hasBottomNav?: boolean;
   noPadding?: boolean;
   debugFrame?: boolean;
@@ -22,6 +23,7 @@ export default function DefaultLayout({
   children,
   header,
   bottomNav,
+  navFixed = true,
   hasBottomNav = true,
   noPadding = false,
   debugFrame = false,
@@ -34,6 +36,7 @@ export default function DefaultLayout({
     '--side': `${MOBILE_BASE.SIDE}px`,
   } as React.CSSProperties;
 
+  const showHeader = !!header;
   const showBottomNav = hasBottomNav && !!bottomNav;
 
   return (
@@ -41,7 +44,7 @@ export default function DefaultLayout({
       <div
         style={style}
         className={[
-          `w-full max-w-[var(--mobile-w)] min-h-[var(--mobile-h)] bg-white`,
+          `w-full max-w-[var(--mobile-w)] min-h-[var(--mobile-h)] bg-white flex flex-col`,
           debugFrame
             ? 'rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_20px_40px_rgba(0,0,0,0.06)]'
             : '',
@@ -49,7 +52,7 @@ export default function DefaultLayout({
         ].join(' ')}
       >
         {/* Header */}
-        {header && (
+        {showHeader && (
           <div className="w-full h-[44px] flex items-center border-b border-gray-200">
             {header}
           </div>
@@ -57,27 +60,30 @@ export default function DefaultLayout({
 
         {/* Content 영역: Header + BottomNav 제외한 가용 높이 */}
         <main
-          className={`w-full`}
-          style={{
-            minHeight: showBottomNav
-              ? `calc(var(--mobile-h) - var(--header-h) - var(--nav-h))`
-              : `calc(var(--mobile-h) - var(--header-h))`,
-          }}
+          className={[
+            'w-full flex-1 overflow-y-auto',
+            showBottomNav && navFixed
+              ? 'pb-[calc(var(--nav-h)+env(safe-area-inset-bottom,0px))]'
+              : '',
+          ].join(' ')}
         >
           {children ?? <Outlet />}
         </main>
 
         {/* Bottom Nav + 노치별 패딩값 */}
-        {showBottomNav && (
-          <div
-            className="w-full h-[64px] border-t border-gray-200"
-            style={{
-              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-            }}
-          >
-            {bottomNav}
-          </div>
-        )}
+        {showBottomNav &&
+          (navFixed ? (
+            // 네비가 fixed 구현이라면, 여기선 요소만 렌더(추가 높이 박스 X)
+            <>{bottomNav}</>
+          ) : (
+            // fixed가 아니라면 레이아웃 하단에 높이 지정해 배치
+            <div
+              className="w-full h-[64px] border-t border-gray-200"
+              style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+            >
+              {bottomNav}
+            </div>
+          ))}
       </div>
     </div>
   );
