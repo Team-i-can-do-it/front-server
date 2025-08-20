@@ -1,1 +1,7 @@
-export default function LoginPage() {}
+export default function HomePage() {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+}
