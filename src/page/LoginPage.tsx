@@ -1,4 +1,4 @@
-import loginImage from '../assets/main.svg';
+import loginImage from '../assets/loginImage.svg';
 import googleLogo from '../assets/googleLogo.svg';
 
 export default function MainPage() {
