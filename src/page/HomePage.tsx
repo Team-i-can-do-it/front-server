@@ -6,7 +6,6 @@ export default function HomePage() {
     <section className=" px-0">
       {/* 배경은 section 전체로 */}
       <div className="bg-violet-50 mx-auto w-full max-w-[390px] pt-[calc(env(safe-area-inset-top)+44px)] pb-8">
-        {/* 여기에만 px-6 주면 돼 */}
         <div className="px-6">
           <p className="text-2xl font-semibold text-violet-300">LOGO</p>
           <p className="mt-2 mb-9.5 text-[20px] font-semibold">
