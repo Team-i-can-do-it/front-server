@@ -1,7 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <section className=" px-0">
       {/* 배경은 section 전체로 */}
@@ -15,7 +18,11 @@ export default function HomePage() {
           <div className="mt-6">
             <p className="text-base text-[#242424]">글쓰기 시작하기</p>
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <button className="flex flex-col items-center justify-center h-51 gap-7 p-5 rounded-2xl bg-white">
+              {/* 데일리 버튼 */}
+              <button
+                onClick={() => navigate('/compose/daily')}
+                className="flex flex-col items-center justify-center h-51 gap-7 p-5 rounded-2xl bg-white cursor-pointer"
+              >
                 {/* 태그 */}
                 <div className="h-5 py-1 px-2 flex items-center justify-start self-start rounded-lg bg-violet-50 text-violet-400 text-xs">
                   데일리
@@ -23,7 +30,11 @@ export default function HomePage() {
                 <div className="flex justify-center bg-yellow-200 w-15 h-15 rounded-xl" />
                 <div className="font-semibold text-lg">일상용 글쓰기</div>
               </button>
-              <button className="flex flex-col items-center justify-center h-51 gap-7 p-5 rounded-2xl bg-white shadow-">
+              {/* 비즈니스 버튼 */}
+              <button
+                onClick={() => navigate('/compose/work')}
+                className="flex flex-col items-center justify-center h-51 gap-7 p-5 rounded-2xl bg-white cursor-pointer"
+              >
                 <div className="h-5 py-1 px-2 flex items-center justify-start self-start rounded-lg bg-violet-50 text-violet-400 text-xs">
                   비즈니스
                 </div>
