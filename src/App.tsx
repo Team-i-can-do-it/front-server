@@ -12,7 +12,7 @@ function App() {
           <Route path="/" element={<LoginPage />} />
         </Route>
 
-        <Route element={<DefaultLayout />}>
+        <Route element={<DefaultLayout noPadding />}>
           <Route path="/home" element={<HomePage />} />
         </Route>
       </Routes>
