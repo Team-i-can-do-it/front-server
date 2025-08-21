@@ -1,6 +1,5 @@
 import React from 'react';
 import backIcon from '../../assets/backIcon.svg';
-import closeIcon from '../../assets/closeIcon.svg';
 import { useNavigate } from 'react-router-dom';
 
 type HeaderProps = {
