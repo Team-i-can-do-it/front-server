@@ -52,11 +52,7 @@ export default function DefaultLayout({
         ].join(' ')}
       >
         {/* Header */}
-        {showHeader && (
-          <div className="w-full h-[44px] flex items-center border-b border-gray-200">
-            {header}
-          </div>
-        )}
+        {showHeader && header}
 
         {/* Content 영역: Header + BottomNav 제외한 가용 높이 */}
         <main

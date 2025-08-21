@@ -115,11 +115,10 @@ function RadarSVG({ items }: { items: Sub[] }) {
 
 export default function ResultPage() {
   const navigate = useNavigate();
-  const { mode } = useParams(); // "summary" | "analysis" 등 탭 상태 용
+  const { mode } = useParams();
   const [sp] = useSearchParams();
   const topic = sp.get('topic') || '';
 
-  // ===== 목업 데이터 (스샷과 동일 톤) =====
   const total = 90;
   const subs: Sub[] = [
     { k: '내용 충실성', v: 32 },
