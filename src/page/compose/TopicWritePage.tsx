@@ -1,10 +1,11 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import select_topic from '../../assets/select_topic.svg';
 
 export default function TopicWritePage() {
   const [sp] = useSearchParams();
   const navigate = useNavigate();
+  const { mode } = useParams<{ mode: string }>();
   const topic = sp.get('topic') || '';
 
   const [title, setTitle] = useState('');
@@ -22,6 +23,11 @@ export default function TopicWritePage() {
 
   // 제목 1자 이상, 본문 1자 이상 작성
   const canSubmit = title.trim().length >= 1 && content.trim().length >= 1;
+
+  const goResult = () => {
+    const q = topic ? `?topic=${encodeURIComponent(topic)}` : '';
+    navigate(`/compose/${mode}/result${q}`);
+  };
 
   return (
     <section className="pt-3 pb-[88px]">
@@ -92,7 +98,7 @@ export default function TopicWritePage() {
         <div className="h-full flex items-center">
           <button
             disabled={!canSubmit}
-            onClick={() => navigate(`../result?topic=${topic}`)}
+            onClick={goResult}
             className={`w-full p-4 font-semibold ${
               canSubmit
                 ? 'bg-violet-500 text-white'
