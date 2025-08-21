@@ -99,7 +99,7 @@ export default function TopicWritePage() {
           <button
             disabled={!canSubmit}
             onClick={goResult}
-            className={`w-full p-4 font-semibold ${
+            className={`w-full h-12 p-4 font-semibold ${
               canSubmit
                 ? 'bg-violet-500 text-white'
                 : 'bg-[#f2f3f5] text-gray-300'
