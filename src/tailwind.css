@@ -1,8 +1,12 @@
 @import 'tailwindcss';
 
-@theme {
-  --font-sans: 'PretendardVariable';
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+}
 
+@theme {
   /* ------------------ Color --------------------*/
 
   /* Base */
@@ -15,7 +19,7 @@
   --color-violet-200: #bd9ff3;
   --color-violet-300: #9f73ed;
   --color-violet-400: #8d58e9;
-  --color-violet-500: #7d33fe;
+  --color-violet-500: #7d00fe;
   --color-violet-600: #662acf;
   --color-violet-700: #5021a2;
   --color-violet-800: #3e197d;
@@ -80,7 +84,7 @@
   --color-green-600: #159740;
   --color-green-700: #117532;
   --color-green-800: #0d5926;
-  --color-green-900: #0d5926;
+  --color-green-900: #0d4b21;
 
   /* Gray */
   --color-gray-10: #f9f9f9;
@@ -150,4 +154,183 @@
 
   /* --------------Material--------------- */
   --color-material-dimmed: rgba(0, 0, 0, 0.24);
+}
+
+/* ================Typography================== */
+
+@theme {
+  --font-sans: 'PretendardVariable';
+
+  /* Heading */
+  --text-h1-b-24-size: 24px;
+  --text-h1-b-24-lh: 28px;
+  --text-h1-b-24-tracking: -0.48px;
+
+  --text-h2-sb-20-size: 20px;
+  --text-h2-sb-20-lh: 24px;
+  --text-h2-sb-20-tracking: -0.4px;
+
+  --text-h3-sb-18-size: 18px;
+  --text-h3-sb-18-lh: 22px;
+  --text-h3-sb-18-tracking: -0.36px;
+
+  --text-h4-sb-16-size: 16px;
+  --text-h4-sb-16-lh: 20px;
+  --text-h4-sb-16-tracking: -0.32px;
+
+  /* Body */
+  --text-body1-m-20-size: 20px;
+  --text-body1-m-20-lh: 32px;
+  --text-body1-m-20-tracking: -0.4px;
+
+  --text-body2-r-16-size: 16px;
+  --text-body2-r-16-lh: 24px;
+  --text-body2-r-16-tracking: -0.32px;
+
+  --text-body3-r-14-size: 14px;
+  --text-body3-r-14-lh: 22px;
+  --text-body3-r-14-tracking: -0.28px;
+
+  /* Button Label */
+  --text-button-b-18-size: 18px;
+  --text-button-b-18-lh: 24px;
+  --text-button-b-18-tracking: -0.36px;
+
+  --text-button-b-16-size: 16px;
+  --text-button-b-16-lh: 24px;
+  --text-button-b-16-tracking: -0.32px;
+
+  --text-button-r-14-size: 14px;
+  --text-button-r-14-lh: 22px;
+  --text-button-r-14-tracking: -0.28px;
+
+  /* Label */
+  --text-label1-r-15-size: 15px;
+  --text-label1-r-15-lh: 18px;
+  --text-label1-r-15-tracking: -0.3px;
+
+  --text-label2-r-14-size: 14px;
+  --text-label2-r-14-lh: 16px;
+  --text-label2-r-14-tracking: -0.28px;
+
+  --text-label3-m-14-size: 14px;
+  --text-label3-m-14-lh: 16px;
+  --text-label3-m-14-tracking: -0.28px;
+
+  --text-label3-m-12-size: 12px;
+  --text-label3-m-12-lh: 14px;
+  --text-label3-m-12-tracking: -0.24px;
+}
+
+@layer utilities {
+  /* header */
+  .typo-h1-b-24 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--text-h1-b-24-size);
+    line-height: var(--text-h1-b-24-lh);
+    letter-spacing: var(--text-h1-b-24-tracking);
+  }
+  .typo-h2-sb-20 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-h2-sb-20-size);
+    line-height: var(--text-h2-sb-20-lh);
+    letter-spacing: var(--text-h2-sb-20-tracking);
+  }
+  .typo-h3-sb-18 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-h3-sb-18-size);
+    line-height: var(--text-h3-sb-18-lh);
+    letter-spacing: var(--text-h3-sb-18-tracking);
+  }
+  .typo-h4-sb-16 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-h4-sb-16-size);
+    line-height: var(--text-h4-sb-16-lh);
+    letter-spacing: var(--text-h4-sb-16-tracking);
+  }
+
+  /* body */
+
+  .typo-body1-m-20 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: var(--text-body1-m-20-size);
+    line-height: var(--text-body1-m-20-lh);
+    letter-spacing: var(--text-body1-m-20-tracking);
+  }
+
+  .typo-body2-r-16 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-body2-r-16-size);
+    line-height: var(--text-body2-r-16-lh);
+    letter-spacing: var(--text-body2-r-16-tracking);
+  }
+
+  .typo-body3-r-14 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-body3-r-14-size);
+    line-height: var(--text-body3-r-14-lh);
+    letter-spacing: var(--text-body3-r-14-tracking);
+  }
+
+  /* Button Label */
+  .typo-button-b-18 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--text-button-b-18-size);
+    line-height: var(--text-button-b-18-lh);
+    letter-spacing: var(--text-button-b-18-tracking);
+  }
+
+  .typo-button-b-16 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--text-button-b-16-size);
+    line-height: var(--text-button-b-16-lh);
+    letter-spacing: var(--text-button-b-16-tracking);
+  }
+
+  .typo-button-r-14 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-button-r-14-size);
+    line-height: var(--text-button-r-14-lh);
+    letter-spacing: var(--text-button-r-14-tracking);
+  }
+
+  /* Label */
+  .typo-label1-r-15 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-label1-r-15-size);
+    line-height: var(--text-label1-r-15-lh);
+    letter-spacing: var(--text-label1-r-15-tracking);
+  }
+  .typo-label2-r-14 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-label2-r-14-size);
+    line-height: var(--text-label2-r-14-lh);
+    letter-spacing: var(--text-label2-r-14-tracking);
+  }
+  .typo-label3-m-14 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: var(--text-label3-m-14-size);
+    line-height: var(--text-label3-m-14-lh);
+    letter-spacing: var(--text-label3-m-14-tracking);
+  }
+  .typo-label3-m-12 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: var(--text-label3-m-12-size);
+    line-height: var(--text-label3-m-12-lh);
+    letter-spacing: var(--text-label3-m-12-tracking);
+  }
 }

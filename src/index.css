@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'PretendardVariable';
-  src: url('/public/fonts/PretendardVariable.ttf');
+  src: url('/public/fonts/PretendardVariable.ttf') format('truetype');
 }
 
 body {
