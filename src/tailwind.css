@@ -97,4 +97,57 @@
   --color-gray-900: #1a1a1c;
 }
 
-/* ------------------ Color --------------------*/
+/* ------------------ Semantic --------------------*/
+@theme {
+  /* ----------Brand--------- */
+
+  /* Violet */
+  --color-brand-violet-600: var(--color-violet-600);
+  --color-brand-violet-500: var(--color-violet-500);
+  --color-brand-violet-400: var(--color-violet-400);
+  --color-brand-violet-200: var(--color-violet-200);
+  --color-brand-violet-100: var(--color-violet-100);
+  --color-brand-violet-50: var(--color-violet-50);
+  /* Yellow */
+  --color-brand-yellow-600: var(--color-yellow-600);
+  --color-brand-yellow-500: var(--color-yellow-500);
+  --color-brand-yellow-400: var(--color-yellow-400);
+  --color-brand-yellow-200: var(--color-yellow-200);
+  --color-brand-yellow-100: var(--color-yellow-100);
+  --color-brand-yellow-50: var(--color-yellow-50);
+
+  /* -----------Text---------- */
+  --color-text-900: var(--color-gray-900);
+  --color-text-700: var(--color-gray-700);
+  --color-text-500: var(--color-gray-500);
+  --color-text-200: var(--color-gray-200);
+  --color-text-100: var(--color-gray-100);
+  --color-text-50: var(--color-gray-50);
+  --color-text-25: var(--color-gray-25);
+  --color-text-white: var(--color-white-base);
+
+  /* --------------Icon------------ */
+  --color-icon-700: var(--color-gray-700);
+  --color-icon-500: var(--color-gray-500);
+  --color-icon-200: var(--color-gray-200);
+  --color-icon-100: var(--color-gray-100);
+  --color-icon-50: var(--color-gray-50);
+  --color-icon-25: var(--color-gray-25);
+  --color-icon-white: var(--color-white-base);
+
+  /* -----------Border------------- */
+  --color-border-700: var(--color-gray-700);
+  --color-border-25: var(--color-gray-25);
+
+  /* ------------Background------------ */
+  --color-bg-white: var(--color-white-base);
+  --color-bg-10: var(--color-gray-10);
+
+  /* ---------------Status--------------- */
+  --color-status-positive: var(--color-green-500);
+  --color-status-caution: var(--color-yellow-600);
+  --color-status-danger: var(--color-red-500);
+
+  /* --------------Material--------------- */
+  --color-material-dimmed: rgba(0, 0, 0, 0.24);
+}
