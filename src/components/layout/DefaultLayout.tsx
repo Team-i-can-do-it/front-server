@@ -1,0 +1,81 @@
+import React from 'react';
+
+interface DefaultLayoutProps {
+  children: React.ReactNode;
+  header?: React.ReactNode;
+  bottomNav?: React.ReactNode;
+  hasBottomNav?: boolean;
+  noPadding?: boolean;
+  debugFrame?: boolean;
+}
+
+const MOBILE_BASE = {
+  W: 390,
+  H: 844,
+  HEADER_H: 44,
+  NAV_H: 64,
+  SIDE: 24,
+};
+
+export default function DefaultLayout({
+  children,
+  header,
+  bottomNav,
+  hasBottomNav = true,
+  noPadding = false,
+  debugFrame = false,
+}: DefaultLayoutProps) {
+  const style = {
+    '--mobile-w': `${MOBILE_BASE.W}px`,
+    '--mobile-h': `${MOBILE_BASE.H}px`,
+    '--header-h': `${MOBILE_BASE.HEADER_H}px`,
+    '--nav-h': `${MOBILE_BASE.NAV_H}px`,
+    '--side': `${MOBILE_BASE.SIDE}px`,
+  } as React.CSSProperties;
+
+  return (
+    <div className="w-full min-h-[100dvh] flex justify-center bg-gray-15">
+      <div
+        style={style}
+        className={[
+          `w-full max-w-[var(--mobile-w)] min-h-[var(--mobile-h)] bg-white`,
+          debugFrame
+            ? 'rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_20px_40px_rgba(0,0,0,0.06)]'
+            : '',
+          noPadding ? 'px-0' : `px-[var(--side)]`,
+        ].join(' ')}
+      >
+        {/* Header */}
+        {header && (
+          <div className="w-full h-[44px] flex items-center border-b border-gray-200">
+            {header}
+          </div>
+        )}
+
+        {/* Content 영역: Header + BottomNav 제외한 가용 높이 */}
+        <main
+          className={`w-full`}
+          style={{
+            minHeight: hasBottomNav
+              ? `calc(var(--mobile-h) - var(--header-h) - var(--nav-h))`
+              : `calc(var(--mobile-h) - var(--header-h))`,
+          }}
+        >
+          {children}
+        </main>
+
+        {/* Bottom Nav + 노치별 패딩값 */}
+        {hasBottomNav && bottomNav && (
+          <div
+            className="w-full h-[64px] border-t border-gray-200"
+            style={{
+              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+            }}
+          >
+            {bottomNav}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

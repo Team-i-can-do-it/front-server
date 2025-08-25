@@ -4,6 +4,7 @@ import './index.css';
 import App from './App.tsx';
 import QueryClientProviders from './providers/QueryClientProvider.tsx';
 import { BrowserRouter } from 'react-router-dom';
+import './tailwind.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
