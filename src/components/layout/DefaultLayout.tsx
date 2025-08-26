@@ -5,6 +5,7 @@ interface DefaultLayoutProps {
   children?: React.ReactNode;
   header?: React.ReactNode;
   bottomNav?: React.ReactNode;
+  headerFixed?: boolean;
   navFixed?: boolean;
   hasBottomNav?: boolean;
   noPadding?: boolean;
@@ -23,6 +24,7 @@ export default function DefaultLayout({
   children,
   header,
   bottomNav,
+  headerFixed = true,
   navFixed = true,
   hasBottomNav = true,
   noPadding = false,
@@ -40,7 +42,7 @@ export default function DefaultLayout({
   const showBottomNav = hasBottomNav && !!bottomNav;
 
   return (
-    <div className="w-full min-h-[100dvh] flex justify-center bg-gray-15">
+    <div className="w-full min-h-svh flex justify-center bg-gray-15">
       <div
         style={style}
         className={[
@@ -52,7 +54,27 @@ export default function DefaultLayout({
         ].join(' ')}
       >
         {/* Header */}
-        {showHeader && header}
+        {showHeader &&
+          (headerFixed ? (
+            <div
+              className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--mobile-w)] z-50"
+              style={{
+                height: 'var(--header-h)',
+                paddingTop: 'env(safe-area-inset-top, 0px)',
+              }}
+            >
+              {header}
+            </div>
+          ) : (
+            <div
+              className="w-full"
+              style={{
+                height: 'calc(var(--header-h) + env(safe-area-inset-top, 0px))',
+              }}
+            >
+              {header}
+            </div>
+          ))}
 
         {/* Content 영역: Header + BottomNav 제외한 가용 높이 */}
         <main
