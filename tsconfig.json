@@ -11,7 +11,8 @@
       "@_icons/*": ["src/assets/icons/*"],
       "@_api/*": ["src/api/*"],
       "@_types/*": ["src/types/*"],
-      "@_components/*": ["src/components/*"]
+      "@_components/*": ["src/components/*"],
+      "@_page/*": ["src/page/*"]
     }
   }
 }
