@@ -11,6 +11,7 @@ reviews:
     base_branches:
       - 'main'
       - 'develop'
+
   tools:
     eslint:
       enabled: true
