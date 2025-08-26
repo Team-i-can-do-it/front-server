@@ -1,5 +1,5 @@
 import './App.css';
-import DefaultLayout from './components/layout/DefaultLayout';
+import DefaultLayout from '@_components/layout/DefaultLayout';
 
 function App() {
   return (
