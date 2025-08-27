@@ -7,7 +7,6 @@ interface DefaultLayoutProps {
   bottomNav?: React.ReactNode;
   headerFixed?: boolean;
   navFixed?: boolean;
-  hasBottomNav?: boolean;
   noPadding?: boolean;
   debugFrame?: boolean;
 }
@@ -26,7 +25,6 @@ export default function DefaultLayout({
   bottomNav,
   navFixed = true,
   headerFixed = true,
-  hasBottomNav = true,
   noPadding = false,
   debugFrame = false,
 }: DefaultLayoutProps) {
@@ -39,7 +37,7 @@ export default function DefaultLayout({
   } as React.CSSProperties;
 
   const showHeader = !!header;
-  const showBottomNav = hasBottomNav && !!bottomNav;
+  const showBottomNav = !!bottomNav;
 
   return (
     <div className="w-full min-h-[100dvh] flex justify-center bg-gray-15">
