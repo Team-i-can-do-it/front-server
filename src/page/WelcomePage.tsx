@@ -1,0 +1,41 @@
+import { useNavigate } from 'react-router-dom';
+
+import googleLogo from '@_icons/googleIcon.svg';
+
+export default function WelcomePage() {
+  const navigate = useNavigate();
+
+  const handleGoogleLogin = () => {
+    console.log('구글 로그인 버튼 클릭');
+    navigate('/home');
+  };
+
+  return (
+    <main className="flex flex-col items-center justify-center min-h-[100dvh]">
+      <div>
+        <img
+          src="/images/welcomeDummy.svg"
+          alt="메인 이미지"
+          className="w-[244px] h-40"
+        ></img>
+      </div>
+      <div className="flex flex-col text-center gap-6 mb-32">
+        <h1 className="typo-h1-b-24">OOO에 오신 것을 환영해요 :)</h1>
+        <p className="typo-body1-r-15 text-gray-500">
+          처음부터 잘할 필요 없어요. <br /> 꾸준히 할 수 있게 도와드릴게요.
+        </p>
+      </div>
+      <div>
+        <button
+          onClick={handleGoogleLogin}
+          className="flex items-center justify-center bg-[#Efe6ff] text-brand-violet-500 hover:text-brand-violet-600 w-[328px] h-12 p-4 rounded-xl
+            typo-button-b-16 gap-2 cursor-pointer
+            transition-all duration-150 hover:bg-violet-100 hover:shadow-sm active:translate-y-[1px]"
+        >
+          <img src={googleLogo} alt="구글 로그인 로고" className="w-5 h-5" />
+          구글로 로그인하기
+        </button>
+      </div>
+    </main>
+  );
+}
