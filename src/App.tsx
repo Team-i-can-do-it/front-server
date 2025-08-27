@@ -3,6 +3,7 @@ import DefaultLayout from '@_layout/DefaultLayout';
 import DesignTest from '@_page/DesignTest';
 import { Routes, Route } from 'react-router-dom';
 import Header from '@_layout/Header';
+import BottomNav from '@_components/layout/BottomNav';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
                 showClose={true}
               />
             }
+            bottomNav={<BottomNav />}
           />
         }
       >
