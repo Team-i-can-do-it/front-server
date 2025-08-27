@@ -49,8 +49,8 @@ export default function BottomNav() {
               'relative group flex-1 flex flex-col items-center justify-center gap-1 select-none',
               'text-[11px] leading-none transition-colors',
               isActive
-                ? 'text-brand-violet-500'
-                : 'text-black-base hover:text-brand-violet-500',
+                ? 'text-violet-500'
+                : 'text-black-base hover:text-violet-500',
             ].join(' ')
           }
         >
