@@ -59,8 +59,7 @@ export default function DefaultLayout({
             <div
               className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--mobile-w)] z-50"
               style={{
-                height: 'var(--header-h)',
-                paddingTop: 'env(safe-area-inset-top, 0px)',
+                height: 'calc(var(--header-h)+ env(safe-area-inset-top, 0px))',
               }}
             >
               {header}
@@ -80,6 +79,10 @@ export default function DefaultLayout({
         <main
           className={[
             'w-full flex-1 overflow-y-auto',
+
+            showHeader && headerFixed
+              ? 'pt-[calc(var(--header-h)+env(safe-area-inset-top,0px))]'
+              : '',
             showBottomNav && navFixed
               ? 'pb-[calc(var(--nav-h)+env(safe-area-inset-bottom,0px))]'
               : '',

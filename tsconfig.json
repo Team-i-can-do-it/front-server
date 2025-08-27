@@ -12,7 +12,8 @@
       "@_api/*": ["src/api/*"],
       "@_types/*": ["src/types/*"],
       "@_components/*": ["src/components/*"],
-      "@_page/*": ["src/page/*"]
+      "@_page/*": ["src/page/*"],
+      "@_layout/*": ["src/components/layout/*"]
     }
   }
 }
