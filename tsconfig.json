@@ -13,7 +13,10 @@
       "@_types/*": ["src/types/*"],
       "@_components/*": ["src/components/*"],
       "@_page/*": ["src/page/*"],
-      "@_layout/*": ["src/components/layout/*"]
+      "@_layout/*": ["src/components/layout/*"],
+      "@_pageComponent/*": ["src/components/pageComponent/*"],
+      "@_store/*": ["src/store/*"],
+      "@_common/*": ["src/components/common/*"]
     }
   }
 }
