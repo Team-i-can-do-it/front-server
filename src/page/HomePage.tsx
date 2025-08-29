@@ -1,4 +1,5 @@
 import HomeCurrentSpeaking from '@_components/pageComponent/home/HomeCurrentSpeaking';
+import HomeRecommend from '@_components/pageComponent/home/HomeRecommend';
 import HomeTopicSelect from '@_components/pageComponent/home/HomeTopicSelect';
 import HomeTitle from '@_pageComponent/home/HomeTitle';
 
@@ -17,6 +18,7 @@ export default function HomePage() {
       </section>
       <section>
         <HomeCurrentSpeaking />
+        <HomeRecommend />
       </section>
     </>
 
