@@ -1,3 +1,4 @@
+import HomeTopicSelect from '@_components/pageComponent/home/HomeTopicSelect';
 import HomeTitle from '@_pageComponent/home/HomeTitle';
 
 export default function HomePage() {
@@ -9,6 +10,7 @@ export default function HomePage() {
                   pt-[calc(env(safe-area-inset-top)+44px)] pb-8"
       >
         <HomeTitle />
+        <HomeTopicSelect />
       </div>
     </section>
   );
