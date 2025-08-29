@@ -9,7 +9,7 @@ type RecommendedCard = {
   image?: string;
 };
 
-export default function HomeCurrentSpeaking() {
+export default function HomeRecommend() {
   const BUTTONHOVER = [
     'transition-[transform,box-shadow,border-color,background-color] duration-400',
     'hover:-translate-y-0.2 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:border-brand-violet-100',
