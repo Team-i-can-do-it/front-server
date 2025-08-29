@@ -23,7 +23,8 @@ function TopicCard({ option }: { option: TopicOption }) {
   return (
     <button
       onClick={() => navigate(option.to)}
-      className="flex flex-col items-center justify-center w-[165px] gap-5 p-5 rounded-2xl bg-white cursor-pointer"
+      className="flex flex-col items-center justify-center w-[165px] gap-5 p-5 rounded-2xl bg-white cursor-pointer
+      transition hover:shadow-lg hover-bg-gray-10 active:scale-[1.98]"
     >
       {/* 태그들 */}
       <div className="flex w-full gap-1">
@@ -36,7 +37,7 @@ function TopicCard({ option }: { option: TopicOption }) {
         ))}
       </div>
 
-      {/* 이미지 자리(임시) */}
+      {/* 이미지 자리 (임시는 노랑 상자) */}
       {option.image ? (
         <img
           src={option.image}

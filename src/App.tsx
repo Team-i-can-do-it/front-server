@@ -28,7 +28,7 @@ function App() {
       <Route element={<DefaultLayout />}>
         <Route path="/welcome" element={<WelcomePage />} />
       </Route>
-      <Route element={<DefaultLayout noPadding />}>
+      <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
         <Route path="/e-eum" element={<HomePage />} />
       </Route>
     </Routes>

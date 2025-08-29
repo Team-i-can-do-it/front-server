@@ -17,7 +17,7 @@ type Item = {
 };
 
 const items: Item[] = [
-  { to: '/home', label: '홈', icon: home, iconHover: homeHover },
+  { to: '/e-eum', label: '홈', icon: home, iconHover: homeHover },
   {
     to: '/',
     label: '글 기록',
