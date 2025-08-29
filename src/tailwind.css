@@ -167,6 +167,10 @@
   --text-h1-b-24-lh: 28px;
   --text-h1-b-24-tracking: -0.48px;
 
+  --text-h2-sb-22-size: 22px;
+  --text-h2-sb-22-lh: 24px;
+  --text-h2-sb-tracking: -0.44px;
+
   --text-h2-sb-20-size: 20px;
   --text-h2-sb-20-lh: 24px;
   --text-h2-sb-20-tracking: -0.4px;
@@ -236,6 +240,14 @@
     line-height: var(--text-h1-b-24-lh);
     letter-spacing: var(--text-h1-b-24-tracking);
   }
+  .typo-h2-sb-22 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-h2-sb-22-size);
+    line-height: var(--text-h2-sb-22-lh);
+    letter-spacing: var(--text-h2-sb-22-tracking);
+  }
+
   .typo-h2-sb-20 {
     font-family: var(--font-sans);
     font-weight: 600;

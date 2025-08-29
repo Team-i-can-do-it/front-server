@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 
-import googleLogo from '@_icons/googleIcon.svg';
+import googleLogo from '@_icons/common/icon-google.svg';
 
 export default function WelcomePage() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
     console.log('구글 로그인 버튼 클릭');
-    navigate('/home');
+    navigate('/e-eum');
   };
 
   return (

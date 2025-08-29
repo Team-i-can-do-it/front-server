@@ -1,5 +1,5 @@
-import backIcon from '@_icons/icon-back.svg';
-import closeIcon from '@_icons/icon-close.svg';
+import backIcon from '@_icons/common/icon-back.svg';
+import closeIcon from '@_icons/common/icon-close.svg';
 import { useNavigate, type To } from 'react-router-dom';
 
 type HeaderProps = {

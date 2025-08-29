@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom';
 
-import home from '@_icons/icon-home.svg';
-import homeHover from '@_icons/icon-homeHover.svg';
-import writeHistory from '@_icons/icon-history.svg';
-import writeHistoryHover from '@_icons/icon-historyHover.svg';
-import shop from '@_icons/icon-shop.svg';
-import shopHover from '@_icons/icon-shopHover.svg';
-import mypage from '@_icons/icon-mypage.svg';
-import mypageHover from '@_icons/icon-mypageHover.svg';
+import home from '@_icons/common/icon-home.svg';
+import homeHover from '@_icons/common/icon-homeHover.svg';
+import writeHistory from '@_icons/common/icon-history.svg';
+import writeHistoryHover from '@_icons/common/icon-historyHover.svg';
+import shop from '@_icons/common/icon-shop.svg';
+import shopHover from '@_icons/common/icon-shopHover.svg';
+import mypage from '@_icons/common/icon-mypage.svg';
+import mypageHover from '@_icons/common/icon-mypageHover.svg';
 
 type Item = {
   to: string;
