@@ -5,6 +5,11 @@
   src: url('/public/fonts/PretendardVariable.ttf') format('truetype');
 }
 
+html,
+body {
+  min-width: 390px;
+}
+
 body {
   /* margin: 0;
   display: flex;
