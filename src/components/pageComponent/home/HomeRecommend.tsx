@@ -11,7 +11,7 @@ type RecommendedCard = {
 
 export default function HomeRecommend() {
   const BUTTONHOVER = [
-    'transition-[transform,box-shadow,border-color,background-color] duration-400',
+    'transition-[transform,box-shadow,border-color,background-color] duration-400 cursor-pointer',
     'hover:-translate-y-0.2 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:border-brand-violet-100',
     'active:scale-[0.99] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200',
   ].join(' ');

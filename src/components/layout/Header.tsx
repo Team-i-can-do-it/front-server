@@ -13,7 +13,7 @@ export default function Header({
   title,
   showBack = true,
   showClose = false,
-  backTo = '/home',
+  backTo = '/e-eum',
 }: HeaderProps) {
   const navigate = useNavigate();
 
@@ -29,18 +29,17 @@ export default function Header({
   };
 
   const handleClose = () => {
-    navigate('/home', { replace: true });
+    navigate('/e-eum', { replace: true });
   };
 
   return (
     <header
       className="h-[var(--header-h)] flex items-center justify-between px-6 py-[9px] bg-white"
-      style={{}}
       aria-label="헤더"
     >
       {/* 왼쪽 */}
 
-      <div className="w-10 h-10 -ml-1 flex items-center justify-center">
+      <div className="flex items-center justify-center">
         {showBack ? (
           <button
             type="button"

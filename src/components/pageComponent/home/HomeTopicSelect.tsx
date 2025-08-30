@@ -24,7 +24,7 @@ function TopicCard({ option }: { option: TopicOption }) {
     <button
       onClick={() => navigate(option.to)}
       className="flex flex-col items-center justify-center w-[165px] gap-5 p-5 rounded-2xl bg-white cursor-pointer
-      transition hover:shadow-lg hover-bg-gray-10 active:scale-[1.98]"
+      transition hover:shadow-lg hover:bg-gray-10 active:scale-[0.98]"
     >
       {/* 태그들 */}
       <div className="flex w-full gap-1">
@@ -67,7 +67,7 @@ export default function HomeTopicSelect() {
         { label: '순발력', type: 'violet' },
         { label: '5분', type: 'gray' },
       ],
-      to: '/compose/topic',
+      to: '/compose/topicSelect',
       image: topicExpression,
     },
     {

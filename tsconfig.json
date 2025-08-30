@@ -16,7 +16,8 @@
       "@_layout/*": ["src/components/layout/*"],
       "@_pageComponent/*": ["src/components/pageComponent/*"],
       "@_store/*": ["src/store/*"],
-      "@_common/*": ["src/components/common/*"]
+      "@_common/*": ["src/components/common/*"],
+      "@_hooks/*": ["src/hooks/*"]
     }
   }
 }
