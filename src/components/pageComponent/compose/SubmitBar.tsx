@@ -1,3 +1,7 @@
 export default function SubmitBar() {
-  return;
+  return (
+    <>
+      <div></div>
+    </>
+  );
 }

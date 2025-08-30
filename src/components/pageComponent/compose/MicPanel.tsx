@@ -1,3 +1,7 @@
 export default function MicPanel() {
-  return;
+  return (
+    <>
+      <div></div>
+    </>
+  );
 }

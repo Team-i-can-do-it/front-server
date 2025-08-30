@@ -9,7 +9,7 @@ export default function TopicSelectPage() {
   const topics = Array.isArray(data) ? data : [];
 
   const handleSelect = (id: string) => {
-    navigate(`/topic/write?category=${id}`);
+    navigate(`/compose/topic/${id}`);
   };
 
   return (

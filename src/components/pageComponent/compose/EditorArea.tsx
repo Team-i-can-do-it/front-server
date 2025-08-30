@@ -1,3 +1,7 @@
 export default function EditorArea() {
-  return;
+  return (
+    <>
+      <div></div>
+    </>
+  );
 }
