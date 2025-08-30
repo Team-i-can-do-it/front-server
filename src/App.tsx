@@ -32,8 +32,14 @@ function App() {
       <Route element={<DefaultLayout />}>
         <Route path="/welcome" element={<WelcomePage />} />
       </Route>
+
       <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
         <Route path="/e-eum" element={<HomePage />} />
+      </Route>
+
+      {/* 기타 404 페이지 */}
+      <Route element={<DefaultLayout />}>
+        <Route path="*" element={<div>/welcome 주소로 이동해 주세요</div>} />
       </Route>
     </Routes>
   );
