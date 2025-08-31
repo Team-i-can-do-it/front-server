@@ -1,3 +1,4 @@
+import ApiClient from '@_api/ApiClient';
 import { fetchTopicCategories, type TopicCategory } from '@_api/topics';
 import { useQuery } from '@tanstack/react-query';
 
@@ -75,5 +76,16 @@ export function useTopicCategories() {
     initialData: MOCK_TOPICS,
     retry: false,
     staleTime: Infinity,
+  });
+}
+
+export function useTopicCategory(id?: string | null) {
+  return useQuery({
+    queryKey: ['topic-category', id],
+    queryFn: async (): Promise<TopicCategory> => {
+      const { data } = await ApiClient.get(`/topic-categories/${id}`);
+      return data;
+    },
+    enabled: !!id,
   });
 }

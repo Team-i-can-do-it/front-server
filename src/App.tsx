@@ -7,6 +7,7 @@ import BottomNav from '@_components/layout/BottomNav';
 import WelcomePage from '@_page/WelcomePage';
 import HomePage from '@_page/HomePage';
 import TopicSelectPage from '@_page/TopicSelectPage';
+import ComposePage from '@_page/ComposePage';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
       <Route
         element={
           <DefaultLayout
-            header={<Header showBack backTo="/e-eum" />}
+            header={<Header showBack showClose backTo="/e-eum" />}
             bottomNav={<BottomNav />}
           />
         }
@@ -28,6 +29,14 @@ function App() {
         <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
       </Route>
 
+      {/* 네비 없고, 취소 버튼 있는 페이지 */}
+      <Route
+        element={
+          <DefaultLayout noPadding header={<Header showBack showClose />} />
+        }
+      >
+        <Route path="/compose/topic/:id" element={<ComposePage />} />
+      </Route>
       {/* 헤더/네비 없는 페이지 */}
       <Route element={<DefaultLayout />}>
         <Route path="/welcome" element={<WelcomePage />} />

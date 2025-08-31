@@ -9,13 +9,13 @@ export default function TopicSelectPage() {
   const topics = Array.isArray(data) ? data : [];
 
   const handleSelect = (id: string) => {
-    navigate(`/topic/write?category=${id}`);
+    navigate(`/compose/topic/${id}`);
   };
 
   return (
     <section className="mx-auto">
       <div className="flex flex-col gap-6">
-        <div className="fixed w-full pb-2 bg-white/95 backdrop-blur flex items-center">
+        <div className="fixed pb-2 bg-white/95 backdrop-blur flex items-center">
           <h2 className="px-6 typo-h2-sb-20">어떤 주제를 선택해 볼까요?</h2>
         </div>
         {isLoading && (
@@ -33,7 +33,7 @@ export default function TopicSelectPage() {
                 <button
                   onClick={() => handleSelect(topic.id)}
                   className="w-full px-6 flex items-center gap-4 py-4 rounded-2xl bg-white active:scale-[0.99] transition
-                  hover:bg-gray-25 hover:rounded-2xl"
+                  hover:bg-gray-25 hover:rounded-2xl cursor-pointer"
                 >
                   <div className="flex gap-3">
                     <div className="w-12 h-12 rounded-xl bg-gray-10 flex items-center justify-center">
