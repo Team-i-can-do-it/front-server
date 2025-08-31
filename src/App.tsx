@@ -28,6 +28,7 @@ function App() {
       <Route element={<DefaultLayout noPadding header={<Header />} />}>
         <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
       </Route>
+
       {/* 네비 없고, 취소 버튼 있는 페이지 */}
       <Route
         element={

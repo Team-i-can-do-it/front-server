@@ -45,7 +45,7 @@ export default function Header({
             type="button"
             aria-label="뒤로가기 버튼"
             onClick={handleBack}
-            className="hover:bg-gray-50 h-6 w-6 rounded-lg active:scale-95 transition 
+            className="hover:bg-gray-50 h-6 w-6 rounded-lg active:scale-95 transition cursor-pointer
             "
           >
             <img src={backIcon} alt="뒤로가기 버튼" className="h-6 w-6" />
@@ -64,7 +64,7 @@ export default function Header({
             type="button"
             aria-label="닫기 버튼"
             onClick={handleClose}
-            className="hover:bg-gray-50 h-6 w-6 rounded-lg active:scale-95 transition "
+            className="hover:bg-gray-50 h-6 w-6 rounded-lg active:scale-95 transition cursor-pointer"
           >
             <img src={closeIcon} alt="닫기 버튼" className="h-6 w-6" />
           </button>

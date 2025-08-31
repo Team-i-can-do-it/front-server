@@ -40,7 +40,7 @@ export default function DefaultLayout({
   const showBottomNav = !!bottomNav;
 
   return (
-    <div className="w-full min-h-[100dvh] flex justify-center bg-gray-15">
+    <div className="w-full min-h-[100dvh] flex justify-center bg-gray-25">
       <div
         style={style}
         className={[
