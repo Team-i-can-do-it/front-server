@@ -1,7 +1,7 @@
-import record from '@_icons/common/icon-record-violet.svg';
+import iconRecord from '@_icons/common/icon-record-violet.svg';
 import iconSubmit from '@_icons/common/icon-submit.svg';
 type SubmitBarProps = {
-  disabled?: boolean;
+  submitDisabled?: boolean;
   onSubmit?: () => void;
   onRecordClick?: () => void;
   value: string;
@@ -9,7 +9,7 @@ type SubmitBarProps = {
 };
 
 export default function SubmitBar({
-  disabled,
+  submitDisabled,
   onSubmit,
   onRecordClick,
   value,
@@ -22,20 +22,19 @@ export default function SubmitBar({
         <button
           type="button"
           onClick={onRecordClick}
-          disabled={disabled}
           aria-label="음성 녹음"
           className="w-16 h-16 flex items-center justify-center
         cursor-pointer hover:bg-brand-violet-200"
         >
           <img
             className="cursor-pointer w-[30px] h-[30px]"
-            src={record}
+            src={iconRecord}
             alt="마이크 아이콘"
           />
         </button>
       </div>
       {/* 입력창 */}
-      <div className="relative flex items-center cursor-pointer w-[326px] min-h-16">
+      <div className="relative flex items-center w-[326px] min-h-16">
         <textarea
           rows={1}
           value={value}
@@ -43,16 +42,20 @@ export default function SubmitBar({
           placeholder="입력해주세요"
           className="peer w-full self-center placeholder-transparent
           resize-none focus:outline-none 
-          typo-body2-r-16 cursor-pointer placeholder:text-brand-violet-200"
+          typo-body2-r-16 placeholder:text-brand-violet-200"
         ></textarea>
       </div>
       {/* 제출 버튼 */}
-      <div className="">
+      <div>
         <div
           className="w-10 h-10 shrink-0 rounded-full bg-brand-violet-500
-                 flex items-center justify-center"
+                 flex items-center justify-center cursor-pointer"
         >
-          <button onClick={onSubmit} disabled={disabled}>
+          <button
+            onClick={onSubmit}
+            disabled={submitDisabled}
+            className="cursor-pointer"
+          >
             <img src={iconSubmit} alt="제출 아이콘" className="h-6 w-6" />
           </button>
         </div>

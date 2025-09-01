@@ -6,6 +6,8 @@ import { useCallback, useState } from 'react';
 
 export default function ComposePage() {
   const [answer, setAnswer] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
 
@@ -16,6 +18,14 @@ export default function ComposePage() {
     // TODO: API연동
   }, [isDisabled, trimmed]);
 
+  const handleRecordClick = useCallback(() => {
+    setIsRecording(true);
+  }, []);
+
+  const handleStopRecording = useCallback(() => {
+    setIsRecording(false);
+  }, []);
+
   return (
     <section className="min-h-[100dvh] flex flex-col">
       <div>
@@ -24,13 +34,23 @@ export default function ComposePage() {
       </div>
 
       <div>
-        <MicPanel />
-        <SubmitBar
-          disabled={isDisabled}
-          onSubmit={handleSubmit}
-          value={answer}
-          onChange={setAnswer}
-        />
+        {isRecording ? (
+          <MicPanel
+            onClose={() => setIsRecording(false)}
+            onSubmit={() => {
+              handleSubmit();
+              setIsRecording(false);
+            }}
+          />
+        ) : (
+          <SubmitBar
+            submitDisabled={isDisabled}
+            onSubmit={handleSubmit}
+            onRecordClick={() => setIsRecording(true)}
+            value={answer}
+            onChange={setAnswer}
+          />
+        )}
       </div>
     </section>
   );
