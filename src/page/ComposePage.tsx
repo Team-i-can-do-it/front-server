@@ -18,13 +18,13 @@ export default function ComposePage() {
     // TODO: API연동
   }, [isDisabled, trimmed]);
 
-  const handleRecordClick = useCallback(() => {
-    setIsRecording(true);
-  }, []);
+  // const handleRecordClick = useCallback(() => {
+  //   setIsRecording(true);
+  // }, []);
 
-  const handleStopRecording = useCallback(() => {
-    setIsRecording(false);
-  }, []);
+  // const handleStopRecording = useCallback(() => {
+  //   setIsRecording(false);
+  // }, []);
 
   return (
     <section className="min-h-[100dvh] flex flex-col">
@@ -36,7 +36,7 @@ export default function ComposePage() {
       <div>
         {isRecording ? (
           <MicPanel
-            onClose={() => setIsRecording(false)}
+            onTextInput={() => setIsRecording(false)}
             onSubmit={() => {
               handleSubmit();
               setIsRecording(false);

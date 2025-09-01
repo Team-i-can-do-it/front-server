@@ -8,6 +8,10 @@ type SubmitBarProps = {
   onChange: (v: string) => void;
 };
 
+const PUPBLIC_STYLE =
+  'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
+  'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
+
 export default function SubmitBar({
   submitDisabled,
   onSubmit,
@@ -23,8 +27,13 @@ export default function SubmitBar({
           type="button"
           onClick={onRecordClick}
           aria-label="음성 녹음"
-          className="w-16 h-16 flex items-center justify-center
-        cursor-pointer hover:bg-brand-violet-200"
+          className={[
+            'w-16 h-16 flex items-center justify-center rounded-xl cursor-pointer',
+            PUPBLIC_STYLE,
+            // hover + 모바일 active 모두 커버
+            'hover:bg-brand-violet-200 active:bg-brand-violet-200',
+            'hover:shadow-[0_4px_12px_rgba(125,51,254,0.18)]',
+          ].join(' ')}
         >
           <img
             className="cursor-pointer w-[30px] h-[30px]"
@@ -52,9 +61,19 @@ export default function SubmitBar({
                  flex items-center justify-center cursor-pointer"
         >
           <button
+            type="button"
             onClick={onSubmit}
             disabled={submitDisabled}
-            className="cursor-pointer"
+            title="submit"
+            className={[
+              'w-10 h-10 shrink-0 rounded-full flex items-center justify-center cursor-pointer',
+              'bg-brand-violet-500 text-white',
+              PUPBLIC_STYLE,
+              // hover/active 상태 (비활성화 시에는 잠금)
+              submitDisabled
+                ? 'opacity-50 cursor-not-allowed active:scale-100'
+                : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
+            ].join(' ')}
           >
             <img src={iconSubmit} alt="제출 아이콘" className="h-6 w-6" />
           </button>
