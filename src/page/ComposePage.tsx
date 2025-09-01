@@ -18,14 +18,6 @@ export default function ComposePage() {
     // TODO: API연동
   }, [isDisabled, trimmed]);
 
-  // const handleRecordClick = useCallback(() => {
-  //   setIsRecording(true);
-  // }, []);
-
-  // const handleStopRecording = useCallback(() => {
-  //   setIsRecording(false);
-  // }, []);
-
   return (
     <section className="flex flex-col">
       <div>
