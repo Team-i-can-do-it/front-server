@@ -6,11 +6,8 @@ type SubmitBarProps = {
   onRecordClick?: () => void;
   value: string;
   onChange: (v: string) => void;
+  textCount?: number;
 };
-
-const PUPBLIC_STYLE =
-  'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
-  'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
 
 export default function SubmitBar({
   submitDisabled,
@@ -18,10 +15,19 @@ export default function SubmitBar({
   onRecordClick,
   value,
   onChange,
+  textCount = value?.length ?? 0,
 }: SubmitBarProps) {
+  const PUPBLIC_STYLE =
+    'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
+    'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
   return (
     <div className="w-[390px] pr-4 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50">
       <div>
+        <div className="absolute bottom-full left-0 w-full px-6 mb-2 pointer-events-none">
+          <p className="typo-label2-r-14 text-gray-500">
+            현재 글자수 {textCount}자
+          </p>
+        </div>
         {/* 마이크 버튼 */}
         <button
           type="button"

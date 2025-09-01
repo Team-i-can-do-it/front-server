@@ -3,13 +3,21 @@ import IconNext from '@_icons/common/icon-next.svg?react';
 import iconRecord from '@_icons/common/icon-record.svg';
 import IconPause from '@_icons/common/icon-pauseHover.svg?react';
 import { useEffect, useState } from 'react';
+import TextCountBadge from '@_common/TextCountBadge';
 
 type MicPanelProps = {
   onTextInput?: () => void;
   onSubmit?: () => void;
+  value: string;
+  textCount?: number;
 };
 
-export default function MicPanel({ onTextInput, onSubmit }: MicPanelProps) {
+export default function MicPanel({
+  onTextInput,
+  onSubmit,
+  value,
+  textCount = value?.length ?? 0,
+}: MicPanelProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [enter, setEnter] = useState(false); // 등장 애니메이션
   const [leaving, setLeaving] = useState(false); // 퇴장 애니메이션
@@ -47,7 +55,11 @@ export default function MicPanel({ onTextInput, onSubmit }: MicPanelProps) {
     'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
 
   return (
-    <section className="w-[390px] fixed bottom-0 left-1/2 -translate-x-1/2 px-6 py-[33px]">
+    <section
+      className="w-[390px] fixed bottom-0 left-1/2 -translate-x-1/2 px-6 py-[33px]
+    border-t border-border-25"
+    >
+      <TextCountBadge count={textCount} alignXClass="px-6" />
       <div
         className={[
           'flex justify-between items-center',

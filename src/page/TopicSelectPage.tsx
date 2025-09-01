@@ -15,7 +15,7 @@ export default function TopicSelectPage() {
   return (
     <section className="mx-auto">
       <div className="flex flex-col gap-6">
-        <div className="fixed pb-2 bg-white/95 backdrop-blur flex items-center">
+        <div className="fixed w-full pb-2 bg-white/95 backdrop-blur flex items-center">
           <h2 className="px-6 typo-h2-sb-20">어떤 주제를 선택해 볼까요?</h2>
         </div>
         {isLoading && (

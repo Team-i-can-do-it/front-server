@@ -27,16 +27,17 @@ export default function ComposePage() {
   // }, []);
 
   return (
-    <section className="min-h-[100dvh] flex flex-col">
+    <section className="flex flex-col">
       <div>
         <TopicBar />
-        <EditorArea value={answer} onChange={setAnswer} />
+        <EditorArea onChange={setAnswer} />
       </div>
 
       <div>
         {isRecording ? (
           <MicPanel
             onTextInput={() => setIsRecording(false)}
+            value={answer}
             onSubmit={() => {
               handleSubmit();
               setIsRecording(false);
