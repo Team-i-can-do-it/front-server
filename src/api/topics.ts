@@ -1,6 +1,6 @@
 import ApiClient from '@_api/ApiClient';
 
-// back 연결시 수정
+// back 연결시 명칭 수정 필요해용
 export type TopicCategory = {
   id: string;
   title: string;
@@ -13,6 +13,10 @@ export type TopicCategory = {
 export type TopicItem = {
   id: string;
   title: string;
+};
+
+export type TopicHint = {
+  content: string;
 };
 
 // 카테고리 목록 불러오는 api
@@ -32,5 +36,11 @@ export const fetchOneTopicByCategory = async (id: string) => {
   const res = await ApiClient.get<TopicItem>(
     `/topic-categories/${id}/topics:one`,
   );
+  return res.data;
+};
+
+// 카테고리 힌트 불러오기
+export const fetchTopicHintByCategory = async (id: string) => {
+  const res = await ApiClient.get<TopicHint>(`/topic-categories/${id}/hint`);
   return res.data;
 };
