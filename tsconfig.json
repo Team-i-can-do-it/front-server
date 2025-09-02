@@ -17,7 +17,8 @@
       "@_pageComponent/*": ["src/components/pageComponent/*"],
       "@_store/*": ["src/store/*"],
       "@_common/*": ["src/components/common/*"],
-      "@_hooks/*": ["src/hooks/*"]
+      "@_hooks/*": ["src/hooks/*"],
+      "@_characters/*": ["src/assets/characters/*"]
     }
   }
 }

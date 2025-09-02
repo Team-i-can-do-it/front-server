@@ -13,6 +13,9 @@ export default function ComposePage() {
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
 
+  const [count, setCount] = useState(3);
+  const submitUiDisabled = count > 0;
+
   // 제출 및 입력 x시 비활성화
   const handleSubmit = useCallback(() => {
     if (isDisabled) return;
@@ -39,6 +42,8 @@ export default function ComposePage() {
           value={answer}
           onChange={setAnswer}
           highlight={{ lastSentence: 8 }}
+          spinnerCount={count}
+          setSpinnerCount={setCount}
         />
       </div>
 
@@ -60,6 +65,7 @@ export default function ComposePage() {
           />
         ) : (
           <SubmitBar
+            submitUiDisabled={submitUiDisabled}
             submitDisabled={isDisabled}
             onConfirm={() => setConfirmOpen(true)}
             onRecordClick={() => setIsRecording(true)}
