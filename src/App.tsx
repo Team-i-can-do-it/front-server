@@ -16,6 +16,7 @@ import ResultPage from '@_page/ResultPage';
 import ParagraphPage from '@_page/ParagraphPage';
 import LoadingPage from '@_page/LoadingPage';
 
+
 function App() {
   return (
     <>
@@ -42,9 +43,11 @@ function App() {
         </Route>
 
         {/* 네비만 있는 페이지 */}
+
         <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
           <Route path="/e-eum" element={<HomePage />} />
         </Route>
+
 
         {/* 헤더+네비 있는 그룹 */}
         <Route
@@ -67,12 +70,12 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/loading" element={<LoadingPage />} />
         </Route>
-
         {/* 어드민 페이지 */}
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <ModalProvider />
       <ToastProvider />
+
     </>
   );
 }
