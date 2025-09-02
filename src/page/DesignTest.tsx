@@ -2,11 +2,81 @@ import VioletTag, { GrayTag, WhiteTextTag } from '@_components/common/Tag';
 import Lottie from 'react-lottie-player';
 import logo from '@_icons/logo/logo.svg';
 import { useEffect, useState } from 'react';
+import useModalStore from '@_store/dialogStore';
+import { useNavigate } from 'react-router-dom';
 
 export default function DesignTest() {
   const [dog1, setDog1] = useState<object | null>(null);
   const [dog3, setDog3] = useState<object | null>(null);
   const [cat1, setCat1] = useState<object | null>(null);
+
+  const { alert, confirm } = useModalStore();
+  const navigate = useNavigate();
+
+  // ====== 모달 ======
+
+  // 1) 주문 확인 (두 버튼)
+  const openOrderConfirm = () => {
+    confirm({
+      title: '주문 확인',
+      description: (
+        <>
+          5,000P를 사용하여 구매하시겠어요?
+          <br />
+          결제 후 잔액 200P
+        </>
+      ),
+      confirmText: '구매하기',
+      cancelText: '취소',
+      onConfirm: () => {
+        // 결제 로직 ~~~
+        console.log('구매 진행');
+      },
+    });
+  };
+
+  // 2) 결제 완료 (한 버튼)
+  const openPaymentDone = () => {
+    alert({
+      title: '결제가 완료되었습니다',
+      description:
+        '주문이 정상적으로 완료되었습니다.\n상세 내역은 마이페이지에서 확인해 주세요.',
+      confirmText: '닫기',
+    });
+  };
+
+  // 3) 정말 제출하시겠어요? (두 버튼, 회색 취소 버튼)
+  const openSubmitConfirm = () => {
+    confirm({
+      title: '정말 제출하시겠어요?',
+      description: '제출된 원고는 수정이 불가능해요',
+      confirmText: '확인',
+      cancelText: '취소',
+      onConfirm: () => console.log('제출 진행'),
+    });
+  };
+
+  // 4) 당첨자 발표 (태그 + 한 버튼)
+  const openWinner = () => {
+    alert({
+      title: '당첨자 발표',
+      tag: { text: '정*연님' },
+      description: '당첨을 축하합니다🎉',
+      confirmText: '확인',
+    });
+  };
+
+  // 5) 포인트 보기 모달
+  const openPointConfirm = () => {
+    useModalStore.getState().open({
+      title: '000P가 지급되었어요🎉',
+      description: '포인트는 마이페이지에서 확인가능해요',
+      buttonLayout: 'doubleVioletCancel', // ← 왼쪽 연보라 + 오른쪽 보라
+      cancelText: '포인트 보기', // ← 왼쪽 버튼
+      confirmText: '확인', // ← 오른쪽 버튼
+      onCancel: () => navigate('/mypage/points'), // 경로는 프로젝트 맞게
+    });
+  };
 
   useEffect(() => {
     let alive = true;
@@ -84,6 +154,41 @@ export default function DesignTest() {
         src="https://upload.wikimedia.org/wikipedia/commons/b/b5/JTBC_%EB%93%9C%EB%9D%BC%EB%A7%88_%27%EB%9D%BC%EC%9D%B4%ED%94%84%27_%EC%A0%9C%EC%9E%91%EB%B0%9C%ED%91%9C%ED%9A%8C_%EC%A1%B0%EC%8A%B9%EC%9A%B0_%281%29.jpg"
         alt="조승우"
       />
+
+      {/* ===== 모달 테스트 버튼들 ===== */}
+      <div className="mt-8 grid grid-cols-2 gap-3 max-w-[390px]">
+        <button
+          onClick={openOrderConfirm}
+          className="h-12 rounded-xl bg-brand-violet-50 text-brand-violet-500 typo-button-b-16 active:scale-[0.99]"
+        >
+          주문 확인
+        </button>
+        <button
+          onClick={openPaymentDone}
+          className="h-12 rounded-xl bg-brand-violet-500 text-white typo-button-b-16 active:scale-[0.99]"
+        >
+          결제 완료
+        </button>
+        <button
+          onClick={openSubmitConfirm}
+          className="h-12 rounded-xl bg-gray-25 text-gray-700 typo-button-b-16 active:scale-[0.99]"
+        >
+          제출 확인
+        </button>
+        <button
+          onClick={openWinner}
+          className="h-12 rounded-xl bg-brand-violet-500 text-white typo-button-b-16 active:scale-[0.99]"
+        >
+          당첨자 발표(태그)
+        </button>
+
+        <button
+          onClick={openPointConfirm}
+          className="h-12 rounded-xl bg-brand-violet-500 text-white typo-button-b-16 active:scale-[0.99]"
+        >
+          포인트 지급(보라 버튼)
+        </button>
+      </div>
     </>
   );
 }
