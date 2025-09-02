@@ -1,39 +1,71 @@
 import type { ReactNode } from 'react';
 import { create } from 'zustand';
 
-interface ModalState {
-  isOpen: boolean;
-  content: ReactNode | null;
-  buttonProps?: {
-    text: string;
-    color: string;
-  };
-  openModal: (
-    content: ReactNode,
-    action?: () => void,
-    closeAction?: () => void,
-    buttonProps?: {
-      text: string;
-      color: string;
-    },
-  ) => void;
-  closeModal: () => void;
-  action: () => void;
-  closeAction: () => void;
+type ButtonLayout = 'single' | 'double' | 'doubleVioletCancel';
+
+export interface ModalOptions {
+  title: ReactNode;
+  description?: ReactNode;
+  tag?: { text: string };
+
+  buttonLayout?: ButtonLayout;
+
+  confirmText?: string;
+  cancelText?: string;
+
+  onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
-const useModalStore = create<ModalState>((set) => ({
-  isOpen: false,
-  content: null,
-  action: (action = () => {}) => set({ action }),
-  openModal: (
-    content,
-    action = () => {},
-    closeAction = () => {},
-    buttonProps,
-  ) => set({ isOpen: true, content, buttonProps, action, closeAction }),
-  closeAction: (closeAction = () => {}) => set({ closeAction }),
-  closeModal: () => set({ isOpen: false, content: null }),
-}));
+interface ModalState {
+  isOpen: boolean;
+  modal?: ModalOptions;
 
+  open: (opts: ModalOptions) => void;
+  close: () => void;
+
+  confirm: (opts: Omit<ModalOptions, 'buttonLayout'>) => void;
+  alert: (
+    opts: Omit<ModalOptions, 'buttonLayout' | 'cancelText' | 'onCancel'>,
+  ) => void;
+}
+
+export const useModalStore = create<ModalState>((set) => ({
+  isOpen: false,
+  modal: undefined,
+
+  open: (opts) =>
+    set({
+      isOpen: true,
+      modal: {
+        buttonLayout: opts.buttonLayout ?? 'double',
+        confirmText: opts.confirmText ?? '확인',
+        cancelText: opts.cancelText ?? '취소',
+        ...opts,
+      },
+    }),
+
+  close: () => set({ isOpen: false, modal: undefined }),
+
+  confirm: (opts) =>
+    set({
+      isOpen: true,
+      modal: {
+        buttonLayout: 'double',
+        confirmText: opts.confirmText ?? '확인',
+        cancelText: opts.cancelText ?? '취소',
+        ...opts,
+      },
+    }),
+
+  alert: (opts) =>
+    set({
+      isOpen: true,
+      modal: {
+        buttonLayout: 'single',
+        confirmText: opts.confirmText ?? '확인',
+        ...opts,
+      },
+    }),
+}));
 export default useModalStore;
