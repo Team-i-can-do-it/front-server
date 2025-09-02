@@ -33,7 +33,7 @@ export default function SubmitBar({
       disabled={submitUiDisabled}
       aria-busy={submitUiDisabled}
       className={[
-        'w-[390px] pr-4 pl-2 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50',
+        'w-[390px] border-0 p-0 m-0 min-w-0 pr-4 pl-2 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50',
         disabledStyle,
       ].join(' ')}
     >
