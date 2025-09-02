@@ -35,6 +35,7 @@ export function useTopicBar(categoryId: string) {
     retry: 1,
   });
 
+  // 밸런스게임에는 힌트 없음
   const canShowHint = useMemo(() => categoryId !== 'balance', [categoryId]);
 
   const changeTopic = async () => {

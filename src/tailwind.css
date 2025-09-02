@@ -14,13 +14,13 @@
   --color-white-base: #ffffff;
 
   /* Violet */
+  --color-violet-25: #f8f5fd;
   --color-violet-50: #f1eafc;
   --color-violet-100: #d3bef7;
   --color-violet-200: #bd9ff3;
   --color-violet-300: #9f73ed;
   --color-violet-400: #8d58e9;
   --color-violet-500: #7b00fe;
-  --color-brand-violet-500: #7d33fe;
   --color-violet-600: #662acf;
   --color-violet-700: #5021a2;
   --color-violet-800: #3e197d;
@@ -110,9 +110,11 @@
   --color-brand-violet-600: var(--color-violet-600);
   --color-brand-violet-500: #7d33fe;
   --color-brand-violet-400: var(--color-violet-400);
+  --color-brand-violet-300: var(--color-violet-300);
   --color-brand-violet-200: var(--color-violet-200);
   --color-brand-violet-100: var(--color-violet-100);
   --color-brand-violet-50: var(--color-violet-50);
+  --color-brand-violet-25: var(--color-violet-25);
   /* Yellow */
   --color-brand-yellow-600: var(--color-yellow-600);
   --color-brand-yellow-500: var(--color-yellow-500);

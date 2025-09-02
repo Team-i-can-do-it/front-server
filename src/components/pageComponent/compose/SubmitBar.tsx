@@ -1,27 +1,36 @@
 import iconRecord from '@_icons/common/icon-record-violet.svg';
-import iconSubmit from '@_icons/common/icon-submit.svg';
+import iconConfirm from '@_icons/common/icon-submit.svg';
+
 type SubmitBarProps = {
   submitDisabled?: boolean;
-  onSubmit?: () => void;
+  onConfirm?: () => void;
   onRecordClick?: () => void;
   value: string;
   onChange: (v: string) => void;
+  textCount?: number;
 };
-
-const PUPBLIC_STYLE =
-  'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
-  'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
 
 export default function SubmitBar({
   submitDisabled,
-  onSubmit,
+  onConfirm,
   onRecordClick,
   value,
   onChange,
+  textCount = value?.length ?? 0,
 }: SubmitBarProps) {
+  //hover css
+  const PUPBLIC_STYLE =
+    'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
+    'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
+
   return (
     <div className="w-[390px] pr-4 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50">
       <div>
+        <div className="absolute bottom-full left-0 w-full px-6 mb-2 pointer-events-none">
+          <p className="typo-label2-r-14 text-gray-500">
+            현재 글자수 {textCount}자
+          </p>
+        </div>
         {/* 마이크 버튼 */}
         <button
           type="button"
@@ -62,20 +71,19 @@ export default function SubmitBar({
         >
           <button
             type="button"
-            onClick={onSubmit}
+            onClick={onConfirm}
             disabled={submitDisabled}
             title="submit"
             className={[
               'w-10 h-10 shrink-0 rounded-full flex items-center justify-center cursor-pointer',
               'bg-brand-violet-500 text-white',
               PUPBLIC_STYLE,
-              // hover/active 상태 (비활성화 시에는 잠금)
               submitDisabled
                 ? 'opacity-50 cursor-not-allowed active:scale-100'
                 : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
             ].join(' ')}
           >
-            <img src={iconSubmit} alt="제출 아이콘" className="h-6 w-6" />
+            <img src={iconConfirm} alt="제출 아이콘" className="h-6 w-6" />
           </button>
         </div>
       </div>
