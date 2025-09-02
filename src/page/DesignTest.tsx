@@ -8,7 +8,6 @@ import RadarChart from '@_components/pageComponent/result/analysis/RadarChart';
 import DetailCard from '@_components/pageComponent/result/analysis/DetailCard';
 import RelatedTopic from '@_components/pageComponent/result/analysis/RelatedTopic';
 
-
 export default function DesignTest() {
   const [dog1, setDog1] = useState<object | null>(null);
   const [dog3, setDog3] = useState<object | null>(null);
@@ -16,7 +15,6 @@ export default function DesignTest() {
 
   const { alert, confirm } = useModalStore();
   const navigate = useNavigate();
-
 
   // ====== 차트 ======
   const labels = ['주제 명료성', '표현력', '완성도', '내용 충실성', '논리성'];
@@ -263,4 +261,3 @@ export default function DesignTest() {
     </>
   );
 }
-
