@@ -72,6 +72,18 @@ export default function DesignTest() {
           style={{ width: '100%', height: '100%' }}
         />
       </div>
+
+      <div>
+        <img src="https://ko.wikipedia.org/wiki/%EC%A1%B0%EC%8A%B9%EC%9A%B0" />
+      </div>
+
+      <div>
+        <img src="https://cdnweb01.wikitree.co.kr/webdata/editor/202509/01/202509011414078187.JPG" />
+      </div>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/b/b5/JTBC_%EB%93%9C%EB%9D%BC%EB%A7%88_%27%EB%9D%BC%EC%9D%B4%ED%94%84%27_%EC%A0%9C%EC%9E%91%EB%B0%9C%ED%91%9C%ED%9A%8C_%EC%A1%B0%EC%8A%B9%EC%9A%B0_%281%29.jpg"
+        alt="조승우"
+      />
     </>
   );
 }

@@ -16,15 +16,30 @@ export default function ComposePage() {
   // 제출 및 입력 x시 비활성화
   const handleSubmit = useCallback(() => {
     if (isDisabled) return;
-    console.log('제출:', trimmed);
-    // TODO: API연동
+
+    try {
+      console.log('제출:', trimmed);
+      // TODO: API연동
+    } finally {
+      setAnswer('');
+      setConfirmOpen(false);
+      setIsRecording(false);
+
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    }
   }, [isDisabled, trimmed]);
 
   return (
     <section className="flex flex-col">
       <div>
         <TopicBar />
-        <EditorArea value={answer} onChange={setAnswer} />
+        <EditorArea
+          value={answer}
+          onChange={setAnswer}
+          highlight={{ lastSentence: 8 }}
+        />
       </div>
 
       <div>
@@ -32,10 +47,7 @@ export default function ComposePage() {
           <MicPanel
             onTextInput={() => setIsRecording(false)}
             value={answer}
-            onSubmit={() => {
-              handleSubmit();
-              setIsRecording(false);
-            }}
+            onSubmit={() => {}}
           />
         ) : confirmOpen ? (
           <ConfirmBar
@@ -44,7 +56,6 @@ export default function ComposePage() {
             onTextInput={() => setConfirmOpen(false)}
             onSubmit={() => {
               handleSubmit();
-              setConfirmOpen(false);
             }}
           />
         ) : (

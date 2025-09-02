@@ -78,7 +78,6 @@ export default function SubmitBar({
               'w-10 h-10 shrink-0 rounded-full flex items-center justify-center cursor-pointer',
               'bg-brand-violet-500 text-white',
               PUPBLIC_STYLE,
-              // hover/active 상태 (비활성화 시에는 잠금)
               submitDisabled
                 ? 'opacity-50 cursor-not-allowed active:scale-100'
                 : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
