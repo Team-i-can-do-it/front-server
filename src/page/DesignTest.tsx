@@ -261,3 +261,6 @@ export default function DesignTest() {
     </>
   );
 }
+function useNaviage() {
+  throw new Error('Function not implemented.');
+}
