@@ -2,7 +2,7 @@ import { fetchTopicHintByCategory } from '@_api/topics';
 import { useTopicBar } from '@_hooks/useTopicBar';
 import iconRetry from '@_icons/common/icon-retry.svg';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function TopicBar() {
