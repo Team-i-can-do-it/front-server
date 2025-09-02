@@ -1,8 +1,9 @@
 import iconRecord from '@_icons/common/icon-record-violet.svg';
-import iconSubmit from '@_icons/common/icon-submit.svg';
+import iconConfirm from '@_icons/common/icon-submit.svg';
+
 type SubmitBarProps = {
   submitDisabled?: boolean;
-  onSubmit?: () => void;
+  onConfirm?: () => void;
   onRecordClick?: () => void;
   value: string;
   onChange: (v: string) => void;
@@ -11,15 +12,17 @@ type SubmitBarProps = {
 
 export default function SubmitBar({
   submitDisabled,
-  onSubmit,
+  onConfirm,
   onRecordClick,
   value,
   onChange,
   textCount = value?.length ?? 0,
 }: SubmitBarProps) {
+  //hover css
   const PUPBLIC_STYLE =
     'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
     'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
+
   return (
     <div className="w-[390px] pr-4 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50">
       <div>
@@ -68,7 +71,7 @@ export default function SubmitBar({
         >
           <button
             type="button"
-            onClick={onSubmit}
+            onClick={onConfirm}
             disabled={submitDisabled}
             title="submit"
             className={[
@@ -81,7 +84,7 @@ export default function SubmitBar({
                 : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
             ].join(' ')}
           >
-            <img src={iconSubmit} alt="제출 아이콘" className="h-6 w-6" />
+            <img src={iconConfirm} alt="제출 아이콘" className="h-6 w-6" />
           </button>
         </div>
       </div>

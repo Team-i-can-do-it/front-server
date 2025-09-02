@@ -1,3 +1,4 @@
+import ConfirmBar from '@_components/pageComponent/compose/ConfirmBar';
 import EditorArea from '@_components/pageComponent/compose/EditorArea';
 import MicPanel from '@_components/pageComponent/compose/MicPanel';
 import SubmitBar from '@_components/pageComponent/compose/SubmitBar';
@@ -7,6 +8,7 @@ import { useCallback, useState } from 'react';
 export default function ComposePage() {
   const [answer, setAnswer] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
@@ -22,7 +24,7 @@ export default function ComposePage() {
     <section className="flex flex-col">
       <div>
         <TopicBar />
-        <EditorArea onChange={setAnswer} />
+        <EditorArea value={answer} onChange={setAnswer} />
       </div>
 
       <div>
@@ -35,10 +37,20 @@ export default function ComposePage() {
               setIsRecording(false);
             }}
           />
+        ) : confirmOpen ? (
+          <ConfirmBar
+            value={answer}
+            textCount={answer.length}
+            onTextInput={() => setConfirmOpen(false)}
+            onSubmit={() => {
+              handleSubmit();
+              setConfirmOpen(false);
+            }}
+          />
         ) : (
           <SubmitBar
             submitDisabled={isDisabled}
-            onSubmit={handleSubmit}
+            onConfirm={() => setConfirmOpen(true)}
             onRecordClick={() => setIsRecording(true)}
             value={answer}
             onChange={setAnswer}
