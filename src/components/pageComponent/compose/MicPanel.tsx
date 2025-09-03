@@ -68,7 +68,7 @@ export default function MicPanel({
 
   return (
     <section
-      className="w-full max-w-[390px] fixed bottom-0  px-6 p-[33px] 
+      className="w-full max-w-[390px] fixed bottom-0 px-6 p-[33px] 
      pt-5 bg-white-base"
     >
       <TextCountBadge

@@ -34,16 +34,16 @@ export default function SubmitBar({
       disabled={submitUiDisabled}
       aria-busy={submitUiDisabled}
       className={[
-        'fixed inset-x-0 bottom-0 z-50',
+        'w-full max-w-[390px]',
+        'fixed bottom-0',
         'border-0 m-0 p-0',
         disabledStyle,
       ].join(' ')}
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <div
-        className="relative
-        mx-auto w-full max-w-[var(--mobile-w,390px)]
-               h-16 px-4 flex items-center gap-3 bg-brand-violet-50"
+        className="relative flex items-center 
+        h-16 px-4 gap-3 bg-brand-violet-50"
       >
         {/* 글자수 */}
         <TextCountBadge count={textCount} alignXClass="px-6" />
