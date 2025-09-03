@@ -1,8 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+import Lottie from 'react-lottie-player';
 
 import googleLogo from '@_icons/common/icon-google.svg';
+import { useEffect, useState } from 'react';
 
 export default function WelcomePage() {
+  const [dog1, setDog1] = useState<object>();
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
@@ -10,14 +13,24 @@ export default function WelcomePage() {
     navigate('/e-eum');
   };
 
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const [d1] = await Promise.all([import('@_characters/dog.json')]);
+      if (!alive) return;
+      setDog1(d1.default);
+    })();
+  }, []);
+
   return (
     <main className="flex flex-col items-center justify-center min-h-[100dvh]">
-      <div>
-        <img
-          src="/images/welcomeDummy.svg"
-          alt="메인 이미지"
-          className="w-[244px] h-40"
-        ></img>
+      <div className="w-[125px] h-[127px] mb-10">
+        <Lottie
+          loop
+          animationData={dog1}
+          play
+          style={{ width: '100%', height: '100%' }}
+        />
       </div>
       <div className="flex flex-col text-center gap-6 mb-32">
         <h1 className="typo-h1-b-24">OOO에 오신 것을 환영해요 :)</h1>

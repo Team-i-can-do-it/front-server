@@ -47,7 +47,7 @@ export default function TopicBar() {
   // 힌트 토글 상태
   const [hintOpen, setHintOpen] = useState(false);
   const {
-    data: hint,
+    data: hintData,
     isFetching: hintLoading,
     isError: hintError,
     refetch: refetchHint,
@@ -64,7 +64,7 @@ export default function TopicBar() {
 
   const onClickHint = async () => {
     if (!canShowHint) return;
-    if (!hint && !hintOpen) {
+    if (!hintData && !hintOpen) {
       await refetchHint();
     }
     setHintOpen((v) => !v);
@@ -151,7 +151,7 @@ export default function TopicBar() {
                   )}
                   {!hintLoading && !hintError && (
                     <p className="typo-body3-r-14 text-gray-500 whitespace-pre-line">
-                      {hint?.content ?? '힌트가 없습니다.'}
+                      {hintData?.content ?? '힌트가 없습니다.'}
                     </p>
                   )}
                 </div>
