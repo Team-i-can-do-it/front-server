@@ -4,12 +4,15 @@ import iconRecord from '@_icons/common/icon-record.svg';
 import IconPause from '@_icons/common/icon-pauseHover.svg?react';
 import { useEffect, useState } from 'react';
 import TextCountBadge from '@_common/TextCountBadge';
+import useModalStore from '@_store/dialogStore';
 
 type MicPanelProps = {
   onTextInput?: () => void;
   onSubmit?: () => void;
   value: string;
   textCount?: number;
+  isRecording?: boolean;
+  onToggleRecording?: () => void;
 };
 
 export default function MicPanel({
@@ -17,11 +20,13 @@ export default function MicPanel({
   onSubmit,
   value,
   textCount = value?.length ?? 0,
+  isRecording = false,
+  onToggleRecording,
 }: MicPanelProps) {
-  const [isRecording, setIsRecording] = useState(false);
   const [enter, setEnter] = useState(false); // 등장 애니메이션
   const [leaving, setLeaving] = useState(false); // 퇴장 애니메이션
   const DURATION = 200;
+  const { confirm } = useModalStore();
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setEnter(true));
@@ -38,8 +43,7 @@ export default function MicPanel({
   };
 
   const handleToggleRecording = () => {
-    setIsRecording((prev) => !prev);
-    //STT 기능 연동 자리
+    onToggleRecording?.();
   };
 
   const handleTextInput = () => {
@@ -47,8 +51,16 @@ export default function MicPanel({
   };
 
   const handleSubmit = () => {
-    onSubmit?.();
-    closeWithAnimation(() => onTextInput?.());
+    confirm({
+      title: '정말 제출하시겠어요?',
+      description: '제출된 원고는 수정이 불가능해요',
+      confirmText: '확인',
+      cancelText: '취소',
+      onConfirm: () => {
+        if (isRecording) onToggleRecording?.();
+        onSubmit?.();
+      },
+    });
   };
   const PUPBLIC_STYLE =
     'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
