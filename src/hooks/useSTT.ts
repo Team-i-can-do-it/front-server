@@ -20,6 +20,10 @@ export function useSTT() {
 
   // 녹음하다 침묵 순간이 와도 이전 텍스트 사라지지 않게 관리
   const committedRef = useRef('');
+  // 마지막으로 처리한 result index 추적
+  const lastProcessedIndexRef = useRef(-1);
+  // 이미 처리한 final 결과들의 텍스트를 저장
+  const processedFinalsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     // 브라우저 내장 API
@@ -38,36 +42,61 @@ export function useSTT() {
     recognition.lang = 'ko-KR';
     recognition.continuous = true; // 연속으로 인식
     recognition.interimResults = true;
-
-    recognition.onstart = () => setIsRecording(true);
-
     recognition.maxAlternatives = 1;
 
-    // 매 결과 이벤트마다 전체 results 스캔
+    recognition.onstart = () => {
+      setIsRecording(true);
+      // 새로운 세션 시작 시 초기화
+      lastProcessedIndexRef.current = -1;
+      processedFinalsRef.current.clear();
+    };
 
     recognition.onresult = (event: any) => {
-      let committed = '';
+      // resultIndex부터 시작하여 새로운 결과만 처리
+      const startIndex = event.resultIndex || 0;
+
+      let newCommitted = '';
       const interims: string[] = [];
 
-      for (let i = 0; i < event.results.length; i++) {
+      // 기존 committed 텍스트 유지
+      let fullCommitted = committedRef.current;
+
+      // startIndex부터 처리 (새로운 결과만)
+      for (let i = startIndex; i < event.results.length; i++) {
         const result = event.results[i];
         const transScriptRaw = result?.[0]?.transcript;
+
         if (typeof transScriptRaw !== 'string') continue;
 
         const transScript = transScriptRaw.trim();
         if (!transScript) continue;
 
-        if (result.isFinal) committed += transScript + ' ';
-        else interims.push(transScript);
+        if (result.isFinal) {
+          // 중복 체크: 동일한 final 텍스트가 이미 처리되었는지 확인
+          const finalKey = `${i}-${transScript}`;
+          if (!processedFinalsRef.current.has(finalKey)) {
+            processedFinalsRef.current.add(finalKey);
+            newCommitted += transScript + ' ';
+          }
+        } else {
+          // interim 결과는 항상 표시
+          interims.push(transScript);
+        }
       }
 
-      committed = committed.trimEnd();
-      committedRef.current = committed;
+      // 새로운 final 텍스트가 있으면 추가
+      if (newCommitted) {
+        fullCommitted = (fullCommitted + ' ' + newCommitted).trim();
+        committedRef.current = fullCommitted;
+      }
 
+      // 화면에 표시할 텍스트 구성
       const display = (
-        committed + (interims.length ? ' ' + interims.join(' ') : '')
+        fullCommitted + (interims.length ? ' ' + interims.join(' ') : '')
       ).trim();
+
       setSpeechText(display);
+      lastProcessedIndexRef.current = event.results.length - 1;
     };
 
     recognition.onerror = (e: any) => {
@@ -93,6 +122,9 @@ export function useSTT() {
     const r = recognitionRef.current;
     if (!r) return;
     try {
+      // 시작 전 초기화
+      lastProcessedIndexRef.current = -1;
+      processedFinalsRef.current.clear();
       r.start();
       setIsRecording(true);
     } catch (e) {
@@ -114,6 +146,8 @@ export function useSTT() {
   const reset = useCallback(() => {
     committedRef.current = '';
     setSpeechText('');
+    lastProcessedIndexRef.current = -1;
+    processedFinalsRef.current.clear();
   }, []);
 
   return {
