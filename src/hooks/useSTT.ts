@@ -41,24 +41,31 @@ export function useSTT() {
 
     recognition.onstart = () => setIsRecording(true);
 
-    recognition.onresult = (event: any) => {
-      let committed = committedRef.current;
-      let interim = '';
+    recognition.maxAlternatives = 1;
 
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const res = event.results[i];
-        const alt0 = res && res[0];
-        const transcript = alt0?.transcript ?? '';
-        if (res.isFinal) {
-          committed += transcript + '';
-        } else {
-          interim += transcript;
-        }
+    // 매 결과 이벤트마다 전체 results 스캔
+
+    recognition.onresult = (event: any) => {
+      let committed = '';
+      const interims: string[] = [];
+
+      for (let i = 0; i < event.results.length; i++) {
+        const result = event.results[i];
+        const transScriptRaw = result?.[0]?.transcript;
+        if (typeof transScriptRaw !== 'string') continue;
+
+        const transScript = transScriptRaw.trim();
+        if (!transScript) continue;
+
+        if (result.isFinal) committed += transScript + ' ';
+        else interims.push(transScript);
       }
 
-      committedRef.current = committed.trimEnd();
+      committed = committed.trimEnd();
+      committedRef.current = committed;
+
       const display = (
-        committedRef.current + (interim ? ' ' + interim : '')
+        committed + (interims.length ? ' ' + interims.join(' ') : '')
       ).trim();
       setSpeechText(display);
     };
