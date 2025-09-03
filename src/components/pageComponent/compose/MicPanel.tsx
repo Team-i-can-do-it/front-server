@@ -7,12 +7,12 @@ import TextCountBadge from '@_common/TextCountBadge';
 import useModalStore from '@_store/dialogStore';
 
 type MicPanelProps = {
-  onTextInput?: () => void;
-  onSubmit?: () => void;
-  value: string;
-  textCount?: number;
-  isRecording?: boolean;
-  onToggleRecording?: () => void;
+  onTextInput?: () => void; // 텍스트 입력 모드
+  onSubmit?: () => void; // handleSubmit 요청 제출 composePage에서 post Api요청
+  value: string; // 입력된 텍스트
+  textCount?: number; // 글자수
+  isRecording?: boolean; // 녹음중 여부
+  onToggleRecording?: () => void; // 녹음 요청 STT
 };
 
 export default function MicPanel({
@@ -23,10 +23,10 @@ export default function MicPanel({
   isRecording = false,
   onToggleRecording,
 }: MicPanelProps) {
-  const [enter, setEnter] = useState(false); // 등장 애니메이션
-  const [leaving, setLeaving] = useState(false); // 퇴장 애니메이션
-  const DURATION = 200;
-  const { confirm } = useModalStore();
+  const [enter, setEnter] = useState(false); // 패널 등장 애니메이션
+  const [leaving, setLeaving] = useState(false); // 패널 사라지는 애니메이션
+  const DURATION = 200; // 애니메이션 시간
+  const { confirm } = useModalStore(); // 모달
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setEnter(true));
