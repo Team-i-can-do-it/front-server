@@ -23,7 +23,10 @@ export default function WelcomePage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-[100dvh]">
+    <main
+      className="w-full max-w-[var(--mobile-w,390px)] mx-auto 
+    flex flex-col items-center justify-center min-h-[100dvh]"
+    >
       <div className="w-[125px] h-[127px] mb-10">
         <Lottie
           loop
@@ -38,10 +41,13 @@ export default function WelcomePage() {
           처음부터 잘할 필요 없어요. <br /> 꾸준히 할 수 있게 도와드릴게요.
         </p>
       </div>
-      <div>
+      <div className="w-full flex justify-center">
         <button
           onClick={handleGoogleLogin}
-          className="flex items-center justify-center bg-[#Efe6ff] text-brand-violet-500 hover:text-brand-violet-600 w-[328px] h-12 p-4 rounded-xl
+          className="w-full max-w-[328px]
+          flex items-center justify-center
+           bg-[#Efe6ff] text-brand-violet-500 hover:text-brand-violet-600 
+            h-12 p-4 rounded-xl
             typo-button-b-16 gap-2 cursor-pointer
             transition-all duration-150 hover:bg-violet-100 hover:shadow-sm active:translate-y-[1px]"
         >

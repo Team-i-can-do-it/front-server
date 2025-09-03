@@ -13,7 +13,7 @@ interface DefaultLayoutProps {
 
 const MOBILE_BASE = {
   W: 390,
-  H: 844,
+  H: 824,
   HEADER_H: 44,
   NAV_H: 64,
   SIDE: 24,
@@ -55,7 +55,7 @@ export default function DefaultLayout({
         {showHeader &&
           (headerFixed ? (
             <div
-              className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--mobile-w)] z-50"
+              className="fixed top-0 w-full max-w-[var(--mobile-w)] z-50"
               style={{
                 height: 'calc(var(--header-h)+ env(safe-area-inset-top, 0px))',
               }}

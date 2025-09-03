@@ -23,7 +23,7 @@ function TopicCard({ option }: { option: TopicOption }) {
   return (
     <button
       onClick={() => navigate(option.to)}
-      className="flex flex-col items-center justify-center w-[165px] gap-5 p-5 rounded-2xl bg-white cursor-pointer
+      className="flex flex-col items-center justify-center w-full gap-5 p-5 rounded-2xl bg-white cursor-pointer
       transition hover:shadow-lg hover:bg-gray-10 active:scale-[0.98]"
     >
       {/* 태그들 */}

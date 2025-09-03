@@ -1,3 +1,4 @@
+import TextCountBadge from '@_components/common/TextCountBadge';
 import iconRecord from '@_icons/common/icon-record-violet.svg';
 import iconConfirm from '@_icons/common/icon-submit.svg';
 
@@ -33,71 +34,63 @@ export default function SubmitBar({
       disabled={submitUiDisabled}
       aria-busy={submitUiDisabled}
       className={[
-        'w-[390px] border-0 p-0 m-0 min-w-0 pr-4 pl-2 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50',
+        'fixed inset-x-0 bottom-0 z-50',
+        'border-0 m-0 p-0',
         disabledStyle,
       ].join(' ')}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
-      <div>
-        <div className="absolute bottom-full left-0 w-full px-6 mb-2 pointer-events-none">
-          <p className="typo-label2-r-14 text-gray-500">
-            현재 글자수 {textCount}자
-          </p>
-        </div>
+      <div
+        className="mx-auto w-full max-w-[var(--mobile-w,390px)]
+               h-16 px-4 flex items-center gap-3 bg-brand-violet-50"
+      >
+        {/* 글자수 */}
+        <TextCountBadge count={textCount} alignXClass="px-6" />
+
         {/* 마이크 버튼 */}
         <button
           type="button"
           onClick={onRecordClick}
           aria-label="음성 녹음"
           className={[
-            'w-10 h-10 flex items-center justify-center rounded-xl cursor-pointer',
+            'w-10 h-10 shrink-0 flex items-center justify-center rounded-xl cursor-pointer',
             PUPBLIC_STYLE,
-            // hover + 모바일 active 모두 커버
             'hover:bg-brand-violet-200 active:bg-brand-violet-200',
             'hover:shadow-[0_4px_12px_rgba(125,51,254,0.18)]',
           ].join(' ')}
         >
-          <img
-            className="cursor-pointer w-6 h-6"
-            src={iconRecord}
-            alt="마이크 아이콘"
-          />
+          <img className="w-6 h-6" src={iconRecord} alt="마이크 아이콘" />
         </button>
-      </div>
-      {/* 입력창 */}
-      <div className="relative flex items-center w-[326px] min-h-16">
-        <textarea
-          rows={1}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="입력해주세요"
-          className="peer w-full self-center placeholder-transparent
-          resize-none focus:outline-none 
-          typo-body2-r-16 placeholder:text-brand-violet-200"
-        ></textarea>
-      </div>
-      {/* 제출 버튼 */}
-      <div>
-        <div
-          className="w-10 h-10 shrink-0 rounded-full bg-brand-violet-500
-                 flex items-center justify-center cursor-pointer"
-        >
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={submitDisabled}
-            title="submit"
-            className={[
-              'w-10 h-10 shrink-0 rounded-full flex items-center justify-center cursor-pointer',
-              'bg-brand-violet-500 text-white',
-              PUPBLIC_STYLE,
-              submitDisabled
-                ? 'opacity-50 cursor-not-allowed active:scale-100'
-                : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
-            ].join(' ')}
-          >
-            <img src={iconConfirm} alt="제출 아이콘" className="h-6 w-6" />
-          </button>
+
+        {/* 입력창: 유동폭 */}
+        <div className="relative flex items-center w-0 flex-1 min-w-0">
+          <textarea
+            rows={1}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="입력해주세요"
+            className="peer w-full resize-none focus:outline-none
+                   typo-body2-r-16 placeholder:text-brand-violet-200"
+          />
         </div>
+
+        {/* 제출 버튼 */}
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={submitDisabled}
+          title="submit"
+          className={[
+            'w-10 h-10 shrink-0 rounded-full flex items-center justify-center',
+            'bg-brand-violet-500 text-white',
+            PUPBLIC_STYLE,
+            submitDisabled
+              ? 'opacity-50 cursor-not-allowed active:scale-100'
+              : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
+          ].join(' ')}
+        >
+          <img src={iconConfirm} alt="제출 아이콘" className="h-6 w-6" />
+        </button>
       </div>
     </fieldset>
   );
