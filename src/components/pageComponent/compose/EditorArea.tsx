@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
+import Spinner from './Spinner';
 
 type EditorAreaProps = {
   value: string;
   placeholder?: string;
   onChange: (v: string) => void;
   highlight?: { lastSentence?: number; suffix?: string; regex?: RegExp };
+  spinnerCount: number;
+  setSpinnerCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function EditorArea({
@@ -12,7 +15,10 @@ export default function EditorArea({
   onChange,
   placeholder = '답변을 작성하거나 음성으로 대답해주세요.',
   highlight,
+  spinnerCount,
+  setSpinnerCount,
 }: EditorAreaProps) {
+  // highlight 기능
   const { head, tail } = useMemo(() => {
     if (!value) return { head: '', tail: '' };
 
@@ -50,33 +56,40 @@ export default function EditorArea({
     return { head: value, tail: '' };
   }, [value, highlight]);
 
+  const isCounting = spinnerCount < 1;
+
   return (
     <div className="mt-13 px-6">
-      <div className="relative w-[325px] min-h-[180px]">
-        <div
-          className="absolute inset-0 whitespace-pre-wrap break-words typo-body1-m-20
+      {isCounting ? (
+        <div className="relative w-[325px] min-h-[180px]">
+          <div
+            className="absolute inset-0 whitespace-pre-wrap break-words typo-body1-m-20
                      text-gray-900 pointer-events-none select-none"
-          aria-hidden="true"
-        >
-          {value ? (
-            <>
-              <span>{head}</span>
-              {tail && <span className="text-brand-violet-500">{tail}</span>}
-            </>
-          ) : (
-            <span className="text-gray-300">{placeholder}</span>
-          )}
-        </div>
-
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          readOnly
-          className="absolute inset-0 w-full h-full resize-none bg-transparent
+            aria-hidden="true"
+          >
+            {value ? (
+              <>
+                <span>{head}</span>
+                {tail && <span className="text-brand-violet-500">{tail}</span>}
+              </>
+            ) : (
+              <span className="text-gray-300">{placeholder}</span>
+            )}
+          </div>
+          <textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            readOnly
+            className="absolute inset-0 w-full h-full resize-none bg-transparent
                      text-transparent caret-black focus:outline-none
                      typo-body1-m-20"
-        />
-      </div>
+          />
+        </div>
+      ) : (
+        <div className="mt-20">
+          <Spinner setCount={setSpinnerCount} count={spinnerCount} />
+        </div>
+      )}
     </div>
   );
 }

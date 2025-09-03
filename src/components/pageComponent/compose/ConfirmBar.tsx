@@ -1,6 +1,8 @@
 import TextCountBadge from '@_components/common/TextCountBadge';
 import IconKeyboard from '@_icons/common/icon-keyboard.svg?react';
 import { useState, useEffect } from 'react';
+import useModalStore from '@_store/dialogStore';
+
 type ConfirmBarProps = {
   onSubmit?: () => void;
   onTextInput?: () => void;
@@ -21,6 +23,7 @@ export default function ConfirmBar({
   const [enter, setEnter] = useState(false); // 등장 애니메이션
   const [leaving, setLeaving] = useState(false); // 퇴장 애니메이션
   const DURATION = 200;
+  const { confirm } = useModalStore();
 
   const closeWithAnimation = (after?: () => void) => {
     setLeaving(true);
@@ -32,7 +35,15 @@ export default function ConfirmBar({
   };
 
   const handleSubmit = () => {
-    onSubmit?.();
+    confirm({
+      title: '정말 제출하시겠어요?',
+      description: '제출된 원고는 수정이 불가능해요',
+      confirmText: '확인',
+      cancelText: '취소',
+      onConfirm: () => {
+        onSubmit?.();
+      },
+    });
   };
 
   const handleTextInput = () => {

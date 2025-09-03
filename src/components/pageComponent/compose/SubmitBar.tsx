@@ -3,6 +3,7 @@ import iconConfirm from '@_icons/common/icon-submit.svg';
 
 type SubmitBarProps = {
   submitDisabled?: boolean;
+  submitUiDisabled: boolean;
   onConfirm?: () => void;
   onRecordClick?: () => void;
   value: string;
@@ -12,6 +13,7 @@ type SubmitBarProps = {
 
 export default function SubmitBar({
   submitDisabled,
+  submitUiDisabled,
   onConfirm,
   onRecordClick,
   value,
@@ -23,8 +25,18 @@ export default function SubmitBar({
     'transition-[transform,box-shadow,background-color,color] duration-200 ease-out ' +
     'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
 
+  const disabledStyle = submitUiDisabled
+    ? 'opacity-50 grayscale pointer-events-none select-none'
+    : '';
   return (
-    <div className="w-[390px] pr-4 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50">
+    <fieldset
+      disabled={submitUiDisabled}
+      aria-busy={submitUiDisabled}
+      className={[
+        'w-[390px] border-0 p-0 m-0 min-w-0 pr-4 pl-2 fixed bottom-0 flex items-center gap-3 h-16 bg-brand-violet-50',
+        disabledStyle,
+      ].join(' ')}
+    >
       <div>
         <div className="absolute bottom-full left-0 w-full px-6 mb-2 pointer-events-none">
           <p className="typo-label2-r-14 text-gray-500">
@@ -37,7 +49,7 @@ export default function SubmitBar({
           onClick={onRecordClick}
           aria-label="음성 녹음"
           className={[
-            'w-16 h-16 flex items-center justify-center rounded-xl cursor-pointer',
+            'w-10 h-10 flex items-center justify-center rounded-xl cursor-pointer',
             PUPBLIC_STYLE,
             // hover + 모바일 active 모두 커버
             'hover:bg-brand-violet-200 active:bg-brand-violet-200',
@@ -45,7 +57,7 @@ export default function SubmitBar({
           ].join(' ')}
         >
           <img
-            className="cursor-pointer w-[30px] h-[30px]"
+            className="cursor-pointer w-6 h-6"
             src={iconRecord}
             alt="마이크 아이콘"
           />
@@ -87,6 +99,6 @@ export default function SubmitBar({
           </button>
         </div>
       </div>
-    </div>
+    </fieldset>
   );
 }

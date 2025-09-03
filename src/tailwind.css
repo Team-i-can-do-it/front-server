@@ -231,6 +231,11 @@
   --text-label4-m-12-size: 12px;
   --text-label4-m-12-lh: 14px;
   --text-label4-m-12-tracking: -0.24px;
+
+  /* event */
+  --text-event1-r-48-size: 48px;
+  --text-event1-r-48-lh: 18px;
+  --text-event1-r-48-tracking: -0.96px;
 }
 
 @layer utilities {
@@ -358,5 +363,14 @@
     font-size: var(--text-label4-m-12-size);
     line-height: var(--text-label4-m-12-lh);
     letter-spacing: var(--text-label4-m-12-tracking);
+  }
+
+  /* event */
+  .typo-event1-r-48 {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: var(--text-event1-r-48-size);
+    line-height: var(--text-event1-r-48-lh);
+    letter-spacing: var(--text-event1-r-48-tracking);
   }
 }
