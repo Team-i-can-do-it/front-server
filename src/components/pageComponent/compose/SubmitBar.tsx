@@ -41,7 +41,8 @@ export default function SubmitBar({
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <div
-        className="mx-auto w-full max-w-[var(--mobile-w,390px)]
+        className="relative
+        mx-auto w-full max-w-[var(--mobile-w,390px)]
                h-16 px-4 flex items-center gap-3 bg-brand-violet-50"
       >
         {/* 글자수 */}

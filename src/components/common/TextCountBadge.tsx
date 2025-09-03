@@ -12,7 +12,7 @@ export default function TextCountBadge({
   return (
     <div
       className={[
-        'absolute bottom-full left-0 w-full py-2 pointer-events-none bg-white-base',
+        'absolute bottom-full w-full py-4 left-0 pointer-events-none bg-white-base z-0',
         alignXClass,
         className,
       ].join(' ')}

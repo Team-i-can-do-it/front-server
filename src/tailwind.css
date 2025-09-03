@@ -374,3 +374,7 @@
     letter-spacing: var(--text-event1-r-48-tracking);
   }
 }
+
+@theme {
+--xs : 'xs':'390px' ;
+}

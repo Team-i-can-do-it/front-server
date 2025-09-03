@@ -72,7 +72,7 @@ export default function ComposePage() {
   };
 
   return (
-    <section className="flex flex-col">
+    <section>
       <div>
         <TopicBar />
         <EditorArea

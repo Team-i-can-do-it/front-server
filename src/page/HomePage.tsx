@@ -9,7 +9,7 @@ export default function HomePage() {
       <section className="w-full bg-[#efe6ff]">
         {/* 컨텐츠 컨테이너 */}
         <div
-          className="mx-auto w-full max-w-[390px] px-4 
+          className="mx-auto w-full max-w-[390px] px-4
                   pt-[calc(env(safe-area-inset-top)+44px)] pb-8"
         >
           <HomeTitle />
