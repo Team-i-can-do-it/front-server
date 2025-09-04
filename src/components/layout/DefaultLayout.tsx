@@ -5,10 +5,13 @@ interface DefaultLayoutProps {
   children?: React.ReactNode;
   header?: React.ReactNode;
   bottomNav?: React.ReactNode;
+
+  // default page 옵션
   headerFixed?: boolean;
   navFixed?: boolean;
   noPadding?: boolean;
   debugFrame?: boolean;
+  noContentPadding?: boolean;
 }
 
 const MOBILE_BASE = {
@@ -38,6 +41,7 @@ export default function DefaultLayout({
 
   const showHeader = !!header;
   const showBottomNav = !!bottomNav;
+  const sidePaddingClass = noPadding ? 'px-0' : `px-[var(--side)]`;
 
   return (
     <div className="w-full min-h-[100dvh] flex justify-center bg-gray-25">
@@ -77,12 +81,14 @@ export default function DefaultLayout({
           className={[
             'w-full flex-1 overflow-y-auto',
             noPadding ? '' : 'px-[var(--side)]',
+
             showHeader && headerFixed
               ? 'pt-[calc(var(--header-h)+env(safe-area-inset-top,0px))]'
               : '',
             showBottomNav && navFixed
               ? 'pb-[calc(var(--nav-h)+env(safe-area-inset-bottom,0px))]'
               : '',
+            sidePaddingClass,
           ].join(' ')}
         >
           {children ?? <Outlet />}

@@ -1,3 +1,7 @@
 export default function ResultSummary() {
-  return;
+  return (
+    <>
+      <div>요약</div>
+    </>
+  );
 }

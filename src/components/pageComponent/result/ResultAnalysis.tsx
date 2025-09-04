@@ -1,3 +1,7 @@
 export default function ResultAnalysis() {
-  return;
+  return (
+    <>
+      <div>분석</div>
+    </>
+  );
 }

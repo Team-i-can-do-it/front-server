@@ -232,10 +232,16 @@
   --text-label4-m-12-lh: 14px;
   --text-label4-m-12-tracking: -0.24px;
 
+
+  --text-label9-sb-16-size: 16px;
+  --text-label9-sb-16-lh: 22px;
+  --text-label9-sb-16-tracking: -0.32px;
+
   /* event */
   --text-event1-r-48-size: 48px;
   --text-event1-r-48-lh: 18px;
   --text-event1-r-48-tracking: -0.96px;
+
 }
 
 @layer utilities {
@@ -363,6 +369,13 @@
     font-size: var(--text-label4-m-12-size);
     line-height: var(--text-label4-m-12-lh);
     letter-spacing: var(--text-label4-m-12-tracking);
+  }
+  .typo-label9-sb-16 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-label9-sb-16-size);
+    line-height: var(--text-label9-sb-16-lh);
+    letter-spacing: var(--text-label9-sb-16-tracking);
   }
 
   /* event */
