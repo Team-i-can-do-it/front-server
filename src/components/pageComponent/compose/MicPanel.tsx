@@ -2,9 +2,12 @@ import IconKeyboard from '@_icons/common/icon-keyboard.svg?react';
 import IconNext from '@_icons/common/icon-next.svg?react';
 import iconRecord from '@_icons/common/icon-record.svg';
 import IconPause from '@_icons/common/icon-pauseHover.svg?react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import TextCountBadge from '@_common/TextCountBadge';
 import useModalStore from '@_store/dialogStore';
+import MicVisualizer from './MicVisualizer';
+import { useMicVisualizer } from '@_hooks/useMicVisualizer';
+import RecordingTime from './RecordingTime';
 
 type MicPanelProps = {
   onTextInput?: () => void; // 텍스트 입력 모드
@@ -28,10 +31,30 @@ export default function MicPanel({
   const DURATION = 200; // 애니메이션 시간
   const { confirm } = useModalStore(); // 모달
 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { start: startViz, stop: stopViz } = useMicVisualizer(
+    isRecording,
+    canvasRef,
+  );
+
   useEffect(() => {
     const id = requestAnimationFrame(() => setEnter(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  // MicPanel이 보이는 동안 isRecording이 true면 파형 시작, 아니면 정지
+  useEffect(() => {
+    if (isRecording) startViz();
+    else stopViz();
+  }, [isRecording, startViz, stopViz]);
+
+  const stopAllNow = () => {
+    // 파형 먼저 즉시 종료
+    stopViz();
+    // STT도 즉시 종료(ComposePage에서 onToggleRecording이 abort() 사용하도록 바꿔둔 상태)
+    if (isRecording) onToggleRecording?.();
+  };
 
   const closeWithAnimation = (after?: () => void) => {
     setLeaving(true);
@@ -43,21 +66,28 @@ export default function MicPanel({
   };
 
   const handleToggleRecording = () => {
-    onToggleRecording?.();
+    if (isRecording) {
+      stopAllNow();
+    } else {
+      startViz();
+      onToggleRecording?.(); // STT 시작
+    }
   };
 
+  // 텍스트 입력 눌르면 중단
   const handleTextInput = () => {
+    stopAllNow();
     closeWithAnimation(() => onTextInput?.());
   };
 
   const handleSubmit = () => {
+    stopAllNow();
     confirm({
       title: '정말 제출하시겠어요?',
       description: '제출된 원고는 수정이 불가능해요',
       confirmText: '확인',
       cancelText: '취소',
       onConfirm: () => {
-        if (isRecording) onToggleRecording?.();
         onSubmit?.();
       },
     });
@@ -67,10 +97,16 @@ export default function MicPanel({
     'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-violet-200';
 
   return (
-    <section
-      className="w-full max-w-[390px] fixed bottom-0 px-6 p-[33px] 
-     pt-5 bg-white-base"
-    >
+    <section className="w-full max-w-[390px] fixed bottom-0 px-6 p-[33px] pt-5 bg-white-base">
+      {isRecording && (
+        <div className="flex flex-col items-center justify-center z-10 mb-10">
+          <RecordingTime isRecording={isRecording} />
+          <MicVisualizer ref={canvasRef} />
+          <p className="typo-body2-r-16 text-brand-violet-500">
+            문장들을 쭉 이어서 녹음해보세요
+          </p>
+        </div>
+      )}
       <TextCountBadge
         count={textCount}
         alignXClass="px-6 border-b border-border-25"

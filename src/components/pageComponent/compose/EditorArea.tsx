@@ -61,7 +61,7 @@ export default function EditorArea({
   return (
     <div className="mt-13 px-6">
       {isCounting ? (
-        <div className="relative w-[325px] min-h-[180px]">
+        <div className="relative w-full max-w-[325px] min-h-[200px]">
           <div
             className="absolute inset-0 whitespace-pre-wrap break-words typo-body1-m-20
                      text-gray-900 pointer-events-none select-none"

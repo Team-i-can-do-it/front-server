@@ -57,10 +57,13 @@ export default function ConfirmBar({
 
   return (
     <section
-      className="w-[390px] fixed bottom-0 left-1/2 -translate-x-1/2 px-6 py-[33px]
-    border-t border-border-25"
+      className="w-full max-w-[390px] fixed bottom-0 px-6 p-[33px] 
+     pt-5 bg-white-base"
     >
-      <TextCountBadge count={textCount} alignXClass="px-6" />
+      <TextCountBadge
+        count={textCount}
+        alignXClass="px-6 border-b border-border-25"
+      />
       <div
         className={[
           'flex items-center',
