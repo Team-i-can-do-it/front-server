@@ -11,10 +11,9 @@ const TABS: { id: TabId; label: string }[] = [
 
 // 상수(디자인 값)
 const HEADER_H = 44; // 헤더 높이
-const TAB_H = 44; // 탭바 높이
+const TAB_H = 27; // 탭바 높이
 const TAB_W = 152; // 탭 너비
 const GAP_REM = '1.25rem'; // gap-5
-const PAGE_W = 390; // 최대 폭
 
 export default function ResultPage() {
   const [params, setParams] = useSearchParams();
