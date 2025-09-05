@@ -48,7 +48,6 @@ export default function DefaultLayout({
           debugFrame
             ? 'rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_20px_40px_rgba(0,0,0,0.06)]'
             : '',
-          noPadding ? 'px-0' : `px-[var(--side)]`,
         ].join(' ')}
       >
         {/* Header */}
@@ -77,7 +76,7 @@ export default function DefaultLayout({
         <main
           className={[
             'w-full flex-1 overflow-y-auto',
-
+            noPadding ? '' : 'px-[var(--side)]',
             showHeader && headerFixed
               ? 'pt-[calc(var(--header-h)+env(safe-area-inset-top,0px))]'
               : '',

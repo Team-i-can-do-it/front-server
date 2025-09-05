@@ -10,6 +10,7 @@ import TopicSelectPage from '@_page/TopicSelectPage';
 import ComposePage from '@_page/ComposePage';
 import AdminPage from '@_page/AdminPage.tsx';
 import ModalProvider from '@_components/common/ModalProvider';
+import NotFoundPage from '@_page/NotFoundPage';
 
 function App() {
   return (
@@ -50,8 +51,10 @@ function App() {
         </Route>
 
         {/* 기타 404 페이지 */}
-        <Route element={<DefaultLayout />}>
-          <Route path="*" element={<div>/welcome 주소로 이동해 주세요</div>} />
+        <Route
+          element={<DefaultLayout header={<Header showBack showClose />} />}
+        >
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         {/* 어드민 페이지 */}
