@@ -1,4 +1,5 @@
 import { fetchTopicHintByCategory } from '@_api/topics';
+import { useToast } from '@_hooks/useToast';
 import { useTopicBar } from '@_hooks/useTopicBar';
 import iconRetry from '@_icons/common/icon-retry.svg';
 import { useQuery } from '@tanstack/react-query';
@@ -6,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function TopicBar() {
+  const toast = useToast();
+
   const { id: categoryIdParam } = useParams<{ id: string }>();
   const categoryId = categoryIdParam ?? '';
   if (!categoryId) {
@@ -44,6 +47,10 @@ export default function TopicBar() {
     ? '주제를 불러올 수 없습니다'
     : topic?.title ?? '주제가 없습니다';
 
+  // 힌트 있는지 없는지, 확인
+  const hasHint = (data?: { content?: string }) =>
+    !!data?.content && data.content.trim().length > 0;
+
   // 힌트 토글 상태
   const [hintOpen, setHintOpen] = useState(false);
   const {
@@ -64,10 +71,30 @@ export default function TopicBar() {
 
   const onClickHint = async () => {
     if (!canShowHint) return;
+
+    // 힌트 오픈시만 fetch
     if (!hintData && !hintOpen) {
-      await refetchHint();
+      const { data, error } = await refetchHint({ throwOnError: false });
+      if (error) {
+        toast('힌트를 불러올 수 없습니다.', 'error');
+        return;
+      }
+      if (!hasHint(data)) {
+        toast('해당 주제의 힌트가 없어요.', 'info');
+        return;
+      }
+      setHintOpen(true);
+      return;
     }
-    setHintOpen((v) => !v);
+    if (!hintOpen) {
+      if (!hasHint(hintData)) {
+        toast('해당 주제의 힌트가 아직 없어요.', 'info');
+        return;
+      }
+      setHintOpen(true);
+    } else {
+      setHintOpen(false);
+    }
   };
 
   //말풍선 효과
@@ -106,6 +133,7 @@ export default function TopicBar() {
               type="button"
               onClick={onClickHint}
               aria-expanded={hintOpen}
+              disabled={hintLoading}
               className={[
                 'typo-body2-r-16 cursor-pointer active:scale-95',
                 hintOpen
@@ -149,9 +177,9 @@ export default function TopicBar() {
                       힌트를 불러올 수 없습니다.
                     </p>
                   )}
-                  {!hintLoading && !hintError && (
+                  {!hintLoading && !hintError && hasHint(hintData) && (
                     <p className="typo-body3-r-14 text-gray-500 whitespace-pre-line">
-                      {hintData?.content ?? '힌트가 없습니다.'}
+                      {hintData!.content!.trim()}
                     </p>
                   )}
                 </div>
