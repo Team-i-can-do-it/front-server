@@ -11,6 +11,7 @@ import ComposePage from '@_page/ComposePage';
 import AdminPage from '@_page/AdminPage.tsx';
 import ModalProvider from '@_components/common/ModalProvider';
 import NotFoundPage from '@_page/NotFoundPage';
+import ToastProvider from '@_components/common/Toast/ToastProvider';
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <ModalProvider />
+      <ToastProvider />
     </>
   );
 }
