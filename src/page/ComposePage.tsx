@@ -21,7 +21,7 @@ export default function ComposePage() {
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
 
-  const isLengthInvalid = trimmed.length < 100 || trimmed.length > 600;
+  const isLengthInvalid = trimmed.length < 0 || trimmed.length > 600;
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
