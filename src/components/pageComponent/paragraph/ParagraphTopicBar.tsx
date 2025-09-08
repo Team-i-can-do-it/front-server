@@ -46,14 +46,23 @@ export default function SentenceTopicBar({
   const displayedWords = isMock ? MOCK_WORDS : words;
 
   const refresh = async () => {
-    const r = await refetch();
-    const nextWords = r.data ?? [];
-    if (nextWords.length > 0) {
-      onChangeWords?.(nextWords);
-      toast('새 단어로 바꿨어요!', 'success');
-    } else {
-      toast('단어가 없습니다', 'info');
+    // 1) 클릭 즉시 피드백
+    toast('새 단어를 불러오는 중…', 'info');
+
+    try {
+      const r = await refetch();
+      const nextWords = r.data ?? [];
+
+      if (nextWords.length > 0) {
+        onChangeWords?.(nextWords); // 화면 먼저 업데이트
+        toast('새 단어로 바꿨어요!', 'success'); // 그리고 성공 토스트
+      } else {
+        onChangeWords?.(MOCK_WORDS);
+        toast('단어가 없습니다.', 'info');
+      }
+    } catch {
       onChangeWords?.(MOCK_WORDS);
+      toast('단어를 불러오지 못했어요. 임시 단어로 대체합니다.', 'error');
     }
   };
 

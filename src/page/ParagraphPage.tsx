@@ -18,6 +18,7 @@ export default function ParagraphPage() {
 
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
+  const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
@@ -47,6 +48,10 @@ export default function ParagraphPage() {
 
   // 제출 및 입력 x시 비활성화
   const handleSubmit = useCallback(async () => {
+    if (isLengthInvalid) {
+      toast('글쓰기는 100자 이상 600자 미만으로 작성해 주세요.', 'info');
+      return;
+    }
     if (isDisabled) return;
 
     try {
@@ -70,7 +75,17 @@ export default function ParagraphPage() {
       console.error(err);
       toast('제출에 실패했어요. 잠시 후 다시 시도해 주세요.', 'info');
     }
-  }, [isDisabled, trimmed, stop, reset]);
+  }, [
+    isDisabled,
+    isLengthInvalid,
+    trimmed,
+    stop,
+    reset,
+    toast,
+    navigate,
+    submitMutation,
+    feedbackMutation,
+  ]);
 
   const openMicPanel = () => {
     if (!isSupported) return console.log('이 브라우저는 STT 미지원');
@@ -121,7 +136,7 @@ export default function ParagraphPage() {
         ) : (
           <SubmitBar
             submitUiDisabled={submitUiDisabled}
-            submitDisabled={isDisabled}
+            submitDisabled={isDisabled || isLengthInvalid}
             onConfirm={() => setConfirmOpen(true)}
             onRecordClick={openMicPanel}
             value={answer}

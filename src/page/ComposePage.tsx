@@ -21,7 +21,7 @@ export default function ComposePage() {
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
 
-  const isLengthInvalid = trimmed.length < 0 || trimmed.length > 600;
+  const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
@@ -59,17 +59,6 @@ export default function ComposePage() {
         topicId, // INTEGER
         content: trimmed, // STRING (100~600)
       });
-
-      if (res.status === 201) {
-        console.log('글 저장 성공:', res.message);
-        navigate(`/result?id=${res.result?.id}`);
-      } else {
-        console.warn('예상치 못한 응답', res);
-      }
-    } catch (err) {
-      console.log('글 저장 실패:', err);
-      toast('글 저장에 실패하였습니다.', 'error');
-    } finally {
       stop();
       reset();
       setAnswer('');
@@ -79,8 +68,18 @@ export default function ComposePage() {
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
+
+      if (res.status === 201) {
+        console.log('글 저장 성공:', res.message);
+        navigate(`/result?id=${res.result?.id}`);
+      } else {
+        console.warn('예상치 못한 응답', res);
+      }
+    } catch (err) {
+      console.error('글 저장 실패:', err);
+      toast('글 저장에 실패하였습니다.', 'error');
     }
-  }, [isDisabled, trimmed, stop, reset]);
+  }, [isDisabled, trimmed, stop, reset, toast, navigate]);
 
   const openMicPanel = () => {
     if (!isSupported) return console.log('이 브라우저는 STT 미지원');
