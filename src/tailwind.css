@@ -165,6 +165,10 @@
   --font-sans: 'PretendardVariable';
 
   /* Heading */
+  --text-h0-b-32-size: 32px;
+  --text-h0-b-32-lh: 28px;
+  --text-h0-b-32-tracking: -0.64px;
+
   --text-h1-b-24-size: 24px;
   --text-h1-b-24-lh: 28px;
   --text-h1-b-24-tracking: -0.48px;
@@ -232,14 +236,31 @@
   --text-label4-m-12-lh: 14px;
   --text-label4-m-12-tracking: -0.24px;
 
+
+  --text-label9-sb-16-size: 16px;
+  --text-label9-sb-16-lh: 22px;
+  --text-label9-sb-16-tracking: -0.32px;
+
   /* event */
   --text-event1-r-48-size: 48px;
   --text-event1-r-48-lh: 18px;
   --text-event1-r-48-tracking: -0.96px;
+
 }
 
 @layer utilities {
   /* header */
+  .typo-h0-b-32 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--text-h0-b-32-size);
+    line-height: var(--text-h0-b-32-lh);
+    letter-spacing: var(--text-h0--b-32-tracking);
+  }
+
+
+
+
   .typo-h1-b-24 {
     font-family: var(--font-sans);
     font-weight: 700;
@@ -363,6 +384,13 @@
     font-size: var(--text-label4-m-12-size);
     line-height: var(--text-label4-m-12-lh);
     letter-spacing: var(--text-label4-m-12-tracking);
+  }
+  .typo-label9-sb-16 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-label9-sb-16-size);
+    line-height: var(--text-label9-sb-16-lh);
+    letter-spacing: var(--text-label9-sb-16-tracking);
   }
 
   /* event */

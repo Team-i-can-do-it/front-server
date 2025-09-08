@@ -4,6 +4,9 @@ import logo from '@_icons/logo/logo.svg';
 import { useEffect, useState } from 'react';
 import useModalStore from '@_store/dialogStore';
 import { useNavigate } from 'react-router-dom';
+import RadarChart from '@_components/pageComponent/result/analysis/RadarChart';
+import DetailCard from '@_components/pageComponent/result/analysis/DetailCard';
+import RelatedTopic from '@_components/pageComponent/result/analysis/RelatedTopic';
 
 export default function DesignTest() {
   const [dog1, setDog1] = useState<object | null>(null);
@@ -12,6 +15,59 @@ export default function DesignTest() {
 
   const { alert, confirm } = useModalStore();
   const navigate = useNavigate();
+
+  // ====== 차트 ======
+  const labels = ['주제 명료성', '표현력', '완성도', '내용 충실성', '논리성'];
+  const scores = [82, 71, 64, 77, 69];
+
+  const details = [
+    {
+      title: '주제 명료성',
+      summary:
+        '핵심 주제를 비교적 명확히 제시했어요. 앞부분에서 논지 선언이 좋아요.',
+    },
+    {
+      title: '표현력',
+      summary:
+        '비유/강조 표현이 자연스러웠습니다. 다만 군더더기 어투를 조금 덜어내면 더 좋아요.',
+    },
+    {
+      title: '완성도',
+      summary:
+        '서론-본론-결론 구조가 살아있습니다. 결론에서 요약 문장을 한 줄만 더 보강해보세요.',
+    },
+    {
+      title: '내용 충실성',
+      summary:
+        '예시가 구체적이라 설득력이 있었어요. 반례도 1개 정도 추가하면 더욱 탄탄합니다.',
+    },
+    {
+      title: '논리성',
+      summary:
+        '근거-주장의 연결이 대체로 자연스럽습니다. 접속어 사용을 조금 더 간결하게!',
+    },
+  ];
+
+  const reads = [
+    {
+      id: '1',
+      title: '핵심 주제 뾰족하게 잡는 법 3가지',
+      thumbnailUrl: 'https://picsum.photos/seed/a/300/180',
+      href: '#',
+    },
+    {
+      id: '2',
+      title: '예시/반례로 논증 강화하는 실전 팁',
+      thumbnailUrl: 'https://picsum.photos/seed/b/300/180',
+      href: '#',
+    },
+    {
+      id: '3',
+      title: '결론 한 문장으로 설득 끝내기',
+      thumbnailUrl: 'https://picsum.photos/seed/c/300/180',
+      href: '#',
+    },
+  ];
 
   // ====== 모달 ======
 
@@ -189,6 +245,20 @@ export default function DesignTest() {
           포인트 지급(보라 버튼)
         </button>
       </div>
+
+      <main className="mx-auto py-6 space-y-6">
+        <RadarChart name="도넛" labels={labels} scores={scores} />
+        <section className="mt-4">
+          <ul>
+            {details.map((d) => (
+              <li key={d.title}>
+                <DetailCard title={d.title} summary={d.summary} />
+              </li>
+            ))}
+          </ul>
+        </section>
+        <RelatedTopic items={reads} />
+      </main>
     </>
   );
 }
