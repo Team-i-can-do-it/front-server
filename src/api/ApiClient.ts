@@ -3,6 +3,7 @@ import axios, { type AxiosInstance } from 'axios';
 const ApiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_DEV_ROOT,
   headers: {
+    Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
