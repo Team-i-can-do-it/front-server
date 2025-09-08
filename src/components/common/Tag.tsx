@@ -1,15 +1,24 @@
+type TagSize = 'sm' | 'md' | 'lg';
+
 type TagProps = {
   label: string;
   className?: string;
+
+  size?: TagSize;
 };
 
-export function VioletTag({ label, className = '' }: TagProps) {
+const sizeStyle: Record<TagSize, string> = {
+  sm: 'px-2 py-1 typo-label4-m-12',
+  md: 'px-3 py-[6px] typo-label3-m-14',
+  lg: 'px-4 py-2 typo-label2-r-14',
+};
+
+export function VioletTag({ label, className = '', size = 'sm' }: TagProps) {
   const colorStyle = 'bg-brand-violet-50 text-brand-violet-500';
-  const typo = 'typo-label4-m-12';
 
   return (
     <span
-      className={`inline-flex items-center rounded-full typo-label2-r-14 px-2 py-1 ${typo} ${colorStyle} ${className}`}
+      className={`inline-flex items-center rounded-full ${sizeStyle[size]} ${colorStyle} ${className}`}
     >
       {label}
     </span>

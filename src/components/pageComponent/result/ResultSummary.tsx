@@ -2,6 +2,7 @@ import MbtiCard from './summary/MbtiCard';
 import ScoreCard from './summary/ScoreCard';
 import { useMyResult } from '@_hooks/useResultSummary';
 import dogLottie from '@_characters/dog.json';
+import MbtiTagCard from './summary/MbtiTagCard';
 
 export default function ResultSummary() {
   const { data, isLoading, error } = useMyResult();
@@ -31,6 +32,7 @@ export default function ResultSummary() {
         mbitName={mock.mbitName}
         summary={mock.summary}
       />
+      <MbtiTagCard tags={mock.tags} axes={mock.axes} />
     </section>
   );
 }
