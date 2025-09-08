@@ -1,5 +1,5 @@
-import ScoreCard from './analysis.tsx/ScoreCard';
-import { useMyResult } from '@_hooks/useMyResult';
+import ScoreCard from './summary/ScoreCard';
+import { useMyResult } from '@_hooks/useResultSummary';
 
 export default function ResultSummary() {
   const { data, isLoading, error } = useMyResult();

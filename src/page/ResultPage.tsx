@@ -35,7 +35,7 @@ export default function ResultPage() {
     <main className="min-h-[100dvh] bg-white">
       {/* 탭바: 헤더(44px) 바로 아래 고정 + 페이지폭 390px 제한 */}
       <nav
-        className="fixed left-1/2 -translate-x-1/2 z-40 bg-white border-b border-border-25
+        className="fixed z-40 bg-white border-b border-border-25
                    w-[min(100vw,390px)]"
         style={{ top: HEADER_H }}
       >
