@@ -5,14 +5,23 @@ import SubmitBar from '@_components/pageComponent/compose/SubmitBar';
 import TopicBar from '@_components/pageComponent/compose/TopicBar';
 import { useCallback, useEffect, useState } from 'react';
 import { useSTT } from '@_hooks/useSTT';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useToast } from '@_hooks/useToast';
+import { createAnswer } from '@_api/answers';
 
 export default function ComposePage() {
+  const { id } = useParams(); // "/compose/topic/:id"
+  const topicId = Number(id);
   const [answer, setAnswer] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [micOpen, setMicOpen] = useState(false);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
+
+  const isLengthInvalid = trimmed.length < 100 || trimmed.length > 600;
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
@@ -37,12 +46,29 @@ export default function ComposePage() {
   };
 
   // 제출 및 입력 x시 비활성화
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
+    if (isLengthInvalid) {
+      toast('글쓰기는 100자 이상 600자 미만으로 작성해 주세요.', 'info');
+      return;
+    }
     if (isDisabled) return;
 
     try {
       console.log('제출:', trimmed);
-      // TODO: API연동
+      const res = await createAnswer({
+        topicId, // INTEGER
+        content: trimmed, // STRING (100~600)
+      });
+
+      if (res.status === 201) {
+        console.log('글 저장 성공:', res.message);
+        navigate(`/result?id=${res.result?.id}`);
+      } else {
+        console.warn('예상치 못한 응답', res);
+      }
+    } catch (err) {
+      console.log('글 저장 실패:', err);
+      toast('글 저장에 실패하였습니다.', 'error');
     } finally {
       stop();
       reset();
@@ -105,7 +131,7 @@ export default function ComposePage() {
         ) : (
           <SubmitBar
             submitUiDisabled={submitUiDisabled}
-            submitDisabled={isDisabled}
+            submitDisabled={isDisabled || isLengthInvalid}
             onConfirm={() => setConfirmOpen(true)}
             onRecordClick={openMicPanel}
             value={answer}

@@ -79,7 +79,6 @@ export default function SubmitBar({
         <button
           type="button"
           onClick={onConfirm}
-          disabled={submitDisabled}
           title="submit"
           className={[
             'w-10 h-10 shrink-0 rounded-full flex items-center justify-center',
