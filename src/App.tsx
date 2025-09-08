@@ -13,6 +13,7 @@ import ModalProvider from '@_components/common/ModalProvider';
 import NotFoundPage from '@_page/NotFoundPage';
 import ToastProvider from '@_components/common/Toast/ToastProvider';
 import ResultPage from '@_page/ResultPage';
+import ParagraphPage from '@_page/ParagraphPage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           }
         >
           <Route path="/compose/topic/:id" element={<ComposePage />} />
+          <Route path="/paragraph" element={<ParagraphPage />} />
           <Route path="/result" element={<ResultPage />} />
         </Route>
         {/* 헤더/네비 없는 페이지 */}

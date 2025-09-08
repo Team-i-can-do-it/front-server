@@ -3,14 +3,13 @@ type TagSize = 'sm' | 'md' | 'lg';
 type TagProps = {
   label: string;
   className?: string;
-
   size?: TagSize;
 };
 
 const sizeStyle: Record<TagSize, string> = {
   sm: 'px-2 py-1 typo-label4-m-12',
   md: 'px-3 py-[6px] typo-label3-m-14',
-  lg: 'px-4 py-2 typo-label2-r-14',
+  lg: 'px-4 py-2 typo-h4-sb-16',
 };
 
 export function VioletTag({ label, className = '', size = 'sm' }: TagProps) {

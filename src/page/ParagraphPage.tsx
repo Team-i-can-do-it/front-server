@@ -1,17 +1,15 @@
-import ConfirmBar from '@_components/pageComponent/compose/ConfirmBar';
-import EditorArea from '@_components/pageComponent/compose/EditorArea';
-import MicPanel from '@_components/pageComponent/compose/MicPanel';
-import SubmitBar from '@_components/pageComponent/compose/SubmitBar';
-import TopicBar from '@_components/pageComponent/compose/TopicBar';
+import ConfirmBar from '@_components/pageComponent/paragraph/ConfirmBar';
+import EditorArea from '@_components/pageComponent/paragraph/EditorArea';
+import MicPanel from '@_components/pageComponent/paragraph/MicPanel';
+import SubmitBar from '@_components/pageComponent/paragraph/SubmitBar';
+import ParagraphTopicBar from '@_components/pageComponent/paragraph/ParagraphTopicBar';
 import { useCallback, useEffect, useState } from 'react';
 import { useSTT } from '@_hooks/useSTT';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParagraphFeedback, useParagraphSubmit } from '@_hooks/useParagraph';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
-import { createAnswer } from '@_api/answers';
 
-export default function ComposePage() {
-  const { id } = useParams(); // "/compose/topic/:id"
-  const topicId = Number(id);
+export default function ParagraphPage() {
   const [answer, setAnswer] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [micOpen, setMicOpen] = useState(false);
@@ -20,7 +18,6 @@ export default function ComposePage() {
 
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
-
   const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
 
   const [count, setCount] = useState(3);
@@ -35,6 +32,10 @@ export default function ComposePage() {
     stop,
     reset,
   } = useSTT();
+
+  // 제출/피드백 뮤테이션
+  const submitMutation = useParagraphSubmit();
+  const feedbackMutation = useParagraphFeedback();
 
   useEffect(() => {
     if (isRecording) setAnswer(speechText);
@@ -55,31 +56,36 @@ export default function ComposePage() {
 
     try {
       console.log('제출:', trimmed);
-      const res = await createAnswer({
-        topicId, // INTEGER
-        content: trimmed, // STRING (100~600)
-      });
+      // 내용 제출
+      const pcId = await submitMutation.mutateAsync(trimmed);
+
+      // 피드백 요청
+      await feedbackMutation.mutateAsync({ pcId, content: trimmed });
+
       stop();
       reset();
       setAnswer('');
       setConfirmOpen(false);
       setMicOpen(false);
-
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
-
-      if (res.status === 201) {
-        console.log('글 저장 성공:', res.message);
-        navigate(`/result?id=${res.result?.id}`);
-      } else {
-        console.warn('예상치 못한 응답', res);
-      }
+      navigate(`/result/paragraph/${pcId}`);
     } catch (err) {
-      console.error('글 저장 실패:', err);
-      toast('글 저장에 실패하였습니다.', 'error');
+      console.error(err);
+      toast('제출에 실패했어요. 잠시 후 다시 시도해 주세요.', 'info');
     }
-  }, [isDisabled, trimmed, stop, reset, toast, navigate]);
+  }, [
+    isDisabled,
+    isLengthInvalid,
+    trimmed,
+    stop,
+    reset,
+    toast,
+    navigate,
+    submitMutation,
+    feedbackMutation,
+  ]);
 
   const openMicPanel = () => {
     if (!isSupported) return console.log('이 브라우저는 STT 미지원');
@@ -99,7 +105,7 @@ export default function ComposePage() {
   return (
     <section>
       <div>
-        <TopicBar />
+        <ParagraphTopicBar count={3} onChangeWords={() => {}} />
         <EditorArea
           value={answer}
           onChange={handleEditorChange}
