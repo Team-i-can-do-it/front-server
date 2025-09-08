@@ -77,7 +77,7 @@ export default function HomeTopicSelect() {
         { label: '창의력', type: 'violet' },
         { label: '시간제한X', type: 'gray' },
       ],
-      to: '/compose/sentence',
+      to: '/paragraph',
       image: makingSentences,
     },
   ];
