@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchOneTopicByCategory,
@@ -8,13 +8,14 @@ import {
 } from '@_api/topics';
 
 export function useTopicBar(categoryId: string) {
+  const [nonce, setNonce] = useState(0);
   // topic 한 건 가져오는 쿼리(상단 p 텍스트)
   const {
     data: category,
     isLoading: categoryLoading,
     isError: categoryError,
   } = useQuery<TopicCategory>({
-    queryKey: ['topicCategory', categoryId],
+    queryKey: ['topic.Category', categoryId],
     queryFn: () => fetchTopicCategory(categoryId),
     enabled: !!categoryId,
     staleTime: 5 * 60 * 1000,
@@ -27,9 +28,8 @@ export function useTopicBar(categoryId: string) {
     isLoading: topicLoading,
     isFetching: topicFetching,
     isError: topicError,
-    refetch: refetchTopic,
   } = useQuery<TopicItem>({
-    queryKey: ['topicOne', categoryId],
+    queryKey: ['topic.one', categoryId, nonce],
     queryFn: () => fetchOneTopicByCategory(categoryId),
     enabled: !!categoryId,
     retry: 1,
@@ -38,9 +38,7 @@ export function useTopicBar(categoryId: string) {
   // 밸런스게임에는 힌트 없음
   const canShowHint = useMemo(() => categoryId !== 'balance', [categoryId]);
 
-  const changeTopic = async () => {
-    await refetchTopic();
-  };
+  const changeTopic = () => setNonce((n) => n + 1);
 
   return {
     category,

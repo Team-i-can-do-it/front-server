@@ -1,11 +1,15 @@
 import axios, { type AxiosInstance } from 'axios';
 
+// const baseURL = import.meta.env.DEV
+//   ? '/api' // dev: Vite 프록시 경유
+//   : import.meta.env.VITE_API_BASE_URL;
+
 const ApiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_DEV_ROOT,
+  //baseURL,
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
+    // Accept: 'application/json',
+    // 'Content-Type': 'application/json',
+    // 'X-Requested-With': 'XMLHttpRequest',
   },
 });
 
