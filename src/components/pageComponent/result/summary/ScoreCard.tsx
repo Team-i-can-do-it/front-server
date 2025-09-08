@@ -1,5 +1,3 @@
-import React from 'react';
-
 /** 로딩/완료를 분기하는 안전한 타입 */
 type LoadingProps = { isLoading: true; className?: string };
 type LoadedProps = { isLoading?: false; score: number; className?: string };
