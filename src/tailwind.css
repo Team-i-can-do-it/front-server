@@ -165,6 +165,10 @@
   --font-sans: 'PretendardVariable';
 
   /* Heading */
+  --text-h0-b-32-size: 32px;
+  --text-h0-b-32-lh: 28px;
+  --text-h0-b-32-tracking: -0.64px;
+
   --text-h1-b-24-size: 24px;
   --text-h1-b-24-lh: 28px;
   --text-h1-b-24-tracking: -0.48px;
@@ -246,6 +250,17 @@
 
 @layer utilities {
   /* header */
+  .typo-h0-b-32 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--text-h0-b-32-size);
+    line-height: var(--text-h0-b-32-lh);
+    letter-spacing: var(--text-h0--b-32-tracking);
+  }
+
+
+
+
   .typo-h1-b-24 {
     font-family: var(--font-sans);
     font-weight: 700;

@@ -9,7 +9,7 @@ export default function ResultSummary() {
 
   return (
     <section className="space-y-6">
-      <ScoreCard name={data?.name} score={data?.score} />
+      <ScoreCard score={data!.score} />
     </section>
   );
 }
