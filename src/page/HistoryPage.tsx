@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import HistoryListTab from '@_components/pageComponent/history/HistoryListTab';
 import BarChart from '@_components/pageComponent/history/BarChart';
@@ -27,6 +27,16 @@ export default function HistoryPage() {
     if (!params.get('tab')) setParams({ tab: 'topic' }, { replace: true });
     else setActive(tabParam);
   }, [tabParam]);
+  // 차트
+  const chartWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = chartWrapRef.current;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      console.debug('[HistoryPage] chart wrapper size', r.width, r.height);
+    }
+  }, [active, year, month]);
 
   const onTab = (id: TabId) => {
     if (id === active) return;
@@ -47,8 +57,38 @@ export default function HistoryPage() {
 
   const monthText = useMemo(() => `${month}월`, [month]);
 
+  // 그래프 더미데이터
+  const daysInMonth = useMemo(
+    () => new Date(year, month, 0).getDate(),
+    [year, month],
+  );
+
+  // 목 데이터: 40~95 사이에서 완만한 곡선 + 약간의 요일 노이즈
+  const mockDaily = useMemo(
+    () =>
+      Array.from({ length: daysInMonth }, (_, i) => {
+        const t = (i + 1) / daysInMonth; // 0..1
+        const base = 65 + 25 * Math.sin(Math.PI * t); // 40~90대
+        const noise = (((i * 7 + month * 3) % 11) - 5) * 1.5; // -7.5..+7.5
+        const v = Math.round(base + noise);
+        return Math.max(5, Math.min(98, v));
+      }),
+    [daysInMonth, month],
+  );
+
+  const chartValues = (daily?.length ?? 0) > 0 ? daily! : mockDaily;
+
+  useEffect(() => {
+    console.debug(
+      '[HistoryPage] chartValues len',
+      chartValues.length,
+      chartValues.slice(0, 7),
+    );
+    (window as any).chartValues = chartValues; // 필요하면 전역으로 붙여서 콘솔에서 확인
+  }, [chartValues]);
+
   return (
-    <main className="min-h-[100dvh] w-[min(100vw,390px)] bg-white">
+    <main className="min-h-[100dvh] w-[min(100vw,390px)] ">
       <section className="px-6 pb-10 pt-5">
         <p className="typo-h3-sb-18 mb-3">내 성장 리포트</p>
         {/* 상단 월 네비 + 일별 차트 */}
@@ -70,7 +110,7 @@ export default function HistoryPage() {
           </button>
         </div>
         <BarChart
-          values={daily}
+          values={chartValues}
           visibleCount={7}
           onBarClick={(i) => console.log(`${i + 1}일 막대 클릭`)}
           className="mb-6"
