@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
 import { create } from 'zustand';
 
-type ButtonLayout = 'single' | 'double' | 'doubleVioletCancel';
+type ButtonLayout =
+  | 'single'
+  | 'double'
+  | 'doubleVioletCancel'
+  | 'doubleRedCancel';
 
 export interface ModalOptions {
   title: ReactNode;
