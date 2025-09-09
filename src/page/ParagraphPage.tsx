@@ -8,6 +8,8 @@ import { useSTT } from '@_hooks/useSTT';
 import { useParagraphFeedback, useParagraphSubmit } from '@_hooks/useParagraph';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
+import { useConfirmExitHandlers } from '@_hooks/useExitConfirm';
+import Header from '@_components/layout/Header';
 
 export default function ParagraphPage() {
   const [answer, setAnswer] = useState('');
@@ -19,6 +21,9 @@ export default function ParagraphPage() {
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
   const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
+
+  const isDirty = answer.trim().length > 0;
+  const { onBack, onClose } = useConfirmExitHandlers(isDirty);
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
@@ -104,6 +109,7 @@ export default function ParagraphPage() {
 
   return (
     <section>
+      <Header showBack showClose onBack={onBack} onClose={onClose} />
       <div>
         <ParagraphTopicBar count={3} onChangeWords={() => {}} />
         <EditorArea

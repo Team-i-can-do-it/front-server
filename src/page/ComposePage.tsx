@@ -8,6 +8,8 @@ import { useSTT } from '@_hooks/useSTT';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
 import { createAnswer } from '@_api/answers';
+import { useConfirmExitHandlers } from '@_hooks/useExitConfirm';
+import Header from '@_components/layout/Header';
 
 export default function ComposePage() {
   const { id } = useParams(); // "/compose/topic/:id"
@@ -22,6 +24,9 @@ export default function ComposePage() {
   const isDisabled = trimmed.length === 0;
 
   const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
+
+  const isDirty = answer.trim().length > 0;
+  const { onBack, onClose } = useConfirmExitHandlers(isDirty);
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
@@ -98,6 +103,7 @@ export default function ComposePage() {
 
   return (
     <section>
+      <Header showBack showClose onBack={onBack} onClose={onClose} />
       <div>
         <TopicBar />
         <EditorArea

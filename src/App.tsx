@@ -32,9 +32,12 @@ function App() {
             <DefaultLayout noPadding header={<Header showBack showClose />} />
           }
         >
+          <Route path="/result" element={<ResultPage />} />
+        </Route>
+
+        <Route element={<DefaultLayout noPadding />}>
           <Route path="/compose/topic/:id" element={<ComposePage />} />
           <Route path="/paragraph" element={<ParagraphPage />} />
-          <Route path="/result" element={<ResultPage />} />
         </Route>
 
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
