@@ -134,6 +134,23 @@ export default function DesignTest() {
     });
   };
 
+  // 6) 종료 확인 모달
+  const openExitConfirm = () => {
+    useModalStore.getState().open({
+      title: '정말 나가시겠어요?',
+      description: (
+        <span className="block w-full text-left whitespace-pre-line">
+          지금까지 연습했던 내용은 저장되지 않아요.
+          {'\n'}내용을 모두 지우고 나가시겠어요?
+        </span>
+      ),
+      buttonLayout: 'doubleRedCancel',
+      cancelText: '이어하기',
+      confirmText: '종료하기',
+      onConfirm: () => navigate('/e-eum'),
+    });
+  };
+
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -244,8 +261,14 @@ export default function DesignTest() {
         >
           포인트 지급(보라 버튼)
         </button>
-      </div>
 
+        <button
+          onClick={openExitConfirm}
+          className="h-12 rounded-xl bg-status-danger text-white typo-button-b-16 active:scale-[0.99]"
+        >
+          종료 확인 버튼(레드 버튼)
+        </button>
+      </div>
       <main className="mx-auto py-6 space-y-6">
         <RadarChart name="도넛" labels={labels} scores={scores} />
         <section className="mt-4">

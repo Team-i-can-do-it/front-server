@@ -43,6 +43,19 @@ function VioletButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
     />
   );
 }
+function RedButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...props}
+      className={[
+        'w-full h-12 rounded-xl typo-button-b-16',
+        'bg-status-danger text-white-base hover:bg-red-400 cursor-pointer',
+        'active:scale-[0.99] transition-[transform,background-color] duration-200',
+        props.className ?? '',
+      ].join(' ')}
+    />
+  );
+}
 
 export default function ModalProvider() {
   const { isOpen, modal, close } = useModalStore();
@@ -50,7 +63,10 @@ export default function ModalProvider() {
   if (!isOpen || !modal) return null;
 
   const layout = modal.buttonLayout ?? 'double';
-  const isDouble = layout === 'double' || layout === 'doubleVioletCancel';
+  const isDouble =
+    layout === 'double' ||
+    layout === 'doubleVioletCancel' ||
+    layout === 'doubleRedCancel';
 
   // 버튼 묶음 렌더러
   const renderFooter = () => {
@@ -65,6 +81,28 @@ export default function ModalProvider() {
           >
             {modal.confirmText ?? '확인'}
           </PrimaryButton>
+        );
+
+      case 'doubleRedCancel':
+        return (
+          <>
+            <GrayButton
+              onClick={() => {
+                modal.onCancel?.();
+                close();
+              }}
+            >
+              {modal.cancelText ?? '이어하기'}
+            </GrayButton>
+            <RedButton
+              onClick={() => {
+                modal.onConfirm?.();
+                close();
+              }}
+            >
+              {modal.confirmText ?? '종료하기'}
+            </RedButton>
+          </>
         );
 
       case 'doubleVioletCancel':
@@ -134,13 +172,13 @@ export default function ModalProvider() {
         >
           {/* 헤더 */}
           <div className="text-center">
-            <h3 className="typo-h2-sb-20 text-text-900">{modal.title}</h3>
+            <h3 className="typo-h3-sb-18 text-text-heavy">{modal.title}</h3>
 
             {(modal.tag || modal.description) && (
               <div className="mt-3 flex flex-col items-center gap-3">
                 {modal.tag && <VioletTag label={modal.tag.text} />}
                 {modal.description && (
-                  <p className="typo-body2-r-16 text-gray-500 text-center whitespace-pre-line">
+                  <p className=" typo-body2-r-16 text-text-default text-center whitespace-pre-line">
                     {modal.description}
                   </p>
                 )}

@@ -100,6 +100,7 @@
   --color-gray-700: #35383b;
   --color-gray-800: #292a2d;
   --color-gray-900: #1a1a1c;
+  
 }
 
 /* ------------------ Semantic --------------------*/
@@ -132,6 +133,7 @@
   --color-text-50: var(--color-gray-50);
   --color-text-25: var(--color-gray-25);
   --color-text-white: var(--color-white-base);
+  --color-text-default: #6b7684;
 
   /* --------------Icon------------ */
   --color-icon-700: var(--color-gray-700);

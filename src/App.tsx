@@ -16,6 +16,7 @@ import ResultPage from '@_page/ResultPage';
 import ParagraphPage from '@_page/ParagraphPage';
 import LoadingPage from '@_page/LoadingPage';
 
+
 function App() {
   return (
     <>
@@ -31,9 +32,12 @@ function App() {
             <DefaultLayout noPadding header={<Header showBack showClose />} />
           }
         >
+          <Route path="/result" element={<ResultPage />} />
+        </Route>
+
+        <Route element={<DefaultLayout noPadding />}>
           <Route path="/compose/topic/:id" element={<ComposePage />} />
           <Route path="/paragraph" element={<ParagraphPage />} />
-          <Route path="/result" element={<ResultPage />} />
         </Route>
 
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
@@ -42,9 +46,11 @@ function App() {
         </Route>
 
         {/* 네비만 있는 페이지 */}
+
         <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
           <Route path="/e-eum" element={<HomePage />} />
         </Route>
+
 
         {/* 헤더+네비 있는 그룹 */}
         <Route
@@ -67,12 +73,12 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/loading" element={<LoadingPage />} />
         </Route>
-
         {/* 어드민 페이지 */}
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <ModalProvider />
       <ToastProvider />
+
     </>
   );
 }

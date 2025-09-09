@@ -7,6 +7,8 @@ type HeaderProps = {
   showBack?: boolean;
   backTo?: To;
   showClose?: boolean;
+  onBack?: () => void;
+  onClose?: () => void;
 };
 
 export default function Header({
@@ -14,13 +16,14 @@ export default function Header({
   showBack = true,
   showClose = false,
   backTo = '/e-eum',
+  onBack,
+  onClose,
 }: HeaderProps) {
   const navigate = useNavigate();
 
-  const handleBack = () => {
+  const defaultBack = () => {
     const idx =
       (window.history.state && (window.history.state as any).idx) ?? 0;
-
     if (idx > 0) {
       navigate(-1);
     } else {
@@ -28,9 +31,12 @@ export default function Header({
     }
   };
 
-  const handleClose = () => {
+  const defaultClose = () => {
     navigate('/e-eum', { replace: true });
   };
+
+  const handleBack = onBack ?? defaultBack;
+  const handleClose = onClose ?? defaultClose;
 
   return (
     <header
