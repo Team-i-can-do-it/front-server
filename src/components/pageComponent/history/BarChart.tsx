@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Chart as ChartJS,
   BarElement,
@@ -13,7 +13,7 @@ import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip);
 
-// 100점 가이드라인 + "100점" 텍스트
+// 100점 가이드라인 텍스트
 const maxGuidePlugin = {
   id: 'maxGuide',
   afterDraw(chart: Chart) {
@@ -24,7 +24,7 @@ const maxGuidePlugin = {
 
     ctx.save();
     ctx.fillStyle = 'rgba(154,114,255,0.7)';
-    ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto';
+    ctx.font = '12px Pretendard';
     ctx.textBaseline = 'bottom';
     ctx.fillText('100점', left, y - 6);
 
@@ -40,7 +40,7 @@ const maxGuidePlugin = {
 
 ChartJS.register(maxGuidePlugin);
 
-type Props = {
+type BarChartProps = {
   values: number[]; // 일별 점수 배열 (길이=그 달의 일수)
   visibleCount?: number; // 한 화면에 보일 막대 개수 (기본 7)
   onBarClick?: (index: number) => void; // 0=1일, 1=2일...
@@ -52,7 +52,7 @@ export default function BarChart({
   visibleCount = 7,
   onBarClick,
   className,
-}: Props) {
+}: BarChartProps) {
   // 01 ~ n일
   const labels = useMemo(
     () => values.map((_, i) => String(i + 1).padStart(2, '0')),
@@ -99,6 +99,8 @@ export default function BarChart({
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      resizeDelay: 0,
+      animation: false,
       plugins: { legend: { display: false }, tooltip: { enabled: true } },
       scales: {
         x: {
@@ -126,6 +128,19 @@ export default function BarChart({
   const innerWidth = Math.max(values.length, visibleCount) * CELL_W;
   const CHART_H = 213;
 
+  // // 값이 바뀔 때 강제 리마운트(초기 렌더 크기 문제 회피)
+  // const remountKey = useMemo(() => {
+  //   const head = values[0] ?? 0;
+  //   const tail = values[values.length - 1] ?? 0;
+  //   // 여기서 백틱(`) 빠져있던거만 고쳐줌
+  //   return `bar-${values.length}-${head}-${tail}`;
+  // }, [values]);
+
+  const [isReady, setIsReady] = useState(false);
+  useEffect(() => {
+    setTimeout(() => setIsReady(true), 100);
+  }, []);
+
   return (
     <section
       className={['w-full bg-white rounded-2xl pr-6', className]
@@ -133,13 +148,12 @@ export default function BarChart({
         .join(' ')}
     >
       {/* 바깥 스크롤 래퍼와 안쪽 래퍼 모두 같은 높이 */}
-      <div className="overflow-x-auto" style={{ height: CHART_H }}>
-        <div style={{ width: innerWidth, height: CHART_H }}>
-          <Bar
-            data={data}
-            options={options}
-            style={{ height: '100%', width: '100%' }}
-          />
+      <div className="relative overflow-x-auto h-[213px] w-full">
+        <div
+          className="shrink-0"
+          style={{ width: innerWidth, height: CHART_H }}
+        >
+          {isReady ? <Bar data={data} options={options} /> : <div>Loading</div>}
         </div>
       </div>
     </section>

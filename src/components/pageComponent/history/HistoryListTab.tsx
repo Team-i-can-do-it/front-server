@@ -34,6 +34,7 @@ const MOCK_BY_TYPE: Record<HistoryListTabProps['type'], HistoryCardVM[]> = {
       createdAt: new Date().toISOString(),
       score: 78,
       mbti: { expression_style: -20, content_format: 10, tone_of_voice: -5 },
+      iconSrc: TOPIC_GRAPHIC_ICON_MAP.balance,
     },
     {
       id: 'mock-topic-2',
@@ -43,6 +44,7 @@ const MOCK_BY_TYPE: Record<HistoryListTabProps['type'], HistoryCardVM[]> = {
       createdAt: new Date(Date.now() - 86400000).toISOString(),
       score: 84,
       mbti: { expression_style: 5, content_format: -15, tone_of_voice: -10 },
+      iconSrc: TOPIC_GRAPHIC_ICON_MAP.balance,
     },
     {
       id: 'mock-topic-3',
@@ -52,6 +54,7 @@ const MOCK_BY_TYPE: Record<HistoryListTabProps['type'], HistoryCardVM[]> = {
       createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
       score: 91,
       mbti: { expression_style: -8, content_format: 12, tone_of_voice: 18 },
+      iconSrc: TOPIC_GRAPHIC_ICON_MAP.balance,
     },
   ],
   paragraph: [
