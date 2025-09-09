@@ -139,7 +139,7 @@ export default function DesignTest() {
     (async () => {
       const [d1, d3, c1] = await Promise.all([
         import('../assets/characters/dog.json'),
-        import('../assets/characters/dog.v3.json'),
+        import('../assets/characters/dog.loading.json'),
         import('../assets/characters/cat1.json'),
       ]);
       if (!alive) return;

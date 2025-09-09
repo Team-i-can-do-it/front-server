@@ -80,7 +80,7 @@ export default function DefaultLayout({
         <main
           className={[
             'w-full flex-1 overflow-y-auto',
-            noPadding ? '' : 'px-[var(--side)]',
+            sidePaddingClass,
 
             showHeader && headerFixed
               ? 'pt-[calc(var(--header-h)+env(safe-area-inset-top,0px))]'
@@ -88,7 +88,6 @@ export default function DefaultLayout({
             showBottomNav && navFixed
               ? 'pb-[calc(var(--nav-h)+env(safe-area-inset-bottom,0px))]'
               : '',
-            sidePaddingClass,
           ].join(' ')}
         >
           {children ?? <Outlet />}
