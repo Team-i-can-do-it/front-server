@@ -1,12 +1,13 @@
 import TextCountBadge from '@_components/common/TextCountBadge';
-import iconRecord from '@_icons/common/icon-record-violet.svg';
-import iconConfirm from '@_icons/common/icon-submit.svg';
+import IconRecord from '@_icons/common/icon-record-violet.svg?react';
+import IconConfirm from '@_icons/common/icon-submit.svg?react';
 
 type SubmitBarProps = {
   submitDisabled?: boolean;
-  submitUiDisabled: boolean;
+  submitUiDisabled: boolean; // 진입 카운트시 ui비활성
   onConfirm?: () => void;
   onRecordClick?: () => void;
+  onInvalid?: () => void; // 토스트 메시지
   value: string;
   onChange: (v: string) => void;
   textCount?: number;
@@ -17,6 +18,7 @@ export default function SubmitBar({
   submitUiDisabled,
   onConfirm,
   onRecordClick,
+  onInvalid,
   value,
   onChange,
   textCount = value?.length ?? 0,
@@ -29,6 +31,14 @@ export default function SubmitBar({
   const disabledStyle = submitUiDisabled
     ? 'opacity-50 grayscale pointer-events-none select-none'
     : '';
+
+  const handleSubmitClick = () => {
+    if (submitDisabled) {
+      onInvalid?.();
+      return;
+    }
+    onConfirm?.();
+  };
   return (
     <fieldset
       disabled={submitUiDisabled}
@@ -60,7 +70,7 @@ export default function SubmitBar({
             'hover:shadow-[0_4px_12px_rgba(125,51,254,0.18)]',
           ].join(' ')}
         >
-          <img className="w-6 h-6" src={iconRecord} alt="마이크 아이콘" />
+          <IconRecord className="w-6 h-6" />
         </button>
 
         {/* 입력창: 유동폭 */}
@@ -78,8 +88,8 @@ export default function SubmitBar({
         {/* 제출 버튼 */}
         <button
           type="button"
-          onClick={onConfirm}
-          disabled={submitDisabled}
+          onClick={handleSubmitClick}
+          aria-disabled={submitDisabled || false}
           title="submit"
           className={[
             'w-10 h-10 shrink-0 rounded-full flex items-center justify-center',
@@ -90,7 +100,7 @@ export default function SubmitBar({
               : 'hover:bg-brand-violet-400 active:bg-brand-violet-400 hover:shadow-[0_6px_16px_rgba(125,51,254,0.35)]',
           ].join(' ')}
         >
-          <img src={iconConfirm} alt="제출 아이콘" className="h-6 w-6" />
+          <IconConfirm className="h-6 w-6" />
         </button>
       </div>
     </fieldset>

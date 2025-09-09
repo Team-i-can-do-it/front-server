@@ -132,6 +132,13 @@ export default function ComposePage() {
             submitUiDisabled={submitUiDisabled}
             submitDisabled={isDisabled || isLengthInvalid}
             onConfirm={() => setConfirmOpen(true)}
+            onInvalid={() => {
+              isLengthInvalid;
+              toast(
+                '글쓰기는 100자 이상 600자 미만으로 작성해 주세요.',
+                'info',
+              );
+            }}
             onRecordClick={openMicPanel}
             value={answer}
             onChange={handleEditorChange}
