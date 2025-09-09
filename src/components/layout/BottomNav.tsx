@@ -19,12 +19,12 @@ type Item = {
 const items: Item[] = [
   { to: '/e-eum', label: '홈', icon: home, iconHover: homeHover },
   {
-    to: '/',
+    to: '/history',
     label: '글 기록',
     icon: writeHistory,
     iconHover: writeHistoryHover,
   },
-  { to: '/shop', label: '상점', icon: shop, iconHover: shopHover },
+  { to: '/gacha', label: '상점', icon: shop, iconHover: shopHover },
   { to: '/mypage', label: '마이', icon: mypage, iconHover: mypageHover },
 ];
 

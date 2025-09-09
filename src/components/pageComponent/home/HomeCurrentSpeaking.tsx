@@ -20,7 +20,7 @@ export default function HomeCurrentSpeaking() {
   const navigate = useNavigate();
 
   const handleViewAll = () => {
-    navigate('/');
+    navigate('/history');
   };
 
   const talkingCards: TalkingCard[] = [

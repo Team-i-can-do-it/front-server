@@ -15,15 +15,21 @@ import ToastProvider from '@_components/common/Toast/ToastProvider';
 import ResultPage from '@_page/ResultPage';
 import ParagraphPage from '@_page/ParagraphPage';
 import LoadingPage from '@_page/LoadingPage';
-
+import HistoryPage from '@_page/HistoryPage';
 
 function App() {
   return (
     <>
       <Routes>
-        {/* 헤더/네비 없는 페이지 */}
+        {/* 헤더/네비 x 페이지 */}
         <Route element={<DefaultLayout />}>
           <Route path="/welcome" element={<WelcomePage />} />
+        </Route>
+
+        {/* 네비 x 헤더 x, 취소 버튼 o 뒤로 가기 o  */}
+        <Route element={<DefaultLayout noPadding />}>
+          <Route path="/compose/topic/:id" element={<ComposePage />} />
+          <Route path="/paragraph" element={<ParagraphPage />} />
         </Route>
 
         {/* 네비 x, 헤더에 취소 버튼 있는 페이지 */}
@@ -35,22 +41,15 @@ function App() {
           <Route path="/result" element={<ResultPage />} />
         </Route>
 
-        <Route element={<DefaultLayout noPadding />}>
-          <Route path="/compose/topic/:id" element={<ComposePage />} />
-          <Route path="/paragraph" element={<ParagraphPage />} />
-        </Route>
-
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
         <Route element={<DefaultLayout noPadding header={<Header />} />}>
           <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
         </Route>
 
         {/* 네비만 있는 페이지 */}
-
         <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
           <Route path="/e-eum" element={<HomePage />} />
         </Route>
-
 
         {/* 헤더+네비 있는 그룹 */}
         <Route
@@ -62,6 +61,19 @@ function App() {
           }
         >
           <Route path="/style" element={<DesignTest />} />
+        </Route>
+
+        {/* 헤더 o 네비 o 취소 없음 */}
+        <Route
+          element={
+            <DefaultLayout
+              noPadding
+              header={<Header showBack />}
+              bottomNav={<BottomNav />}
+            />
+          }
+        >
+          <Route path="/history" element={<HistoryPage />} />
         </Route>
 
         {/* --------------------------------------------------------------- */}
@@ -78,7 +90,6 @@ function App() {
       </Routes>
       <ModalProvider />
       <ToastProvider />
-
     </>
   );
 }
