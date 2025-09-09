@@ -41,6 +41,11 @@ export default function DefaultLayout({
 
   const showHeader = !!header;
   const showBottomNav = !!bottomNav;
+
+  // ✅ dvh 기반으로 꽉 채우기 (밖/안 모두)
+  const outerH = 'h-[100dvh]'; // ← 기존 min-h → h 로 고정
+  const innerH = debugFrame ? 'h-[var(--mobile-h)]' : 'h-[100dvh]'; // ← 고정 프레임 모드만 824px
+
   const sidePaddingClass = noPadding ? 'px-0' : `px-[var(--side)]`;
 
   return (
@@ -80,7 +85,7 @@ export default function DefaultLayout({
         <main
           className={[
             'w-full flex-1 overflow-y-auto',
-            noPadding ? '' : 'px-[var(--side)]',
+            sidePaddingClass,
 
             showHeader && headerFixed
               ? 'pt-[calc(var(--header-h)+env(safe-area-inset-top,0px))]'
@@ -88,7 +93,6 @@ export default function DefaultLayout({
             showBottomNav && navFixed
               ? 'pb-[calc(var(--nav-h)+env(safe-area-inset-bottom,0px))]'
               : '',
-            sidePaddingClass,
           ].join(' ')}
         >
           {children ?? <Outlet />}
