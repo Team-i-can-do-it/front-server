@@ -41,11 +41,6 @@ export default function DefaultLayout({
 
   const showHeader = !!header;
   const showBottomNav = !!bottomNav;
-
-  // ✅ dvh 기반으로 꽉 채우기 (밖/안 모두)
-  const outerH = 'h-[100dvh]'; // ← 기존 min-h → h 로 고정
-  const innerH = debugFrame ? 'h-[var(--mobile-h)]' : 'h-[100dvh]'; // ← 고정 프레임 모드만 824px
-
   const sidePaddingClass = noPadding ? 'px-0' : `px-[var(--side)]`;
 
   return (
