@@ -181,7 +181,7 @@ export default function ProductDetails() {
       </div>
       {/* 하단 고정 버튼 */}
       <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-[min(100vw,var(--mobile-w))] 
+        className="fixed bottom-0 z-50 w-[min(100vw,var(--mobile-w))] 
         pb-10 px-6 py-3 bg-white border-t border-border-25"
       >
         <button

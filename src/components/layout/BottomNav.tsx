@@ -32,7 +32,7 @@ export default function BottomNav() {
   return (
     <nav
       className={`
-        fixed bottom-0 left-1/2 -translate-x-1/2 z-50
+        fixed bottom-0 z-50
         h-[64px] w-[min(100vw,var(--mobile-w))]
         bg-white/90 backdrop-blur border-t border-border-25
         flex items-stretch justify-between px-1
