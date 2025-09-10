@@ -4,6 +4,8 @@ import { isSoldout } from '@_utils/productUtils';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BottomSheet from './BottomSheet';
+import useModalStore from '@_store/dialogStore';
+import { useToast } from '@_hooks/useToast';
 
 const products = [
   {
@@ -48,6 +50,63 @@ export default function ProductDetails() {
 
   const soldout = isSoldout(product);
   const [open, setOpen] = useState(false);
+  const toast = useToast();
+
+  const openPurchaseConfirm = () => {
+    useModalStore.getState().open({
+      title: '주문 확인',
+      description: (
+        <>
+          <p>
+            <span className="text-brand-violet-500 font-semibold">
+              {'(내 포인트 총액)'}
+              {/* {userPoint} */}P
+            </span>
+            를 사용하여 구매하시겠어요?
+          </p>
+          <p className="text-gray-500">
+            결제후 잔액 {'(내 포인트 총액 - 상품금액)'}
+            {/* 결제 후 잔액 {userPoint - product.price}P */}
+          </p>
+        </>
+      ),
+      buttonLayout: 'doubleVioletCancel',
+      cancelText: '취소',
+      confirmText: '구매하기',
+      onConfirm: async () => {
+        try {
+          // 👉 결제 API 호출 자리
+          // const res = await purchaseAPI(product.id);
+          const success = true; // <- 임시 성공 플래그
+
+          if (success) {
+            openPurchaseComplete();
+          } else {
+            throw new Error('결제 실패');
+          }
+        } catch (err) {
+          console.error('결제 실패:', err);
+          toast('결제에 실패했습니다. 다시 시도해주세요.', 'error');
+        }
+      },
+    });
+  };
+
+  const openPurchaseComplete = () => {
+    useModalStore.getState().open({
+      title: '결제가 완료되었습니다',
+      description: (
+        <>
+          <p>주문이 정상적으로 완료되었습니다.</p>
+          <p className="text-gray-500">
+            상세 내역은 마이페이지에서 확인해 주세요.
+          </p>
+        </>
+      ),
+      buttonLayout: 'single',
+      confirmText: '닫기',
+    });
+  };
 
   return (
     <main>
@@ -139,8 +198,8 @@ export default function ProductDetails() {
         open={open}
         onClose={() => setOpen(false)}
         onConfirm={() => {
-          alert('구매 완료!'); // TODO: API 연동 자리
           setOpen(false);
+          openPurchaseConfirm();
         }}
       />
     </main>

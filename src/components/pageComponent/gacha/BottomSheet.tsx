@@ -141,15 +141,19 @@ export default function BottomSheet({
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleClose}
-            className="flex-1 py-3 rounded-xl typo-button-b-16
-            bg-brand-violet-50 text-brand-violet-500"
+            className="flex-1 py-3 rounded-xl typo-button-b-16 cursor-pointer
+            bg-brand-violet-50 text-brand-violet-500
+            hover:bg-brand-violet-100 active:scale-[0.98]
+            duration-200"
           >
             취소
           </button>
           <button
             onClick={handleConfirm}
-            className="flex-1 py-3 rounded-xl typo-button-b-16
-            bg-brand-violet-500 text-white"
+            className="flex-1 py-3 rounded-xl typo-button-b-16 cursor-pointer
+            bg-brand-violet-500 text-white
+            hover:bg-brand-violet-400 active:scale-[0.98]
+            duration-200"
           >
             구매하기
           </button>
