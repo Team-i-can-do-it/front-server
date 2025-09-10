@@ -27,7 +27,7 @@ export default function FilterTab({
         onClick={() => setOpen((prev) => !prev)}
         className="flex items-center justify-end
         text-gray-700 typo-label2-r-14
-        w-40 px-4 py-2"
+        w-40 py-2"
       >
         {label}
         <IconBottom
@@ -44,6 +44,7 @@ export default function FilterTab({
          bg-white border border-border-25 rounded-lg shadow-lg"
         >
           {OPTIONS.map((opt, idx) => {
+            // 위치 따라 rounded 설정 변경해서 ui 깨짐 해결
             const isFirst = idx === 0;
             const isLast = idx === OPTIONS.length - 1;
             return (

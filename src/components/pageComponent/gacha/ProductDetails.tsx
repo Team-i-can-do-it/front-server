@@ -14,7 +14,7 @@ export default function ProductDetails() {
   if (!product) return <p className="p-6">상품을 찾을 수 없습니다.</p>;
 
   return (
-    <main className="mx-auto w-[min(100vw,390px)] px-6 py-8">
+    <main className="mx-auto w-[min(100vw,390px)] py-8">
       <button
         onClick={() => navigate(-1)}
         className="mb-4 text-gray-500 hover:text-gray-700"

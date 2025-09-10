@@ -8,8 +8,30 @@ export default function GachaPage() {
   const navigate = useNavigate();
 
   const products = [
-    { id: 1, name: '레어 아이템', price: 5000, img: '/item1.png' },
-    { id: 2, name: '노말 아이템', price: 1000, img: '/item2.png' },
+    {
+      id: 1,
+      product_name: 'CU 모바일 상품권',
+      brand_name: 'CU',
+      discount: 10,
+      price: 2000,
+      img: '/images/gacha.svg',
+    },
+    {
+      id: 2,
+      product_name: '올리브영 모바일 상품권',
+      brand_name: '올리브영',
+      discount: 10,
+      price: 3000,
+      img: '/images/gacha.svg',
+    },
+    {
+      id: 3,
+      product_name: '도서문화상품권',
+      brand_name: '북앤라이프',
+      discount: 10,
+      price: 4000,
+      img: '/images/gacha.svg',
+    },
   ];
 
   const sorted = [...products].sort((a, b) =>
@@ -25,7 +47,7 @@ export default function GachaPage() {
         <FilterTab filter={filter} onChange={setFilter} />
       </div>
       <div>
-        <ul className="mt-4 grid grid-cols-2 gap-4">
+        <ul className="flex flex-col gap-2 ">
           {sorted.map((p) => (
             <li key={p.id}>
               <ProductCard
