@@ -15,6 +15,8 @@ export default function GachaPage() {
       discount: 10,
       price: 2000,
       img: '/images/gacha.svg',
+      expireDate: '2025-09-15',
+      status: 'active' as const,
     },
     {
       id: 2,
@@ -23,6 +25,8 @@ export default function GachaPage() {
       discount: 10,
       price: 3000,
       img: '/images/gacha.svg',
+      expireDate: '2025-09-30',
+      status: 'soldout' as const,
     },
     {
       id: 3,
@@ -31,6 +35,8 @@ export default function GachaPage() {
       discount: 10,
       price: 4000,
       img: '/images/gacha.svg',
+      expireDate: '2025-09-12',
+      status: 'active' as const,
     },
   ];
 
@@ -40,7 +46,7 @@ export default function GachaPage() {
 
   return (
     <main
-      className="flex flex-col justify-between gpa-1
+      className="flex flex-col justify-between gap-1
     py-3"
     >
       <div className="flex justify-end">
@@ -52,7 +58,9 @@ export default function GachaPage() {
             <li key={p.id}>
               <ProductCard
                 product={p}
-                onClick={() => navigate(`/gacha/${p.id}`)}
+                onClick={() => {
+                  if (p.status === 'active') navigate(`/gacha/${p.id}`);
+                }}
               />
             </li>
           ))}
