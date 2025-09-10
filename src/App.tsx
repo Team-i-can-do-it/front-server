@@ -17,11 +17,11 @@ import ParagraphPage from '@_page/ParagraphPage';
 import LoadingPage from '@_page/LoadingPage';
 import HistoryPage from '@_page/HistoryPage';
 import GachaPage from '@_page/GachaPage';
-import ProductDetails from '@_components/pageComponent/gacha/ProductDetails';
+import ProductDetails from '@_pageComponent/gacha/ProductDetails';
 import MypagePage from '@_page/MypagePage';
-import MyPurchaseHistory from '@_components/pageComponent/mypage/MyPurchaseHistory';
-import MyMBTI from '@_components/pageComponent/mypage/Mymbti';
-import MyPoint from '@_components/pageComponent/mypage/MyPoint';
+import MyPurchaseHistory from '@_pageComponent/mypage/MyPurchaseHistory';
+import MyMBTI from '@_pageComponent/mypage/MyMBTI';
+import MyPoint from '@_pageComponent/mypage/MyPoint';
 
 function App() {
   return (
