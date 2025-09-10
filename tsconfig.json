@@ -18,7 +18,8 @@
       "@_store/*": ["src/store/*"],
       "@_common/*": ["src/components/common/*"],
       "@_hooks/*": ["src/hooks/*"],
-      "@_characters/*": ["src/assets/characters/*"]
+      "@_characters/*": ["src/assets/characters/*"],
+      "@_utils/*": ["src/utils/*"]
     }
   }
 }

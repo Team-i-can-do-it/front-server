@@ -148,7 +148,13 @@ export default function BarChart({
         .join(' ')}
     >
       {/* 바깥 스크롤 래퍼와 안쪽 래퍼 모두 같은 높이 */}
-      <div className="relative overflow-x-auto h-[213px] w-full">
+      <div
+        className="relative overflow-x-auto h-[213px] w-full"
+        style={{
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
+        }}
+      >
         <div
           className="shrink-0"
           style={{ width: innerWidth, height: CHART_H }}

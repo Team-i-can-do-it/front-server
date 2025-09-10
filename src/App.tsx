@@ -16,6 +16,8 @@ import ResultPage from '@_page/ResultPage';
 import ParagraphPage from '@_page/ParagraphPage';
 import LoadingPage from '@_page/LoadingPage';
 import HistoryPage from '@_page/HistoryPage';
+import GachaPage from '@_page/GachaPage';
+import ProductDetails from '@_components/pageComponent/gacha/ProductDetails';
 
 function App() {
   return (
@@ -44,6 +46,7 @@ function App() {
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
         <Route element={<DefaultLayout noPadding header={<Header />} />}>
           <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
+          <Route path="/gacha/:id" element={<ProductDetails />} />
         </Route>
 
         {/* 네비만 있는 페이지 */}
@@ -63,7 +66,7 @@ function App() {
           <Route path="/style" element={<DesignTest />} />
         </Route>
 
-        {/* 헤더 o 네비 o 취소 없음 */}
+        {/* 헤더 o 네비 o 취소, 패딩 없음 */}
         <Route
           element={
             <DefaultLayout
@@ -74,6 +77,17 @@ function App() {
           }
         >
           <Route path="/history" element={<HistoryPage />} />
+        </Route>
+        {/* 헤더 o 네비 o 취소 */}
+        <Route
+          element={
+            <DefaultLayout
+              header={<Header showBack />}
+              bottomNav={<BottomNav />}
+            />
+          }
+        >
+          <Route path="/gacha" element={<GachaPage />} />
         </Route>
 
         {/* --------------------------------------------------------------- */}
