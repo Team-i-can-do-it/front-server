@@ -9,6 +9,7 @@ type HeaderProps = {
   showClose?: boolean;
   onBack?: () => void;
   onClose?: () => void;
+  variant?: 'default' | 'mypage';
 };
 
 export default function Header({
@@ -18,6 +19,7 @@ export default function Header({
   backTo = '/e-eum',
   onBack,
   onClose,
+  variant,
 }: HeaderProps) {
   const navigate = useNavigate();
 
@@ -40,7 +42,9 @@ export default function Header({
 
   return (
     <header
-      className="h-[var(--header-h)] flex items-center justify-between px-6 py-[9px] bg-white"
+      className={`h-[var(--header-h)] flex items-center justify-between px-6 py-[9px] ${
+        variant === 'mypage' ? 'bg-bg-10' : 'bg-white'
+      }`}
       aria-label="헤더"
     >
       {/* 왼쪽 */}
@@ -60,7 +64,9 @@ export default function Header({
       </div>
       {/* 가운데 */}
       <div className="flex-1 min-w-0 text-center">
-        {title ? <h1 className="truncate typo-h4-sb-16">{title}</h1> : null}
+        {title ? (
+          <h1 className="truncate typo-h4-sb-18 text-700">{title}</h1>
+        ) : null}
       </div>
 
       {/* 오른쪽 */}

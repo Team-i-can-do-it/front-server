@@ -1,8 +1,8 @@
-// src/components/pageComponent/common/useConfirmExitHandlers.tsx
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useModalStore from '@_store/dialogStore';
 
+// 이걸 쓴 이유는 ParagraphPage 와 ComposePage 에서 둘 다 쓰이기 때문에  훅으로 핸들러를 하나로 묶은 것,
 export function useConfirmExitHandlers(when: boolean) {
   const navigate = useNavigate();
   const { open, close } = useModalStore();
