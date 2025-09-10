@@ -17,6 +17,7 @@ export default function GachaPage() {
       img: '/images/gacha.svg',
       expireDate: '2025-09-15',
       status: 'active' as const,
+      count: 10,
     },
     {
       id: 2,
@@ -27,6 +28,7 @@ export default function GachaPage() {
       img: '/images/gacha.svg',
       expireDate: '2025-09-30',
       status: 'soldout' as const,
+      count: 10,
     },
     {
       id: 3,
@@ -37,6 +39,7 @@ export default function GachaPage() {
       img: '/images/gacha.svg',
       expireDate: '2025-09-12',
       status: 'active' as const,
+      count: 10,
     },
   ];
 

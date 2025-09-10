@@ -1,17 +1,10 @@
 import VioletTag from '@_components/common/Tag';
 import { useToast } from '@_hooks/useToast';
+import { type Product } from '@_types/product';
+import { getDDay } from '@_utils/productUtils';
 
 type ProductCardProps = {
-  product: {
-    id: number;
-    product_name: string;
-    brand_name: string;
-    discount: number;
-    price: number;
-    img: string;
-    expireDate: string;
-    status: 'active' | 'soldout';
-  };
+  product: Product;
   onClick: () => void;
 };
 
@@ -26,22 +19,6 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     }
     onClick();
   };
-
-  function getDDay(expireDate: string) {
-    const today = new Date();
-    const target = new Date(expireDate);
-
-    // 자정 기준으로 계산 (시분초 무시)
-    today.setHours(0, 0, 0, 0);
-    target.setHours(0, 0, 0, 0);
-
-    const diff = target.getTime() - today.getTime();
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-    if (days < 0) return '만료됨';
-    if (days === 0) return 'D-Day';
-    return `D-${days}`;
-  }
 
   return (
     <article
@@ -91,7 +68,10 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
               {product.discount}%
             </p>
             <p className="typo-h3-sb-18 text-black-base">
-              {product.price.toLocaleString()}
+              {(
+                product.price -
+                product.price * (product.discount / 100)
+              ).toLocaleString()}
               <span className="ml-0.5 typo-h4-sb-16 text-brand-violet-400">
                 point
               </span>

@@ -46,6 +46,7 @@ function App() {
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
         <Route element={<DefaultLayout noPadding header={<Header />} />}>
           <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
+          <Route path="/gacha/:id" element={<ProductDetails />} />
         </Route>
 
         {/* 네비만 있는 페이지 */}
@@ -87,7 +88,6 @@ function App() {
           }
         >
           <Route path="/gacha" element={<GachaPage />} />
-          <Route path="/gacha/:id" element={<ProductDetails />} />
         </Route>
 
         {/* --------------------------------------------------------------- */}
