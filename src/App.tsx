@@ -104,11 +104,22 @@ function App() {
           }
         >
           <Route path="/gacha" element={<GachaPage />} />
-          <Route path="/mypage/purchase" element={<MyPurchaseHistory />} />
+
           <Route path="/mypage/mbti" element={<MyMBTI />} />
           <Route path="/mypage/mypoint" element={<MyPoint />} />
         </Route>
 
+        {/* 헤더에 이름 */}
+        <Route
+          element={
+            <DefaultLayout
+              header={<Header showBack title="구매 내역" />}
+              bottomNav={<BottomNav />}
+            />
+          }
+        >
+          <Route path="/mypage/purchase" element={<MyPurchaseHistory />} />
+        </Route>
         {/* --------------------------------------------------------------- */}
 
         {/* 기타 404 페이지, 로딩 페이지 */}

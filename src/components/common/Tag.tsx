@@ -29,7 +29,7 @@ export function WhiteTextTag({ label, className = '' }: TagProps) {
   const typo = 'typo-label4-m-12';
   return (
     <span
-      className={`inline-flex items-center rounded-full typo-label2-r-14 px-2 py-1 ${typo} ${colorStyle} ${className}`}
+      className={`inline-flex items-center rounded-[10px] z-10 typo-label4-m-12 p-2 ${typo} ${colorStyle} ${className}`}
     >
       {label}
     </span>

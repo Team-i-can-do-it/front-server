@@ -64,7 +64,9 @@ export default function Header({
       </div>
       {/* 가운데 */}
       <div className="flex-1 min-w-0 text-center">
-        {title ? <h1 className="truncate typo-h4-sb-16">{title}</h1> : null}
+        {title ? (
+          <h1 className="truncate typo-h4-sb-18 text-700">{title}</h1>
+        ) : null}
       </div>
 
       {/* 오른쪽 */}
