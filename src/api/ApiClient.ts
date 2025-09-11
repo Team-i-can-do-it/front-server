@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+//const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const ApiClient: AxiosInstance = axios.create({
   // baseURL,
