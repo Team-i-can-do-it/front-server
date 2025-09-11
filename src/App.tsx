@@ -22,6 +22,8 @@ import MypagePage from '@_page/MypagePage';
 import MyPurchaseHistory from '@_pageComponent/mypage/MyPurchaseHistory';
 import MyMBTI from '@_pageComponent/mypage/MyMBTI';
 import MyPoint from '@_pageComponent/mypage/MyPoint';
+import SignUpPage from '@_page/SignUpPage';
+import LogInPage from '@_page/LogInPage';
 
 function App() {
   return (
@@ -47,6 +49,14 @@ function App() {
           <Route path="/result" element={<ResultPage />} />
         </Route>
 
+        {/* 네비 x 헤더 o 뒤로가기 o 취소 x 패딩 O */}
+        <Route
+          element={<DefaultLayout noPadding header={<Header showBack />} />}
+        >
+          <Route path="/siginUpPage" element={<SignUpPage />} />
+          <Route path="/logInPage" element={<LogInPage />} />
+        </Route>
+
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
         <Route element={<DefaultLayout noPadding header={<Header />} />}>
           <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
@@ -58,7 +68,7 @@ function App() {
           <Route path="/e-eum" element={<HomePage />} />
         </Route>
 
-        {/* 헤더+네비 패딩 있는 그룹 */}
+        {/* 헤더+네비 패딩 뒤로가기, 취소 버튼 있는 그룹 */}
         <Route
           element={
             <DefaultLayout
@@ -94,7 +104,7 @@ function App() {
           <Route path="/myPage" element={<MypagePage />} />
         </Route>
 
-        {/* 헤더 o 네비 o 뒤로가기 o 취소 x 패딩 x */}
+        {/* 헤더 o 네비 o 뒤로가기 o 취소 x 패딩 o */}
         <Route
           element={
             <DefaultLayout
@@ -104,7 +114,6 @@ function App() {
           }
         >
           <Route path="/gacha" element={<GachaPage />} />
-
           <Route path="/mypage/mbti" element={<MyMBTI />} />
           <Route path="/mypage/mypoint" element={<MyPoint />} />
         </Route>

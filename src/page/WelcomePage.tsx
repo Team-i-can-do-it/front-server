@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import Lottie from 'react-lottie-player';
 
-import googleLogo from '@_icons/common/icon-google.svg';
+import GoogleLogo from '@_icons/logo/icon-google.svg?react';
+import NaverLogo from '@_icons/logo/logo-naver.svg?react';
 import { useEffect, useState } from 'react';
 
 export default function WelcomePage() {
@@ -11,6 +12,17 @@ export default function WelcomePage() {
   const handleGoogleLogin = () => {
     console.log('구글 로그인 버튼 클릭');
     navigate('/e-eum');
+  };
+  const handleNaverLogin = () =>
+    (window.location.href =
+      'http://15.164.61.78/api/v1/login/oauth2/code/naver');
+  // http://15.164.61.78/api/v1/login/oauth2/code/naver
+
+  const handleEmailLogin = () => {
+    navigate('/logInPage');
+  };
+  const handleSignUp = () => {
+    navigate('/siginUpPage');
   };
 
   useEffect(() => {
@@ -35,13 +47,14 @@ export default function WelcomePage() {
           style={{ width: '100%', height: '100%' }}
         />
       </div>
-      <div className="flex flex-col text-center gap-6 mb-32">
-        <h1 className="typo-h1-b-24">OOO에 오신 것을 환영해요 :)</h1>
+      <div className="flex flex-col text-center gap-6 mb-20">
+        <h1 className="typo-h1-b-24">이음에 오신 것을 환영해요 :{')'}</h1>
+
         <p className="typo-body1-r-15 text-gray-500">
           처음부터 잘할 필요 없어요. <br /> 꾸준히 할 수 있게 도와드릴게요.
         </p>
       </div>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex flex-col gap-[9px] items-center justify-center">
         <button
           onClick={handleGoogleLogin}
           className="w-full max-w-[328px]
@@ -51,8 +64,38 @@ export default function WelcomePage() {
             typo-button-b-16 gap-2 cursor-pointer
             transition-all duration-150 hover:bg-violet-100 hover:shadow-sm active:translate-y-[1px]"
         >
-          <img src={googleLogo} alt="구글 로그인 로고" className="w-5 h-5" />
+          <GoogleLogo className="h-5 w-5" />
           구글로 로그인하기
+        </button>
+        <button
+          onClick={handleNaverLogin}
+          className="w-full max-w-[328px]
+          flex items-center justify-center
+           bg-[#03C75A] text-white-base
+            h-12 p-4 rounded-xl
+            typo-button-b-16 gap-2 cursor-pointer
+            transition-all duration-150 hover:shadow-sm active:translate-y-[1px]"
+        >
+          <NaverLogo />
+          네이버로 로그인하기
+        </button>
+        <button
+          onClick={handleEmailLogin}
+          className="w-full max-w-[328px]
+          flex items-center justify-center
+           bg-icon-25 text-text-500
+            h-12 p-4 rounded-xl
+            typo-button-b-16 gap-2 cursor-pointer
+            transition-all duration-150 hover:shadow-sm active:translate-y-[1px]"
+        >
+          이메일로 로그인하기
+        </button>
+
+        <button
+          onClick={handleSignUp}
+          className="mt-2 typo-button-r-14 text-text-700 underline cursor-pointer hover:text-gray-900"
+        >
+          회원가입
         </button>
       </div>
     </main>

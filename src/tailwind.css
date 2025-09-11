@@ -146,6 +146,7 @@
 
   /* -----------Border------------- */
   --color-border-700: var(--color-gray-700);
+  --color-border-100: var(--color-gary-100);
   --color-border-25: var(--color-gray-25);
 
   /* ------------Background------------ */

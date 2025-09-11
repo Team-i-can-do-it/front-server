@@ -4,7 +4,7 @@ import HistoryCard, {
 } from '@_components/pageComponent/history/HistoryCard';
 import { useHistoryInfinite } from '@_hooks/useHistory';
 import type { ServerResult, HistoryListResponse } from '@_api/result';
-import { TOPIC_GRAPHIC_ICON_MAP } from '@_page/topic/iconMap';
+import { TOPIC_GRAPHIC_ICON_MAP } from 'src/constants/topic/iconMap';
 import { useTopicCategories } from '@_hooks/useTopicCategories';
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
