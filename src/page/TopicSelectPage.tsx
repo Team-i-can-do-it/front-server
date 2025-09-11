@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   MOCK_TOPICS,
   TOPIC_GRAPHIC_ICON_MAP,
-} from '../constants/topic/iconMap';
+} from 'src/constants/topic/iconMap';
 
 export default function TopicSelectPage() {
   const navigate = useNavigate();

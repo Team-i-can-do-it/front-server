@@ -9,19 +9,20 @@ export default function WelcomePage() {
   const [dog1, setDog1] = useState<object>();
 
   const navigate = useNavigate();
-
-  const handleGoogleLogin = () =>
-    (window.location.href =
-      'http://http//15.164.61.78/api/v1/login/oauth2/code/google');
-
   const handleNaverLogin = () =>
     (window.location.href =
       'http://15.164.61.78/api/v1/login/oauth2/code/naver');
   // http://15.164.61.78/api/v1/login/oauth2/code/naver
-
-  const handleEmailLogin = () => navigate('/logInPage');
-  const handleSignUp = () => navigate('/siginUpPage');
-
+  const handleGoogleLogin = () => {
+    console.log('구글 로그인 버튼 클릭');
+    navigate('/e-eum');
+  };
+  const handleEmailLogin = () => {
+    navigate('/logInPage');
+  };
+  const handleSignUp = () => {
+    navigate('/siginUpPage');
+  };
   useEffect(() => {
     let alive = true;
     (async () => {
