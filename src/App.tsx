@@ -1,7 +1,7 @@
 import './App.css';
 import DefaultLayout from '@_layout/DefaultLayout';
 import DesignTest from '@_page/DesignTest';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Header from '@_layout/Header';
 import BottomNav from '@_components/layout/BottomNav';
 import WelcomePage from '@_page/WelcomePage';
@@ -24,8 +24,15 @@ import MyMBTI from '@_pageComponent/mypage/MyMBTI';
 import MyPoint from '@_pageComponent/mypage/MyPoint';
 import SignUpPage from '@_page/SignUpPage';
 import LogInPage from '@_page/LogInPage';
+import { useEffect } from 'react';
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate('/welcome');
+  }, []);
+
   return (
     <>
       <Routes>
@@ -114,7 +121,7 @@ function App() {
           }
         >
           <Route path="/gacha" element={<GachaPage />} />
-          <Route path="/mypage/mbti" element={<MyMBTI />} />
+
           <Route path="/mypage/mypoint" element={<MyPoint />} />
         </Route>
 
@@ -128,6 +135,16 @@ function App() {
           }
         >
           <Route path="/mypage/purchase" element={<MyPurchaseHistory />} />
+        </Route>
+        <Route
+          element={
+            <DefaultLayout
+              header={<Header showBack title="내 mbti 컬렉션" />}
+              bottomNav={<BottomNav />}
+            />
+          }
+        >
+          <Route path="/mypage/mbti" element={<MyMBTI />} />
         </Route>
         {/* --------------------------------------------------------------- */}
 
