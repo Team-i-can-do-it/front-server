@@ -2,7 +2,7 @@ import type { CategoryType } from '@_api/TopicApiClient';
 import { fetchTopicHintByCategory } from '@_api/topics';
 import { useToast } from '@_hooks/useToast';
 import { useTopicBar } from '@_hooks/useTopicBar';
-import { useTopicCategory } from '@_hooks/useTopicCategories';
+//import { useTopicCategory } from '@_hooks/useTopicCategories';
 import iconRetry from '@_icons/common/icon-retry.svg';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ export default function TopicBar() {
   const { id: categoryIdParam } = useParams<{ id: CategoryType }>();
 
   // topicBarData
-  const { data: categoryData } = useTopicCategory(categoryIdParam!);
+  //const { data: categoryData } = useTopicCategory(categoryIdParam!);
 
   const categoryId = categoryIdParam ?? '';
   if (!categoryId) {
