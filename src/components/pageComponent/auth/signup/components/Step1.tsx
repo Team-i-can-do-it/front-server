@@ -1,11 +1,11 @@
 import { useToast } from '@_hooks/useToast';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import IconCheck from '@_icons/common/icon-check.svg?react';
-import { type SignUpRequest } from '@_api/AuthApiClient';
+import type { AuthRequest } from '@_api/AuthApiClient';
 
 interface Step1Props {
   setStep: React.Dispatch<React.SetStateAction<'1' | '2' | '3'>>;
-  onChangeSignUpData: (request: SignUpRequest) => void;
+  onChangeSignUpData: (request: AuthRequest) => void;
 }
 
 export default function Step1({ setStep }: Step1Props) {

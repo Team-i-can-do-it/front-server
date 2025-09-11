@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Step1 from '@_pageComponent/auth/signup/components/Step1';
 import Step2 from '@_pageComponent/auth/signup/components/Step2';
-import { SignUp, type AuthRequest } from '@_api/AuthApiClient';
+import { type AuthRequest } from '@_api/AuthApiClient';
 import Step3 from '@_components/pageComponent/auth/signup/components/Step3';
 
 export default function SignUpPage() {
@@ -21,7 +21,7 @@ export default function SignUpPage() {
   };
 
   const submitSignUp = async () => {
-    const response = await SignUp(signUpData);
+    // const response = await SignUp(signUpData);
 
     // success
 
