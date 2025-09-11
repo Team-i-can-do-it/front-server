@@ -31,6 +31,8 @@ export default function ComposePage() {
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
 
+  // categoryData
+  // topic, title, description
   const {
     isSupported,
     isRecording,

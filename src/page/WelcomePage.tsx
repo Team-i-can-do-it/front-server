@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import Lottie from 'react-lottie-player';
 
 import googleLogo from '@_icons/common/icon-google.svg';
@@ -6,12 +5,10 @@ import { useEffect, useState } from 'react';
 
 export default function WelcomePage() {
   const [dog1, setDog1] = useState<object>();
-  const navigate = useNavigate();
 
-  const handleGoogleLogin = () => {
-    console.log('구글 로그인 버튼 클릭');
-    navigate('/e-eum');
-  };
+  const handleGoogleLogin = () =>
+    (window.location.href =
+      'http://http//15.164.61.78/api/v1/login/oauth2/code/google');
 
   useEffect(() => {
     let alive = true;

@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useTopicCategories } from '@_hooks/useTopicCategories';
+
 import { TOPIC_GRAPHIC_ICON_MAP } from './topic/iconMap';
+import { MOCK_TOPICS } from '@_hooks/useTopicCategories';
 
 export default function TopicSelectPage() {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useTopicCategories();
 
-  const topics = Array.isArray(data) ? data : [];
+  const topics = MOCK_TOPICS;
 
   const handleSelect = (id: string) => {
     navigate(`/compose/topic/${id}`);
@@ -29,16 +29,9 @@ export default function TopicSelectPage() {
         </div>
 
         {/* 로딩 */}
-        {isLoading && (
-          <ul className="w-full flex flex-col gap-3 pt-12">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <li key={i} className="h-[82px] bg-gray-25 animate-pulse" />
-            ))}
-          </ul>
-        )}
 
         {/* 목록 */}
-        {!isLoading && topics.length > 0 && (
+        {topics.length > 0 && (
           <ul className="w-full flex flex-col pt-12">
             {topics.map((topic) => (
               <li key={topic.id}>
@@ -68,12 +61,6 @@ export default function TopicSelectPage() {
               </li>
             ))}
           </ul>
-        )}
-
-        {isError && (
-          <p className="mt-4 text-red-500 typo-body3-r-14">
-            주제를 불러올 수 없습니다.
-          </p>
         )}
       </div>
     </section>
