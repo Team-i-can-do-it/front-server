@@ -13,12 +13,15 @@ export default function WelcomePage() {
     console.log('구글 로그인 버튼 클릭');
     navigate('/e-eum');
   };
-  const handleNaverLogin = () => {
-    console.log('네이버 로그인 버튼 클릭');
-    navigate('/e-eum');
-  };
+  const handleNaverLogin = () =>
+    (window.location.href =
+      'http://15.164.61.78/api/v1/login/oauth2/code/naver');
+  // http://15.164.61.78/api/v1/login/oauth2/code/naver
+
   const handleEmailLogin = () => {
-    console.log('구글 로그인 버튼 클릭');
+    navigate('/LoinPage');
+  };
+  const handleSignUp = () => {
     navigate('/SiginUpPage');
   };
 
@@ -65,7 +68,7 @@ export default function WelcomePage() {
           구글로 로그인하기
         </button>
         <button
-          onClick={handleGoogleLogin}
+          onClick={handleNaverLogin}
           className="w-full max-w-[328px]
           flex items-center justify-center
            bg-[#03C75A] text-white-base
@@ -88,7 +91,10 @@ export default function WelcomePage() {
           이메일로 로그인하기
         </button>
 
-        <button className="mt-2 typo-button-r-14 text-text-700 underline cursor-pointer hover:text-gray-900">
+        <button
+          onClick={handleSignUp}
+          className="mt-2 typo-button-r-14 text-text-700 underline cursor-pointer hover:text-gray-900"
+        >
           회원가입
         </button>
       </div>

@@ -22,7 +22,8 @@ import MypagePage from '@_page/MypagePage';
 import MyPurchaseHistory from '@_pageComponent/mypage/MyPurchaseHistory';
 import MyMBTI from '@_pageComponent/mypage/MyMBTI';
 import MyPoint from '@_pageComponent/mypage/MyPoint';
-import SiginUpPage from '@_components/pageComponent/auth/signup/SiginUpPage';
+import Step1 from '@_pageComponent/auth/signup/components/Step1';
+import SignUpPage from '@_page/SignUpPage';
 
 function App() {
   return (
@@ -52,7 +53,7 @@ function App() {
         <Route
           element={<DefaultLayout noPadding header={<Header showBack />} />}
         >
-          <Route path="/SiginUpPage" element={<SiginUpPage />} />
+          <Route path="/SiginUpPage" element={<SignUpPage />} />
         </Route>
 
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
