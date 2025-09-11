@@ -3,21 +3,24 @@ import Lottie from 'react-lottie-player';
 import GoogleLogo from '@_icons/logo/icon-google.svg?react';
 import NaverLogo from '@_icons/logo/logo-naver.svg?react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function WelcomePage() {
   const [dog1, setDog1] = useState<object>();
+  const navigate = useNavigate();
 
-  const handleGoogleLogin = () =>
-    (window.location.href =
-      'http://http//15.164.61.78/api/v1/login/oauth2/code/google');
-
+  const handleGoogleLogin = () => {};
   const handleNaverLogin = () =>
     (window.location.href =
       'http://15.164.61.78/api/v1/login/oauth2/code/naver');
   // http://15.164.61.78/api/v1/login/oauth2/code/naver
 
-  const handleEmailLogin = () => {};
-  const handleSignUp = () => {};
+  const handleEmailLogin = () => {
+    navigate('/logInPage');
+  };
+  const handleSignUp = () => {
+    navigate('/siginUpPage');
+  };
 
   useEffect(() => {
     let alive = true;
