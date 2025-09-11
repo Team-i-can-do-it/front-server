@@ -1,4 +1,3 @@
-import ApiClient from '@_api/ApiClient';
 import { GetTopicCategory, type CategoryType } from '@_api/TopicApiClient';
 import type { TopicCategory } from '@_api/topics';
 

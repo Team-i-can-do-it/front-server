@@ -4,8 +4,11 @@ import HistoryCard, {
 } from '@_components/pageComponent/history/HistoryCard';
 import { useHistoryInfinite } from '@_hooks/useHistory';
 import type { ServerResult, HistoryListResponse } from '@_api/result';
-import { TOPIC_GRAPHIC_ICON_MAP } from 'src/constants/topic/iconMap';
-import { useTopicCategories } from '@_hooks/useTopicCategories';
+import {
+  MOCK_TOPICS,
+  TOPIC_GRAPHIC_ICON_MAP,
+} from 'src/constants/topic/iconMap';
+
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
 
@@ -95,14 +98,13 @@ const extractItems = (page: any) => {
 export default function HistoryListTab({ type }: HistoryListTabProps) {
   const navigate = useNavigate();
   // 카테고리(iconKey)
-  const { data: categories = [] } = useTopicCategories();
 
   // id -> iconKey 맵
   const iconKeyById = useMemo<Record<string, string>>(() => {
     const m: Record<string, string> = {};
-    for (const c of categories) m[c.id] = c.iconKey; // e.g. 'balance' -> 'balance'
+    for (const c of MOCK_TOPICS) m[c.id] = c.iconKey; // e.g. 'balance' -> 'balance'
     return m;
-  }, [categories]);
+  }, [MOCK_TOPICS]);
 
   // 목록 페이징
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =

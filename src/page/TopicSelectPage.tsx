@@ -1,13 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import { useTopicCategories } from '@_hooks/useTopicCategories';
-=======
 
->>>>>>> 2e14e9b (Feature/auth)
-import { TOPIC_GRAPHIC_ICON_MAP } from '../constants/topic/iconMap';
-import { MOCK_TOPICS } from '@_hooks/useTopicCategories';
-
-import { MOCK_TOPICS } from '@_hooks/useTopicCategories';
+import {
+  MOCK_TOPICS,
+  TOPIC_GRAPHIC_ICON_MAP,
+} from '../constants/topic/iconMap';
 
 export default function TopicSelectPage() {
   const navigate = useNavigate();
