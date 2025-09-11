@@ -19,10 +19,10 @@ export default function WelcomePage() {
   // http://15.164.61.78/api/v1/login/oauth2/code/naver
 
   const handleEmailLogin = () => {
-    navigate('/LoinPage');
+    navigate('/logInPage');
   };
   const handleSignUp = () => {
-    navigate('/SiginUpPage');
+    navigate('/siginUpPage');
   };
 
   useEffect(() => {

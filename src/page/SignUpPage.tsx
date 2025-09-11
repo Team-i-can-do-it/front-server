@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import Step1 from '@_pageComponent/auth/signup/components/Step1';
 import Step2 from '@_pageComponent/auth/signup/components/Step2';
-import { SignUp, type SignUpRequest } from '@_api/AuthApiClient';
+import { SignUp, type AuthRequest } from '@_api/AuthApiClient';
 import Step3 from '@_components/pageComponent/auth/signup/components/Step3';
 
 export default function SignUpPage() {
   const [step, setStep] = useState<'1' | '2' | '3'>('1');
 
-  const [signUpData, setSignUpData] = useState<SignUpRequest>({
+  const [signUpData, setSignUpData] = useState<AuthRequest>({
     name: '',
     email: '',
     password: '',
   });
 
-  const onChangeSignUpData = (signUpData: SignUpRequest) => {
+  const onChangeSignUpData = (signUpData: AuthRequest) => {
     setSignUpData((prev) => ({
       ...prev,
       signUpData,

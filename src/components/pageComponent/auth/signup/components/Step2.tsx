@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import IconCheck from '@_icons/common/icon-check.svg?react';
 import { isValidEmailBasic, isValidPassword } from '@_utils/validation';
-import type { SignUpRequest } from '@_api/AuthApiClient';
+import type { AuthRequest } from '@_api/AuthApiClient';
 
 type Step2Props = {
   setStep: React.Dispatch<React.SetStateAction<'1' | '2' | '3'>>;
-  signUpData: SignUpRequest;
-  setSignUpData: React.Dispatch<React.SetStateAction<SignUpRequest>>;
+  signUpData: AuthRequest;
+  setSignUpData: React.Dispatch<React.SetStateAction<AuthRequest>>;
   submitSignUp: () => void;
 };
 
@@ -16,8 +16,6 @@ export default function Step2({
   setSignUpData,
   submitSignUp,
 }: Step2Props) {
-  // 필드
-
   // 에러
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -36,7 +34,7 @@ export default function Step2({
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
 
-    setSignUpData((prev: SignUpRequest) => ({
+    setSignUpData((prev: AuthRequest) => ({
       ...prev,
       email: v,
     }));
@@ -48,7 +46,7 @@ export default function Step2({
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
-    setSignUpData((prev: SignUpRequest) => ({
+    setSignUpData((prev: AuthRequest) => ({
       ...prev,
       password: v,
     }));
@@ -75,7 +73,7 @@ export default function Step2({
               <input
                 value={signUpData.name}
                 onChange={(e) =>
-                  setSignUpData((prev: SignUpRequest) => ({
+                  setSignUpData((prev: AuthRequest) => ({
                     ...prev,
                     name: e.target.value,
                   }))
