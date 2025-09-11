@@ -21,33 +21,39 @@ const items: Item[] = [
 
 export default function MyMBTI() {
   // "가장 최근 받은" = unlock된 것 중 첫 번째라고 가정
-  const latestId = items.find((it) => !it.locked)?.id ?? items[0].id;
+  const latestId = items.find((it) => !it.locked)?.id ?? undefined;
 
   // 대표 MBTI (초기값: 최신 항목)
-  const [repId, setRepId] = useState<string>(latestId);
+  const [repId, _setRepId] = useState<string | undefined>(latestId);
   const rep = items.find((it) => it.id === repId)!;
 
   return (
     <div className="flex flex-col mt-9 mb-20">
-      <TopSection rep={rep} />
+      <TopSection rep={rep} latestId={latestId} />
       <BottomSection />
     </div>
   );
 }
 
-function TopSection({ rep }: { rep: Item }) {
+function TopSection({ rep, latestId }: { rep: Item; latestId?: string }) {
   return (
     <div className="flex flex-col items-center gap-4 border-b border-border-25">
       <div className="typo-h4-sb-16 text-text-900">나의 대표 mbti</div>
       <div className="w-[90px] h-[90px] rounded-full overflow-hidden">
-        <img
-          src={rep.img}
-          alt={rep.name}
-          className="w-full h-full object-cover"
-        />
+        {latestId ? (
+          <img
+            src={rep.img}
+            alt={rep.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <LockIcon className="w-9 h-9 text-gray-300" />
+        )}
       </div>
       <div className="flex flex-col items-center gap-2 mb-9">
-        <p className="typo-label3-m-16 text-brand-violet-500">{rep.name}</p>
+        <p className="typo-label3-m-16 text-brand-violet-500">
+          {latestId ? rep.name : 'MBTI가 없습니다.'}
+        </p>
         <p className="typo-label3-m-14 text-text-200">
           최근 받은 mbti만 대표 mbti로 설정할 수 있어요
         </p>
