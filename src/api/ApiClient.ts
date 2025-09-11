@@ -1,14 +1,14 @@
 import axios, { type AxiosInstance } from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+//const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const ApiClient: AxiosInstance = axios.create({
-  baseURL,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
-  },
+  // baseURL,
+  // headers: {
+  //   Accept: 'application/json',
+  //   'Content-Type': 'application/json',
+  //   'X-Requested-With': 'XMLHttpRequest',
+  // },
 });
 
 // 요청 인터셉터

@@ -19,7 +19,8 @@
       "@_common/*": ["src/components/common/*"],
       "@_hooks/*": ["src/hooks/*"],
       "@_characters/*": ["src/assets/characters/*"],
-      "@_utils/*": ["src/utils/*"]
+      "@_utils/*": ["src/utils/*"],
+      "@_images/*": ["src/assets/images/*"]
     }
   }
 }

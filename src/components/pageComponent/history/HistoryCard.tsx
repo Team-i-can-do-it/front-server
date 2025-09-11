@@ -17,7 +17,7 @@ export type HistoryCardVM = {
 
 type HistoryCardProps = {
   item: HistoryCardVM;
-  onClick?: (item: HistoryCardVM) => void; // 👈 추가
+  onClick?: (item: HistoryCardVM) => void;
   className?: string;
 };
 

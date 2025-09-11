@@ -10,6 +10,7 @@ import { useToast } from '@_hooks/useToast';
 import { createAnswer } from '@_api/answers';
 import { useConfirmExitHandlers } from '@_hooks/useExitConfirm';
 import Header from '@_components/layout/Header';
+import LoadingPage from './LoadingPage';
 
 export default function ComposePage() {
   const { id } = useParams(); // "/compose/topic/:id"
@@ -29,6 +30,8 @@ export default function ComposePage() {
   const { onBack, onClose } = useConfirmExitHandlers(isDirty);
 
   const [count, setCount] = useState(3);
+
+  const [isLoading, setIsLoading] = useState(false);
   const submitUiDisabled = count > 0;
 
   // categoryData
@@ -61,11 +64,11 @@ export default function ComposePage() {
     if (isDisabled) return;
 
     try {
-      console.log('제출:', trimmed);
       const res = await createAnswer({
         topicId, // INTEGER
         content: trimmed, // STRING (100~600)
       });
+
       stop();
       reset();
       setAnswer('');
@@ -79,11 +82,13 @@ export default function ComposePage() {
       if (res.status === 201) {
         console.log('글 저장 성공:', res.message);
         navigate(`/result?id=${res.result?.id}`);
+        setIsLoading(false);
       } else {
         console.warn('예상치 못한 응답', res);
       }
     } catch (err) {
       console.error('글 저장 실패:', err);
+
       toast('글 저장에 실패하였습니다.', 'error');
     }
   }, [isDisabled, trimmed, stop, reset, toast, navigate]);
@@ -106,53 +111,55 @@ export default function ComposePage() {
   return (
     <section>
       <Header showBack showClose onBack={onBack} onClose={onClose} />
-      <div>
-        <TopicBar />
-        <EditorArea
-          value={answer}
-          onChange={handleEditorChange}
-          highlight={{ lastSentence: 8 }}
-          spinnerCount={count}
-          setSpinnerCount={setCount}
-        />
-      </div>
-
-      <div>
-        {micOpen ? (
-          <MicPanel
-            onTextInput={closeMicPanelToKeyboard}
-            value={answer}
-            onSubmit={handleSubmit}
-            isRecording={isRecording}
-            onToggleRecording={toggleRecording}
-          />
-        ) : confirmOpen ? (
-          <ConfirmBar
-            value={answer}
-            textCount={answer.length}
-            onTextInput={() => setConfirmOpen(false)}
-            onSubmit={() => {
-              handleSubmit();
-            }}
-          />
-        ) : (
-          <SubmitBar
-            submitUiDisabled={submitUiDisabled}
-            submitDisabled={isDisabled || isLengthInvalid}
-            onConfirm={() => setConfirmOpen(true)}
-            onInvalid={() => {
-              isLengthInvalid;
-              toast(
-                '글쓰기는 100자 이상 600자 미만으로 작성해 주세요.',
-                'info',
-              );
-            }}
-            onRecordClick={openMicPanel}
-            value={answer}
-            onChange={handleEditorChange}
-          />
-        )}
-      </div>
+      {isLoading ? (
+        <LoadingPage />
+      ) : (
+        <>
+          <div>
+            <TopicBar />
+            <EditorArea
+              value={answer}
+              onChange={handleEditorChange}
+              highlight={{ lastSentence: 8 }}
+              spinnerCount={count}
+              setSpinnerCount={setCount}
+            />
+          </div>
+          <div>
+            {micOpen ? (
+              <MicPanel
+                onTextInput={closeMicPanelToKeyboard}
+                value={answer}
+                onSubmit={handleSubmit}
+                isRecording={isRecording}
+                onToggleRecording={toggleRecording}
+              />
+            ) : confirmOpen ? (
+              <ConfirmBar
+                value={answer}
+                textCount={answer.length}
+                onTextInput={() => setConfirmOpen(false)}
+                onSubmit={handleSubmit}
+              />
+            ) : (
+              <SubmitBar
+                submitUiDisabled={submitUiDisabled}
+                submitDisabled={isDisabled || isLengthInvalid}
+                onConfirm={() => setConfirmOpen(true)}
+                onInvalid={() =>
+                  toast(
+                    '글쓰기는 100자 이상 600자 미만으로 작성해 주세요.',
+                    'info',
+                  )
+                }
+                onRecordClick={openMicPanel}
+                value={answer}
+                onChange={handleEditorChange}
+              />
+            )}
+          </div>
+        </>
+      )}
     </section>
   );
 }
