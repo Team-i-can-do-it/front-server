@@ -7,20 +7,22 @@ import { useNavigate } from 'react-router-dom';
 
 export default function WelcomePage() {
   const [dog1, setDog1] = useState<object>();
-  const navigate = useNavigate();
 
+<<<<<<< HEAD
   const handleGoogleLogin = () => {};
+=======
+  const handleGoogleLogin = () =>
+    (window.location.href =
+      'http://http//15.164.61.78/api/v1/login/oauth2/code/google');
+
+>>>>>>> 330548a (feat: writting category api 엔드포인트 맞춤)
   const handleNaverLogin = () =>
     (window.location.href =
       'http://15.164.61.78/api/v1/login/oauth2/code/naver');
   // http://15.164.61.78/api/v1/login/oauth2/code/naver
 
-  const handleEmailLogin = () => {
-    navigate('/logInPage');
-  };
-  const handleSignUp = () => {
-    navigate('/siginUpPage');
-  };
+  const handleEmailLogin = () => {};
+  const handleSignUp = () => {};
 
   useEffect(() => {
     let alive = true;
