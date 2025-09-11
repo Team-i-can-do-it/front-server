@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-import { TOPIC_GRAPHIC_ICON_MAP } from './topic/iconMap';
+import { TOPIC_GRAPHIC_ICON_MAP } from '../constants/topic/iconMap';
+
 import { MOCK_TOPICS } from '@_hooks/useTopicCategories';
 
 export default function TopicSelectPage() {
