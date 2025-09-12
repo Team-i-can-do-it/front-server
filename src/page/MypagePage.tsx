@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import avata from '@_icons/graphics/daily.svg';
 import useModalStore from '@_store/dialogStore';
 import { useToast } from '@_hooks/useToast';
+import { useMyPage } from '@_hooks/useMyPage';
+import { useAuthStore } from '@_store/authStore'; // 아래 주석 참고
 
 const SCRAP_MOCK: ScrapItem[] = [
   { id: '1', title: '정보', subtitle: '나만의 블로그' },
@@ -17,10 +19,14 @@ export default function MypagePage() {
   const navigate = useNavigate();
   const { open } = useModalStore();
   const toast = useToast();
+  const clearAuth = useAuthStore((s) => s.clear);
 
-  const nickname = '김도넛';
-  const mbti = '말썽쟁이 치와와';
-  const point = 700;
+  const { data, isLoading, isError, error } = useMyPage();
+
+  const name = data?.name ?? '이음';
+  const mbtiFromServer = data?.mbtiName ?? '나만의 mbti를 찾아보세요';
+  const mbti = mbtiFromServer;
+  const point = data?.point ?? 0;
 
   const handleLogout = () => {
     open({
@@ -34,14 +40,45 @@ export default function MypagePage() {
       cancelText: '취소',
       confirmText: '로그아웃',
       onConfirm: () => {
-        // TODO: 실제 로그아웃 처리 (토큰 삭제, 상태 초기화 등)
-        navigate('/welcome');
+        clearAuth();
+        navigate('/welcome', { replace: true });
         toast('로그아웃 되었습니다.', 'success');
         return;
       },
     });
   };
 
+  if (isLoading) {
+    return (
+      <main className="mx-auto w-[min(100vw,390px)] bg-white-base mb-16">
+        <div className="animate-pulse p-6">
+          <div className="mx-auto h-[90px] w-[90px] rounded-full bg-bg-10" />
+          <div className="mt-4 h-4 w-24 mx-auto rounded bg-bg-10" />
+          <div className="mt-2 h-3 w-32 mx-auto rounded bg-bg-10" />
+          <div className="mt-6 h-12 rounded-[20px] bg-bg-10" />
+        </div>
+      </main>
+    );
+  }
+
+  if (isError) {
+    // @ts-ignore: axios error guard 없이 간단 처리
+    const status = error?.response?.status;
+    if (status === 401) {
+      // 인증 만료: 세션 정리 후 이동
+      clearAuth();
+      navigate('/welcome', { replace: true });
+      toast('로그인이 필요합니다.', 'error');
+      return null;
+    }
+    return (
+      <main className="mx-auto w-[min(100vw,390px)] bg-white-base mb-16">
+        <div className="p-6 text-center text-status-danger">
+          마이페이지 정보를 불러오지 못했습니다.
+        </div>
+      </main>
+    );
+  }
   return (
     <main className="mx-auto w-[min(100vw,390px)] bg-white-base mb-16">
       <div className="flex flex-col items-center justify-between bg-bg-10">
@@ -49,7 +86,7 @@ export default function MypagePage() {
         <div className="flex flex-col items-center gap-3 pb-8">
           <img src={avata} className="rounded-full h-[90px] w-[90px]" />
           <div className="flex flex-col items-center gap-1">
-            <p className="typo-h3-sb-18">{nickname}</p>
+            <p className="typo-h3-sb-18">{name}</p>
             <p className="typo-label3-m-14 text-brand-violet-500">{mbti}</p>
           </div>
         </div>

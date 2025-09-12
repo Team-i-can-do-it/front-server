@@ -9,7 +9,9 @@ export type CategoryType =
   | 'culture-arts';
 
 export type TopicPayload = {
-  topic: number | string;
+  topicId?: number;
+
+  topic: string;
   title: string;
   description: string; // hint
 };
@@ -20,5 +22,6 @@ export const GetTopicCategory = async (category: CategoryType) => {
     message: string;
     result: TopicPayload;
   }>(`/writing/topics/${category}`);
+  console.log('[GetTopicCategory] result =', data.result);
   return data;
 };

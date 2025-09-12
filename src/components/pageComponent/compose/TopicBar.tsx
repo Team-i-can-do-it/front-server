@@ -5,15 +5,6 @@ import iconRetry from '@_icons/common/icon-retry.svg';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-const CATEGORY_LABEL: Record<CategoryType, string> = {
-  random: '추천 랜덤 밸런스',
-  'daily-life': '일상・취미',
-  'economy-business': '경제・비즈니스',
-  'social-politics': '사회・정치',
-  'tech-future': '기술・미래',
-  'culture-arts': '문화・예술',
-} as const;
-
 export default function TopicBar() {
   const toast = useToast();
 
@@ -36,7 +27,12 @@ export default function TopicBar() {
   const { topic, topicLoading, topicError, canShowHint, changeTopic } =
     useTopicBar(categoryId);
 
-  const categoryText = CATEGORY_LABEL[categoryId] ?? '카테고리';
+  const titleText = topicLoading
+    ? '주제 불러오는 중...'
+    : topicError
+    ? '주제를 불러올 수 없습니다'
+    : topic?.topic ?? '주제가 없습니다';
+
   const topicText = topicLoading
     ? '주제 불러오는 중...'
     : topicError
@@ -86,8 +82,8 @@ export default function TopicBar() {
   return (
     <section className="flex flex-col justify-between px-6 py-3 gap-12 border-b border-b-border-25">
       <div className="flex flex-col gap-1">
-        <p className="typo-label1-r-15 text-gray-500">{categoryText}</p>
-        <h3 className="typo-h3-sb-18">{topicText}</h3>
+        <p className="typo-label1-r-15 text-gray-500">{topicText}</p>
+        <h3 className="typo-h3-sb-18">{titleText}</h3>
       </div>
 
       <div className="flex justify-between items-center">

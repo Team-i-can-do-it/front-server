@@ -3,7 +3,7 @@ import {
   fetchHistoryList,
   fetchMonthlyAvg,
   type HistoryListResponse,
-} from '@_api/Result';
+} from '@_api/ResultAPiClient';
 import {
   useInfiniteQuery,
   useQuery,

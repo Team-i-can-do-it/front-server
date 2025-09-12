@@ -1,7 +1,9 @@
 import ResultAnalysis from '@_components/pageComponent/result/ResultAnalysis';
 import ResultSummary from '@_components/pageComponent/result/ResultSummary';
+import { useAnswerResult } from '@_hooks/useResult';
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import LoadingPage from './LoadingPage';
 
 type TabId = 'summary' | 'analysis';
 const TABS: { id: TabId; label: string }[] = [
@@ -19,17 +21,47 @@ export default function ResultPage() {
   const [params, setParams] = useSearchParams();
   const tabParam = (params.get('tab') as TabId) || 'summary';
   const [active, setActive] = useState<TabId>(tabParam);
+  const id = params.get('id') ?? '';
 
   useEffect(() => {
-    if (!params.get('tab')) setParams({ tab: 'summary' }, { replace: true });
-    else setActive(tabParam);
+    if (!params.get('tab')) {
+      const next = new URLSearchParams(params);
+      next.set('tab', 'summary');
+      setParams(next, { replace: true });
+    } else {
+      setActive(tabParam);
+    }
   }, [tabParam]);
 
-  const onTab = (id: TabId) => {
-    if (id === active) return;
-    setActive(id);
-    setParams({ tab: id });
+  const onTab = (tab: TabId) => {
+    if (tab === active) return;
+    setActive(tab);
+    const next = new URLSearchParams(params);
+    next.set('tab', tab);
+    setParams(next, { replace: true });
   };
+  const { data, isPending, isError } = useAnswerResult(id);
+
+  if (!id) {
+    return (
+      <main className="min-h-[100dvh] bg-white">
+        <section className="mx-auto w-[min(100vw,390px)] px-6 py-10">
+          결과 ID가 없습니다.
+        </section>
+      </main>
+    );
+  }
+  if (isPending) return <LoadingPage />;
+
+  if (isError || !data) {
+    return (
+      <main className="min-h-[100dvh] bg-white">
+        <section className="mx-auto w-[min(100vw,390px)] px-6 py-10">
+          결과를 불러오지 못했어요.
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-[100dvh] bg-white">
@@ -77,8 +109,12 @@ export default function ResultPage() {
         className="mx-auto w-[min(100vw,390px)] px-6 pb-10"
         style={{ paddingTop: HEADER_H + TAB_H }}
       >
-        <Suspense fallback={<div className="animate-pulse">불러오는 중…</div>}>
-          {active === 'summary' ? <ResultSummary /> : <ResultAnalysis />}
+        <Suspense fallback={<LoadingPage />}>
+          {active === 'summary' ? (
+            <ResultSummary data={data} />
+          ) : (
+            <ResultAnalysis data={data} />
+          )}
         </Suspense>
       </section>
     </main>

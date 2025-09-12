@@ -3,7 +3,7 @@ import EditorArea from '@_components/pageComponent/compose/EditorArea';
 import MicPanel from '@_components/pageComponent/compose/MicPanel';
 import SubmitBar from '@_components/pageComponent/compose/SubmitBar';
 import TopicBar from '@_components/pageComponent/compose/TopicBar';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSTT } from '@_hooks/useSTT';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
@@ -12,10 +12,11 @@ import { useConfirmExitHandlers } from '@_hooks/useExitConfirm';
 import Header from '@_components/layout/Header';
 import LoadingPage from './LoadingPage';
 import { createAnswer } from '@_api/Answers';
+import { GetTopicCategory, type CategoryType } from '@_api/TopicApiClient';
 
 export default function ComposePage() {
   const { id } = useParams(); // "/compose/topic/:id"
-  const topicId = Number(id);
+  const [topicId, setTopicId] = useState<number | null>(null);
   const [answer, setAnswer] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [micOpen, setMicOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function ComposePage() {
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
 
-  const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
+  const isLengthInvalid = trimmed.length < 100 || trimmed.length > 600;
 
   const isDirty = answer.trim().length > 0;
   const { onBack, onClose } = useConfirmExitHandlers(isDirty);
@@ -34,6 +35,8 @@ export default function ComposePage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const submitUiDisabled = count > 0;
+
+  const submittingRef = useRef(false);
 
   // categoryData
   // topic, title, description
@@ -56,6 +59,21 @@ export default function ComposePage() {
     setSpeechText(v);
   };
 
+  useEffect(() => {
+    if (!id) return;
+    GetTopicCategory(id as CategoryType)
+      .then((res) => {
+        if (typeof res.result.topicId === 'number') {
+          setTopicId(res.result.topicId);
+        } else {
+          console.error('topicId가 숫자가 아님:', res.result.topicId);
+        }
+      })
+      .catch((err) => {
+        console.error('토픽 불러오기 실패:', err);
+      });
+  }, [id]);
+
   // 제출 및 입력 x시 비활성화
   const handleSubmit = useCallback(async () => {
     if (isLengthInvalid) {
@@ -63,11 +81,20 @@ export default function ComposePage() {
       return;
     }
     if (isDisabled) return;
+    if (topicId == null) {
+      toast('주제를 불러오는 중이에요. 잠시 후 다시 시도해 주세요.', 'info');
+      return;
+    }
+
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+
+    setIsLoading(true);
 
     try {
       const res = await createAnswer({
-        topicId, // INTEGER
-        content: trimmed, // STRING (100~600)
+        topicId: topicId as number,
+        content: trimmed,
       });
 
       stop();
@@ -81,18 +108,27 @@ export default function ComposePage() {
       }
 
       if (res.status === 201) {
-        console.log('글 저장 성공:', res.message);
-        navigate(`/result?id=${res.result?.id}`);
-        setIsLoading(false);
+        navigate(`/result?id=${res.result?.id}&tab=summary`, { replace: true });
       } else {
         console.warn('예상치 못한 응답', res);
       }
     } catch (err) {
       console.error('글 저장 실패:', err);
-
       toast('글 저장에 실패하였습니다.', 'error');
+    } finally {
+      setIsLoading(false);
+      submittingRef.current = false;
     }
-  }, [isDisabled, trimmed, stop, reset, toast, navigate]);
+  }, [
+    isLengthInvalid,
+    isDisabled,
+    topicId,
+    trimmed,
+    stop,
+    reset,
+    toast,
+    navigate,
+  ]);
 
   const openMicPanel = () => {
     if (!isSupported) return console.log('이 브라우저는 STT 미지원');

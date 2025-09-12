@@ -24,15 +24,8 @@ import MyMBTI from '@_pageComponent/mypage/MyMBTI';
 import MyPoint from '@_pageComponent/mypage/MyPoint';
 import SignUpPage from '@_page/SignUpPage';
 import LogInPage from '@_page/LogInPage';
-import { useEffect } from 'react';
 
 function App() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigate('/welcome');
-  }, []);
-
   return (
     <>
       <Routes>
