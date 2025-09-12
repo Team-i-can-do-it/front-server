@@ -8,24 +8,17 @@ export type CategoryType =
   | 'tech-future'
   | 'culture-arts';
 
-// 랜덤 주제 조회
-export const GetTopicCategory = async (
-  category: CategoryType,
-): Promise<{
-  status: number;
-  message: string;
-  result: {
-    topic: string;
-    title: string;
-    description: string;
-  };
-}> => {
-  const response = await ApiClient.request({
-    method: 'GET',
-    url: `/writing/topics/${category}`,
-  });
-
-  return response.data;
+export type TopicPayload = {
+  topic: number | string;
+  title: string;
+  description: string; // hint
 };
 
-//
+export const GetTopicCategory = async (category: CategoryType) => {
+  const { data } = await ApiClient.get<{
+    status: number;
+    message: string;
+    result: TopicPayload;
+  }>(`/writing/topics/${category}`);
+  return data;
+};

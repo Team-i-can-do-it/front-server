@@ -95,22 +95,24 @@ export default function Step2({
 
           {/* 아이디(이메일) */}
           <div className="flex flex-col gap-3">
-            <p className="typo-label2-r-14 text-700">아이디</p>
+            <p className="typo-label2-r-14 text-700">아이디(이메일)</p>
             <div className="flex items-center justify-between border-b-2 border-gray-100 pb-2">
               <input
                 value={signUpData.email}
-                type="email"
-                onChange={handleEmailChange}
-                className="typo-body2-r-16 w-2/3 outline-none placeholder:text-text-100"
-                placeholder="abc@gmail.com"
+                readOnly
+                className="typo-body2-r-16 w-2/3 outline-none text-text-500"
               />
-              {emailValid && <IconCheck className="w-6 h-6" />}
+              <span className="typo-label4-m-12 text-brand-violet-500">
+                인증 완료
+              </span>
             </div>
-            {emailError && (
-              <p className="text-status-danger typo-label4-m-12 mt-1">
-                {emailError}
-              </p>
-            )}
+            <button
+              type="button"
+              className="self-end typo-label4-m-12 text-text-300 hover:underline mt-1 cursor-pointer"
+              onClick={() => setStep('1')}
+            >
+              이메일 변경/재인증
+            </button>
           </div>
 
           {/* 비밀번호 */}
