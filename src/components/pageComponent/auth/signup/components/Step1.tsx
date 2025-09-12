@@ -5,9 +5,10 @@ import { requestEmailCode, verifyEmailCode } from '@_api/MailApiClient';
 
 interface Step1Props {
   setStep: React.Dispatch<React.SetStateAction<'1' | '2' | '3'>>;
+  onVerified: (email: string) => void;
 }
 
-export default function Step1({ setStep }: Step1Props) {
+export default function Step1({ setStep, onVerified }: Step1Props) {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
 
@@ -26,7 +27,7 @@ export default function Step1({ setStep }: Step1Props) {
 
   // ===== Validation helpers =====
   const isValidEmailBasic = (v: string) => v.includes('@') && v.includes('.');
-  const isValidCode = (v: string) => /^\d{6}$/.test(v);
+  const isValidCode = (v: string) => v.length === 6;
   const isExpired = useMemo(
     () => isCodeSent && timeLeft <= 0,
     [isCodeSent, timeLeft],
@@ -107,7 +108,7 @@ export default function Step1({ setStep }: Step1Props) {
 
   // 코드 입력 (즉시 검증)
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ''); // 숫자만
+    const value = e.target.value;
     setCode(value);
     setCodeError('');
   };
@@ -161,7 +162,8 @@ export default function Step1({ setStep }: Step1Props) {
 
   const goNext = () => {
     if (!canComplete) return;
-    setStep('2'); // ✅ verify 성공 시에만 다음 단계
+    setStep('2');
+    onVerified(email);
   };
 
   return (
@@ -235,7 +237,7 @@ export default function Step1({ setStep }: Step1Props) {
                   pattern="\d{6}"
                   maxLength={6}
                   className="typo-body2-r-16 w-2/3 outline-none placeholder:text-text-100"
-                  placeholder="6자리 숫자 코드를 입력하세요"
+                  placeholder="6자리 코드를 입력하세요"
                 />
                 {isCodeValid && !isExpired && <IconCheck className="w-6 h-6" />}
               </div>

@@ -1,9 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   fetchParagraphWords,
   requestParagraphFeedback,
   submitParagraph,
 } from '@_api/Paragraph';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useParagraphWords(count = 3) {
   return useQuery({

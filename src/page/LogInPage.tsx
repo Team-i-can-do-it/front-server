@@ -16,7 +16,6 @@ export default function LogInPage() {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const setAuth = useAuthStore((s) => s.setAuth);
 
   // 유효성
   const emailValid = isValidEmailBasic(email);
@@ -51,15 +50,28 @@ export default function LogInPage() {
 
     try {
       setSubmitting(true);
-      const response = await SignIn({ email: email.trim(), password });
-      if (!response) throw new Error('응답 없음');
-      setAuth(response.user, response.accessToken);
+      const { accessToken, user } = await SignIn({
+        email: email.trim(),
+        password,
+      });
 
-      navigate('/e-eum');
+      // 토큰이 헤더에만 있어도 위에서 추출되어 들어옴
+      useAuthStore.getState().setAuth(user ?? null, accessToken ?? null);
+
       toast('로그인이 성공적으로 완료되었습니다.', 'success');
-      return;
-    } catch (err) {
-      toast('로그인에 실패하였습니다', 'error');
+      navigate('/e-eum');
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message;
+
+      if (status === 400) {
+        // 서버가 메시지 내려주면 그대로 노출
+        toast(msg || '이메일 또는 비밀번호를 확인해 주세요.', 'error');
+      } else if (status === 401) {
+        toast('이메일 또는 비밀번호가 올바르지 않아요.', 'error');
+      } else {
+        toast('로그인에 실패하였습니다.', 'error');
+      }
       console.error(err);
     } finally {
       setSubmitting(false);

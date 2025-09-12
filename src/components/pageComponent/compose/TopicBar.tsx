@@ -1,22 +1,16 @@
 import type { CategoryType } from '@_api/TopicApiClient';
-import { fetchTopicHintByCategory } from '@_api/Topics';
 import { useToast } from '@_hooks/useToast';
 import { useTopicBar } from '@_hooks/useTopicBar';
-//import { useTopicCategory } from '@_hooks/useTopicCategories';
 import iconRetry from '@_icons/common/icon-retry.svg';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function TopicBar() {
   const toast = useToast();
 
   const { id: categoryIdParam } = useParams<{ id: CategoryType }>();
+  const categoryId = categoryIdParam as CategoryType | undefined;
 
-  // topicBarData
-  //const { data: categoryData } = useTopicCategory(categoryIdParam!);
-
-  const categoryId = categoryIdParam ?? '';
   if (!categoryId) {
     return (
       <section className="px-6 py-3 border-b border-b-border-25">
@@ -30,22 +24,14 @@ export default function TopicBar() {
     );
   }
 
-  const {
-    category,
-    categoryLoading,
-    categoryError,
-    topic,
-    topicLoading,
-    topicError,
-    canShowHint,
-    changeTopic,
-  } = useTopicBar(categoryId);
+  const { topic, topicLoading, topicError, canShowHint, changeTopic } =
+    useTopicBar(categoryId);
 
-  const categoryText = categoryLoading
-    ? '로딩 중...'
-    : categoryError
-    ? '카테고리를 불러올 수 없습니다'
-    : category?.title ?? '카테고리가 없습니다';
+  const titleText = topicLoading
+    ? '주제 불러오는 중...'
+    : topicError
+    ? '주제를 불러올 수 없습니다'
+    : topic?.topic ?? '주제가 없습니다';
 
   const topicText = topicLoading
     ? '주제 불러오는 중...'
@@ -54,53 +40,26 @@ export default function TopicBar() {
     : topic?.title ?? '주제가 없습니다';
 
   // 힌트 있는지 없는지, 확인
-  const hasHint = (data?: { content?: string }) =>
-    !!data?.content && data.content.trim().length > 0;
+  const hintText = useMemo(
+    () => (topic?.description ?? '').trim(),
+    [topic?.description],
+  );
+  const hasHint = hintText.length > 0;
 
   // 힌트 토글 상태
   const [hintOpen, setHintOpen] = useState(false);
-  const {
-    data: hintData,
-    isFetching: hintLoading,
-    isError: hintError,
-    refetch: refetchHint,
-  } = useQuery({
-    queryKey: ['topic.hint', categoryId],
-    queryFn: () => fetchTopicHintByCategory(categoryId),
-    enabled: false,
-    staleTime: 5 * 60 * 1000,
-  });
 
   useEffect(() => {
     setHintOpen(false);
-  }, [categoryId, topic?.id]);
+  }, [categoryId, topicText]);
 
-  const onClickHint = async () => {
-    if (!canShowHint) return;
-
-    // 힌트 오픈시만 fetch
-    if (!hintData && !hintOpen) {
-      const { data, error } = await refetchHint({ throwOnError: false });
-      if (error) {
-        toast('힌트를 불러올 수 없습니다.', 'error');
-        return;
-      }
-      if (!hasHint(data)) {
-        toast('해당 주제의 힌트가 없어요.', 'info');
-        return;
-      }
-      setHintOpen(true);
+  const onClickHint = () => {
+    if (!canShowHint) return; // random 카테고리면 차단
+    if (!hasHint) {
+      toast('해당 주제의 힌트가 없어요.', 'info');
       return;
     }
-    if (!hintOpen) {
-      if (!hasHint(hintData)) {
-        toast('해당 주제의 힌트가 아직 없어요.', 'info');
-        return;
-      }
-      setHintOpen(true);
-    } else {
-      setHintOpen(false);
-    }
+    setHintOpen((v) => !v);
   };
 
   //말풍선 효과
@@ -120,16 +79,11 @@ export default function TopicBar() {
     }
   }, [hintOpen]);
 
-  // 카테고리/토픽 바뀌면 닫기
-  useEffect(() => {
-    setHintOpen(false);
-  }, [categoryId, topic?.id]);
-
   return (
     <section className="flex flex-col justify-between px-6 py-3 gap-12 border-b border-b-border-25">
       <div className="flex flex-col gap-1">
-        <p className="typo-label1-r-15 text-gray-500">{categoryText}</p>
-        <h3 className="typo-h3-sb-18">{topicText}</h3>
+        <p className="typo-label1-r-15 text-gray-500">{topicText}</p>
+        <h3 className="typo-h3-sb-18">{titleText}</h3>
       </div>
 
       <div className="flex justify-between items-center">
@@ -139,7 +93,6 @@ export default function TopicBar() {
               type="button"
               onClick={onClickHint}
               aria-expanded={hintOpen}
-              disabled={hintLoading}
               className={[
                 'typo-body2-r-16 cursor-pointer active:scale-95',
                 hintOpen
@@ -173,21 +126,9 @@ export default function TopicBar() {
                   after:top-[-13px] after:left-[10px]
                 "
                 >
-                  {hintLoading && (
-                    <p className="typo-body3-r-14 text-gray-400">
-                      힌트를 불러오는 중...
-                    </p>
-                  )}
-                  {hintError && (
-                    <p className="typo-body3-r-14 text-red-500">
-                      힌트를 불러올 수 없습니다.
-                    </p>
-                  )}
-                  {!hintLoading && !hintError && hasHint(hintData) && (
-                    <p className="typo-body3-r-14 text-gray-500 whitespace-pre-line">
-                      {hintData!.content!.trim()}
-                    </p>
-                  )}
+                  <p className="typo-body3-r-14 text-gray-500 whitespace-pre-line">
+                    {hintText}
+                  </p>
                 </div>
               </div>
             )}

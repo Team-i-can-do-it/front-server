@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import IconCheck from '@_icons/common/icon-check.svg?react';
 import { isValidEmailBasic, isValidPassword } from '@_utils/validation';
 import type { AuthRequest } from '@_api/AuthApiClient';
@@ -19,7 +19,7 @@ export default function Step2({
   loading = false,
 }: Step2Props) {
   // 에러
-  const [emailError, setEmailError] = useState('');
+
   const [passwordError, setPasswordError] = useState('');
 
   // 유효성
@@ -27,32 +27,21 @@ export default function Step2({
   const emailValid = isValidEmailBasic(signUpData.email);
   const passwordValid = isValidPassword(signUpData.password);
 
+  // 이메일이 비어있거나 유효하지 않으면 Step1로 회귀 (직접 URL 진입 대비)
+  useEffect(() => {
+    if (!signUpData.email || !emailValid) {
+      setStep('1');
+    }
+  }, [signUpData.email, emailValid, setStep]);
+
   const canSubmit = useMemo(
     () => nameValid && emailValid && passwordValid,
     [nameValid, emailValid, passwordValid],
   );
 
-  // 핸들러
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = e.target.value;
-
-    setSignUpData((prev: AuthRequest) => ({
-      ...prev,
-      email: v,
-    }));
-
-    setEmailError(
-      v && !isValidEmailBasic(v) ? '올바른 이메일 형식을 입력해 주세요.' : '',
-    );
-  };
-
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
-    setSignUpData((prev: AuthRequest) => ({
-      ...prev,
-      password: v,
-    }));
-
+    setSignUpData((prev) => ({ ...prev, password: v }));
     setPasswordError(
       v && !isValidPassword(v)
         ? '비밀번호는 8자 이상이고 특수문자 1개 이상을 포함해야 해요.'
@@ -95,22 +84,24 @@ export default function Step2({
 
           {/* 아이디(이메일) */}
           <div className="flex flex-col gap-3">
-            <p className="typo-label2-r-14 text-700">아이디</p>
+            <p className="typo-label2-r-14 text-700">아이디(이메일)</p>
             <div className="flex items-center justify-between border-b-2 border-gray-100 pb-2">
               <input
                 value={signUpData.email}
-                type="email"
-                onChange={handleEmailChange}
-                className="typo-body2-r-16 w-2/3 outline-none placeholder:text-text-100"
-                placeholder="abc@gmail.com"
+                readOnly
+                className="typo-body2-r-16 w-2/3 outline-none text-text-500"
               />
-              {emailValid && <IconCheck className="w-6 h-6" />}
+              <span className="typo-label4-m-12 text-brand-violet-500">
+                인증 완료
+              </span>
             </div>
-            {emailError && (
-              <p className="text-status-danger typo-label4-m-12 mt-1">
-                {emailError}
-              </p>
-            )}
+            <button
+              type="button"
+              className="self-end typo-label4-m-12 text-text-300 hover:underline mt-1 cursor-pointer"
+              onClick={() => setStep('1')}
+            >
+              이메일 변경/재인증
+            </button>
           </div>
 
           {/* 비밀번호 */}

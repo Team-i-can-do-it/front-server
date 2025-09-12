@@ -16,6 +16,11 @@ export default function SignUpPage() {
     password: '',
   });
 
+  const handleVerified = (email: string) => {
+    setSignUpData((prev) => ({ ...prev, email }));
+    setStep('2');
+  };
+
   const submitSignUp = async () => {
     try {
       setLoading(true);
@@ -39,6 +44,9 @@ export default function SignUpPage() {
       setStep('3');
     } catch (e: any) {
       const status = e?.response?.status;
+      const body = e?.response?.data;
+      console.error('[JOIN error]', status, body);
+
       if (status === 409) {
         toast('이미 가입된 이메일입니다.', 'error');
       } else if (status === 400) {
@@ -54,7 +62,7 @@ export default function SignUpPage() {
   return (
     <div>
       {step === '1' ? (
-        <Step1 setStep={setStep} />
+        <Step1 setStep={setStep} onVerified={handleVerified} />
       ) : step === '2' ? (
         <Step2
           signUpData={signUpData}
