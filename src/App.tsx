@@ -1,7 +1,7 @@
 import './App.css';
 import DefaultLayout from '@_layout/DefaultLayout';
 import DesignTest from '@_page/DesignTest';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Header from '@_layout/Header';
 import BottomNav from '@_components/layout/BottomNav';
 import WelcomePage from '@_page/WelcomePage';

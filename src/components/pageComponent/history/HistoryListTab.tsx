@@ -11,17 +11,17 @@ import {
 
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
-import type { HistoryListResponse, ServerResult } from '@_api/ResultAPiClient';
+import type { HistoryListResponse, AnswerResult } from '@_api/ResultAPiClient';
 
 type HistoryListTabProps = { type: 'topic' | 'paragraph' };
 
-const toCardVM = (it: ServerResult): HistoryCardVM => ({
-  id: it.id,
-  title: it.topic ?? '제목 없음',
-  preview: it.result?.overall_feedback ?? it.text ?? '',
+const toCardVM = (it: AnswerResult): HistoryCardVM => ({
+  id: String(it.id),
+  title: it.topic || '제목 없음',
+  preview: it.feedback.overall_feedback || it.content || '',
   createdAt: it.createdAt,
-  score: it.result?.overall_score ?? 0,
-  mbti: it.result?.mbti ?? {
+  score: it.feedback.overall_score ?? 0,
+  mbti: it.feedback.mbtiScore ?? {
     expression_style: 0,
     content_format: 0,
     tone_of_voice: 0,
