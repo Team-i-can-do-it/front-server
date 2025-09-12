@@ -78,7 +78,7 @@ export default function SentenceTopicBar({
       {/* 태그 들어가는 곳 */}
       <div className="flex items-center gap-2 flex-wrap min-h-8">
         <div className="w-full flex gap-3">
-          {displayedWords.map((word) => (
+          {displayedWords.map((word: string) => (
             <VioletTag
               key={word}
               label={word}
