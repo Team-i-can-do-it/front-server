@@ -1,5 +1,5 @@
 import { GetTopicCategory, type CategoryType } from '@_api/TopicApiClient';
-import type { TopicCategory } from '@_api/topics';
+import type { TopicCategory } from '@_api/Topics';
 
 import { useQuery } from '@tanstack/react-query';
 

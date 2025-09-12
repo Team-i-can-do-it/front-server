@@ -3,7 +3,7 @@ import HistoryCard, {
   type HistoryCardVM,
 } from '@_components/pageComponent/history/HistoryCard';
 import { useHistoryInfinite } from '@_hooks/useHistory';
-import type { ServerResult, HistoryListResponse } from '@_api/result';
+import type { ServerResult, HistoryListResponse } from '@_api/Result';
 import {
   MOCK_TOPICS,
   TOPIC_GRAPHIC_ICON_MAP,

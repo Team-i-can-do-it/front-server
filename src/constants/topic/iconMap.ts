@@ -6,7 +6,7 @@ import imagination from '@_icons/graphics/imagination.svg';
 import society from '@_icons/graphics/society.svg';
 import tech from '@_icons/graphics/technology.svg';
 import philosophy from '@_icons/graphics/philosophy.svg';
-import type { TopicCategory } from '@_api/topics';
+import type { TopicCategory } from '@_api/Topics';
 
 export const TOPIC_GRAPHIC_ICON_MAP: Record<string, string> = {
   balance,

@@ -4,6 +4,7 @@ import IconCheck from '@_icons/common/icon-check.svg?react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
 import { SignIn } from '@_api/AuthApiClient';
+import { useAuthStore } from '@_store/authStore';
 
 export default function LogInPage() {
   const [email, setEmail] = useState('');
@@ -15,6 +16,7 @@ export default function LogInPage() {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const setAuth = useAuthStore((s) => s.setAuth);
 
   // 유효성
   const emailValid = isValidEmailBasic(email);
@@ -49,7 +51,9 @@ export default function LogInPage() {
 
     try {
       setSubmitting(true);
-      await SignIn({ email: email.trim(), password });
+      const response = await SignIn({ email: email.trim(), password });
+      if (!response) throw new Error('응답 없음');
+      setAuth(response.user, response.accessToken);
 
       navigate('/e-eum');
       toast('로그인이 성공적으로 완료되었습니다.', 'success');

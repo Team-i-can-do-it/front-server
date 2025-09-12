@@ -5,7 +5,7 @@ import {
   fetchTopicCategory,
   type TopicCategory,
   type TopicItem,
-} from '@_api/topics';
+} from '@_api/Topics';
 
 export function useTopicBar(categoryId: string) {
   const [nonce, setNonce] = useState(0);

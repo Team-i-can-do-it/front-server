@@ -11,12 +11,12 @@ export default function WelcomePage() {
   const navigate = useNavigate();
   const handleNaverLogin = () =>
     (window.location.href =
-      'http://15.164.61.78/api/v1/login/oauth2/code/naver');
-  // http://15.164.61.78/api/v1/login/oauth2/code/naver
-  const handleGoogleLogin = () => {
-    console.log('구글 로그인 버튼 클릭');
-    navigate('/e-eum');
-  };
+      'https://api.e-eum.site/api/v1/oauth2/authorization/naver');
+
+  const handleGoogleLogin = () =>
+    (window.location.href =
+      'https://api.e-eum.site/api/v1/oauth2/authorization/google');
+
   const handleEmailLogin = () => {
     navigate('/logInPage');
   };

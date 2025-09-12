@@ -7,7 +7,8 @@ type Step2Props = {
   setStep: React.Dispatch<React.SetStateAction<'1' | '2' | '3'>>;
   signUpData: AuthRequest;
   setSignUpData: React.Dispatch<React.SetStateAction<AuthRequest>>;
-  submitSignUp: () => void;
+  submitSignUp: () => Promise<void>;
+  loading?: boolean;
 };
 
 export default function Step2({
@@ -15,6 +16,7 @@ export default function Step2({
   signUpData,
   setSignUpData,
   submitSignUp,
+  loading = false,
 }: Step2Props) {
   // 에러
   const [emailError, setEmailError] = useState('');
@@ -56,6 +58,12 @@ export default function Step2({
         ? '비밀번호는 8자 이상이고 특수문자 1개 이상을 포함해야 해요.'
         : '',
     );
+  };
+
+  const handleComplete = async () => {
+    if (!canSubmit || loading) return;
+    await submitSignUp();
+    setStep('3');
   };
 
   return (
@@ -130,11 +138,8 @@ export default function Step2({
       {/* 하단 고정 버튼 */}
       <div className="fixed bottom-0 z-50 w-[min(100vw,var(--mobile-w))] px-6 pb-10 py-3 bg-white border-t border-border-25">
         <button
-          disabled={!canSubmit}
-          onClick={() => {
-            setStep('3');
-            submitSignUp();
-          }}
+          disabled={!canSubmit || loading}
+          onClick={handleComplete}
           className={[
             'w-full typo-button-b-16 py-3 rounded-xl cursor-pointer transition-colors duration-200 ease-out',
             canSubmit
@@ -142,7 +147,7 @@ export default function Step2({
               : 'bg-material-dimmed text-white opacity-50 cursor-not-allowed',
           ].join(' ')}
         >
-          완료
+          {loading ? '가입 중...' : '완료'}
         </button>
       </div>
     </main>

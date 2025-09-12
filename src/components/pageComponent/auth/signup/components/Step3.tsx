@@ -23,7 +23,7 @@ export default function Step3({ name }: Step3Props) {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      navigate('/e-eum', { replace: true });
+      navigate('/welcome', { replace: true });
     }, 3000);
     return () => clearTimeout(t);
   }, [navigate]);
