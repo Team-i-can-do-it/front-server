@@ -16,10 +16,6 @@ export default function SignUpPage() {
     password: '',
   });
 
-  const onChangeSignUpData = (patch: Partial<AuthRequest>) => {
-    setSignUpData((prev) => ({ ...prev, ...patch }));
-  };
-
   const submitSignUp = async () => {
     try {
       setLoading(true);
@@ -58,7 +54,7 @@ export default function SignUpPage() {
   return (
     <div>
       {step === '1' ? (
-        <Step1 setStep={setStep} onChangeSignUpData={onChangeSignUpData} />
+        <Step1 setStep={setStep} />
       ) : step === '2' ? (
         <Step2
           signUpData={signUpData}
