@@ -3,7 +3,7 @@ import {
   fetchParagraphWords,
   requestParagraphFeedback,
   submitParagraph,
-} from '@_api/paragraph';
+} from '@_api/Paragraph';
 
 export function useParagraphWords(count = 3) {
   return useQuery({

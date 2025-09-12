@@ -1,5 +1,5 @@
 import type { CategoryType } from '@_api/TopicApiClient';
-import { fetchTopicHintByCategory } from '@_api/topics';
+import { fetchTopicHintByCategory } from '@_api/Topics';
 import { useToast } from '@_hooks/useToast';
 import { useTopicBar } from '@_hooks/useTopicBar';
 //import { useTopicCategory } from '@_hooks/useTopicCategories';

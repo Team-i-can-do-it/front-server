@@ -1,37 +1,52 @@
 import axios, { type AxiosInstance } from 'axios';
+import { useAuthStore } from '@_store/authStore';
 
-//const baseURL = import.meta.env.VITE_API_BASE_URL;
+// 외않돼
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const ApiClient: AxiosInstance = axios.create({
-  // baseURL,
-  // headers: {
-  //   Accept: 'application/json',
-  //   'Content-Type': 'application/json',
-  //   'X-Requested-With': 'XMLHttpRequest',
-  // },
+  baseURL,
+  withCredentials: true,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+  },
 });
 
 // 요청 인터셉터
 ApiClient.interceptors.request.use(
   (config) => {
-    // TODO: 백엔드에서 토큰 정책이 결정되면 작업 필요
-    // const token = token
-    // if (token) {
-    //   config.headers.Authorization = Bearer ${token}
-    // }
+    const token = useAuthStore.getState().accessToken;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => Promise.reject(error),
 );
 
+// 응답 인터셉터 401 → refresh 시도 → 재시도
 ApiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      console.error('인증되지 않았습니다. - 401 STATUS');
-
-      // TODO: refreshToken API 나오면 적용
-      return null;
+  async (error) => {
+    const original = error.config as any;
+    if (error.response?.status === 401 && !original?._retry) {
+      original._retry = true;
+      try {
+        // 서버가 /auth/refresh에서 새 accessToken을 JSON으로 반환한다고 가정
+        const { data } = await axios.post<{ accessToken: string; user?: any }>(
+          '/api/auth/refresh',
+          null,
+          { withCredentials: true },
+        );
+        useAuthStore
+          .getState()
+          .setAuth(data.user ?? useAuthStore.getState().user, data.accessToken);
+        original.headers = original.headers || {};
+        original.headers.Authorization = `Bearer ${data.accessToken}`;
+        return ApiClient.request(original);
+      } catch (e) {
+        useAuthStore.getState().clear();
+      }
     }
     return Promise.reject(error);
   },

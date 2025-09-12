@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSTT } from '@_hooks/useSTT';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
-import { createAnswer } from '@_api/answers';
+import { createAnswer } from '@_api/Answers';
 import { useConfirmExitHandlers } from '@_hooks/useExitConfirm';
 import Header from '@_components/layout/Header';
 import LoadingPage from './LoadingPage';

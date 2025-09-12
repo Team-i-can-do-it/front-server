@@ -1,20 +1,23 @@
 import { useToast } from '@_hooks/useToast';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import IconCheck from '@_icons/common/icon-check.svg?react';
-import type { AuthRequest } from '@_api/AuthApiClient';
+import { requestEmailCode, verifyEmailCode } from '@_api/MailApiClient';
 
 interface Step1Props {
   setStep: React.Dispatch<React.SetStateAction<'1' | '2' | '3'>>;
-  onChangeSignUpData: (request: AuthRequest) => void;
 }
 
 export default function Step1({ setStep }: Step1Props) {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
+
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeValid, setIsCodeValid] = useState(false);
+
   const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+
   const [emailError, setEmailError] = useState('');
   const [codeError, setCodeError] = useState('');
 
@@ -35,6 +38,7 @@ export default function Step1({ setStep }: Step1Props) {
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft]);
+
   useEffect(() => {
     if (isExpired) {
       setIsCodeValid(false);
@@ -42,37 +46,48 @@ export default function Step1({ setStep }: Step1Props) {
     }
   }, [isExpired]);
 
-  const handleSendCode = useCallback(() => {
+  const handleSendCode = useCallback(async () => {
     if (sending) return;
     setSending(true);
 
-    if (!email) {
-      toast('이메일을 입력해 주세요.', 'error');
+    try {
+      if (!email) {
+        toast('이메일을 입력해 주세요.', 'error');
+        setSending(false);
+        return;
+      }
+      if (!isValidEmailBasic(email)) {
+        setEmailError('올바른 이메일 형식이 아닙니다');
+        toast('올바른 이메일 형식이 아닙니다.', 'error');
+        setSending(false);
+        return;
+      }
+
+      await requestEmailCode(email);
+
+      // 성공 플로우
+      toast('메일이 성공적으로 전송되었습니다.', 'success');
+      // TODO: 서버 API 호출 (POST /auth/send-code)
+      console.log('이메일:', email);
+
+      setIsCodeSent(true);
+      setTimeLeft(180); // 3분
+      setIsCodeValid(false); // 새 전송 시 초기화
+      setCode('');
+      setCodeError('');
+      // UX: 전송 직후 코드 입력창 포커스
+      setTimeout(() => codeInputRef.current?.focus(), 50);
+    } catch (e: any) {
+      const status = e?.response?.status;
+      if (status === 429) {
+        toast('요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.', 'error');
+      } else {
+        toast('메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.', 'error');
+      }
+      console.error(e);
+    } finally {
       setSending(false);
-      return;
     }
-    if (!isValidEmailBasic(email)) {
-      setEmailError('올바른 이메일 형식이 아닙니다');
-      toast('올바른 이메일 형식이 아닙니다.', 'error');
-      setSending(false);
-      return;
-    }
-
-    // 성공 플로우
-    toast('메일이 성공적으로 전송되었습니다.', 'success');
-    // TODO: 서버 API 호출 (POST /auth/send-code)
-    console.log('이메일:', email);
-
-    setIsCodeSent(true);
-    setTimeLeft(180); // 3분
-    setIsCodeValid(false); // 새 전송 시 초기화
-    setCode('');
-    setCodeError('');
-    // UX: 전송 직후 코드 입력창 포커스
-    setTimeout(() => codeInputRef.current?.focus(), 50);
-
-    // 재전송 디바운싱 (2초)
-    setTimeout(() => setSending(false), 2000);
   }, [email, sending, toast]);
 
   // 이메일 입력
@@ -84,35 +99,53 @@ export default function Step1({ setStep }: Step1Props) {
         ? '이메일에 @와 .이 포함되어야 해요.'
         : '',
     );
+    // 이메일 바뀌면 상태 초기화
+    setIsCodeValid(false);
+    setCode('');
+    setCodeError('');
   };
 
   // 코드 입력 (즉시 검증)
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ''); // 숫자만 허용
+    const value = e.target.value.replace(/\D/g, ''); // 숫자만
     setCode(value);
-
-    if (isExpired) {
-      setIsCodeValid(false);
-      setCodeError('인증코드가 만료되었습니다. 재인증 해주세요.');
-      return;
-    }
-
-    if (!value) {
-      setIsCodeValid(false);
-      setCodeError('');
-      return;
-    }
-
-    if (!isValidCode(value)) {
-      setIsCodeValid(false);
-      setCodeError('올바른 코드를 입력해주세요.');
-      return;
-    }
-
-    // TODO: 서버 검증 API와 연결 시 여기서 verify 호출
-    setIsCodeValid(true);
     setCodeError('');
   };
+
+  useEffect(() => {
+    const run = async () => {
+      if (!isCodeSent || isExpired) return;
+      if (!isValidCode(code)) return; // 6자 아니면 무시
+      if (!isValidEmailBasic(email)) return;
+
+      try {
+        setVerifying(true);
+        const ok = await verifyEmailCode(email, code);
+        if (ok) {
+          setIsCodeValid(true);
+          setCodeError('');
+          toast('이메일 인증이 완료되었습니다.', 'success');
+        } else {
+          setIsCodeValid(false);
+          setCodeError('인증코드가 올바르지 않습니다.');
+        }
+      } catch (e: any) {
+        setIsCodeValid(false);
+        const status = e?.response?.status;
+        if (status === 400) setCodeError('인증코드가 올바르지 않습니다.');
+        else if (status === 410)
+          setCodeError('코드가 만료되었습니다. 재인증 해주세요.');
+        else
+          setCodeError(
+            '인증 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+          );
+        console.error(e);
+      } finally {
+        setVerifying(false);
+      }
+    };
+    run();
+  }, [code, email, isCodeSent, isExpired, toast]);
 
   // mm:ss 포맷
   const formatTime = (sec: number) => {
@@ -125,6 +158,11 @@ export default function Step1({ setStep }: Step1Props) {
 
   const canSend = !sending && !!email && !emailError;
   const canComplete = isCodeValid && !isExpired;
+
+  const goNext = () => {
+    if (!canComplete) return;
+    setStep('2'); // ✅ verify 성공 시에만 다음 단계
+  };
 
   return (
     <main className="mt-9">
@@ -207,6 +245,9 @@ export default function Step1({ setStep }: Step1Props) {
                   {codeError}
                 </p>
               )}
+              {verifying && (
+                <p className="typo-label4-m-12 text-text-500">인증 중...</p>
+              )}
             </div>
           )}
         </div>
@@ -222,9 +263,9 @@ export default function Step1({ setStep }: Step1Props) {
               ? 'bg-brand-violet-500 text-white hover:bg-brand-violet-600'
               : 'bg-material-dimmed text-white opacity-50 cursor-not-allowed',
           ].join(' ')}
-          onClick={() => setStep('2')}
+          onClick={goNext}
         >
-          완료
+          {verifying ? '인증 중...' : '완료'}
         </button>
       </div>
     </main>
