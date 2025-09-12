@@ -1,0 +1,87 @@
+import backIcon from '@_icons/common/icon-back.svg';
+import closeIcon from '@_icons/common/icon-close.svg';
+import { useNavigate, type To } from 'react-router-dom';
+
+type HeaderProps = {
+  title?: string;
+  showBack?: boolean;
+  backTo?: To;
+  showClose?: boolean;
+  onBack?: () => void;
+  onClose?: () => void;
+  variant?: 'default' | 'mypage';
+};
+
+export default function Header({
+  title,
+  showBack = true,
+  showClose = false,
+  backTo = '/e-eum',
+  onBack,
+  onClose,
+  variant,
+}: HeaderProps) {
+  const navigate = useNavigate();
+
+  const defaultBack = () => {
+    const idx =
+      (window.history.state && (window.history.state as any).idx) ?? 0;
+    if (idx > 0) {
+      navigate(-1);
+    } else {
+      navigate(backTo, { replace: true });
+    }
+  };
+
+  const defaultClose = () => {
+    navigate('/e-eum', { replace: true });
+  };
+
+  const handleBack = onBack ?? defaultBack;
+  const handleClose = onClose ?? defaultClose;
+
+  return (
+    <header
+      className={`h-[var(--header-h)] flex items-center justify-between px-6 py-[9px] ${
+        variant === 'mypage' ? 'bg-bg-10' : 'bg-white'
+      }`}
+      aria-label="헤더"
+    >
+      {/* 왼쪽 */}
+
+      <div className="flex items-center justify-center">
+        {showBack ? (
+          <button
+            type="button"
+            aria-label="뒤로가기 버튼"
+            onClick={handleBack}
+            className="hover:bg-gray-50 h-6 w-6 rounded-lg active:scale-95 transition cursor-pointer
+            "
+          >
+            <img src={backIcon} alt="뒤로가기 버튼" className="h-6 w-6" />
+          </button>
+        ) : null}
+      </div>
+      {/* 가운데 */}
+      <div className="flex-1 min-w-0 text-center">
+        {title ? (
+          <h1 className="truncate typo-h4-sb-18 text-700">{title}</h1>
+        ) : null}
+      </div>
+
+      {/* 오른쪽 */}
+      <div className="w-10 h-10 -mr-1 flex items-center justify-center">
+        {showClose ? (
+          <button
+            type="button"
+            aria-label="닫기 버튼"
+            onClick={handleClose}
+            className="hover:bg-gray-50 h-6 w-6 rounded-lg active:scale-95 transition cursor-pointer"
+          >
+            <img src={closeIcon} alt="닫기 버튼" className="h-6 w-6" />
+          </button>
+        ) : null}
+      </div>
+    </header>
+  );
+}

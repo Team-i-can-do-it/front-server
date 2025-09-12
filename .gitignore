@@ -31,3 +31,4 @@ dist-ssr
 
 # OS specific files
 Thumbs.db
+.vercel

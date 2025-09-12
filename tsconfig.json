@@ -3,5 +3,24 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@_icons/*": ["src/assets/icons/*"],
+      "@_api/*": ["src/api/*"],
+      "@_types/*": ["src/types/*"],
+      "@_components/*": ["src/components/*"],
+      "@_page/*": ["src/page/*"],
+      "@_layout/*": ["src/components/layout/*"],
+      "@_pageComponent/*": ["src/components/pageComponent/*"],
+      "@_store/*": ["src/store/*"],
+      "@_common/*": ["src/components/common/*"],
+      "@_hooks/*": ["src/hooks/*"],
+      "@_characters/*": ["src/assets/characters/*"],
+      "@_utils/*": ["src/utils/*"],
+      "@_images/*": ["src/assets/images/*"]
+    }
+  }
 }
