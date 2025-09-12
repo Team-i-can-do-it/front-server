@@ -1,6 +1,7 @@
 import axios, { type AxiosInstance } from 'axios';
 import { useAuthStore } from '@_store/authStore';
 
+// 외않돼
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const ApiClient: AxiosInstance = axios.create({
