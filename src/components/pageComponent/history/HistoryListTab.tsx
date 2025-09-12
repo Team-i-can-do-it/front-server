@@ -3,7 +3,7 @@ import HistoryCard, {
   type HistoryCardVM,
 } from '@_components/pageComponent/history/HistoryCard';
 import { useHistoryInfinite } from '@_hooks/useHistory';
-import type { ServerResult, HistoryListResponse } from '@_api/Result';
+
 import {
   MOCK_TOPICS,
   TOPIC_GRAPHIC_ICON_MAP,
@@ -11,6 +11,7 @@ import {
 
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
+import type { HistoryListResponse, ServerResult } from '@_api/Result';
 
 type HistoryListTabProps = { type: 'topic' | 'paragraph' };
 

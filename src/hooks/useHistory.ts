@@ -1,15 +1,15 @@
 import {
-  useInfiniteQuery,
-  useQuery,
-  type InfiniteData,
-  type QueryKey,
-} from '@tanstack/react-query';
-import {
   fetchDailyScores,
   fetchHistoryList,
   fetchMonthlyAvg,
   type HistoryListResponse,
 } from '@_api/Result';
+import {
+  useInfiniteQuery,
+  useQuery,
+  type InfiniteData,
+  type QueryKey,
+} from '@tanstack/react-query';
 
 export function useMonthlyAvg(type: 'topic' | 'paragraph', year: number) {
   return useQuery({
