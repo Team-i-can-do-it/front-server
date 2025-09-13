@@ -2,8 +2,11 @@ import RadarChart from './analysis/RadarChart';
 import DetailCard from './analysis/DetailCard';
 import RelatedTopic from './analysis/RelatedTopic';
 import type { AnswerResult } from '@_api/ResultAPiClient';
+import { useAuthStore } from '@/store/authStore';
+import { useParams } from 'react-router-dom';
+import { useReferenceMaterials } from '@/hooks/useReferenceMaterials';
 
-type ResultAnalysisProps = { data: AnswerResult };
+type ResultAnalysisProps = { data: AnswerResult; topicId?: string };
 
 const clamp100 = (n: unknown) => {
   const v = Number(n);
@@ -11,8 +14,13 @@ const clamp100 = (n: unknown) => {
   return Math.max(0, Math.min(100, v));
 };
 
-export default function ResultAnalysis({ data }: ResultAnalysisProps) {
-  const name = '이음';
+export default function ResultAnalysis({ data, topicId }: ResultAnalysisProps) {
+  const name = useAuthStore?.((s) => s.user?.name) ?? '이음';
+
+  const params = useParams();
+  const derivedTopicId =
+    topicId || (params.id as string | undefined) || (data as any)?.topicId;
+
   const ev = data.feedback.evaluation;
 
   const labels = ['내용성', '완성도', '표현력', '명료성', '일관성'];
@@ -32,34 +40,16 @@ export default function ResultAnalysis({ data }: ResultAnalysisProps) {
     { title: '명료성', summary: ef.clarity_feedback },
     { title: '일관성', summary: ef.coherence_feedback },
   ].filter((d) => !!d.summary) as { title: string; summary: string }[];
+  // 참고 자료 api
+  const { data: refData, isLoading } = useReferenceMaterials(derivedTopicId);
 
-  const reads = [
-    ef.substance_feedback && {
-      id: `${data.id}-substance`,
-      title: '내용성 향상 가이드',
-      summary: ef.substance_feedback,
-    },
-    ef.completeness_feedback && {
-      id: `${data.id}-completeness`,
-      title: '완성도 향상 가이드',
-      summary: ef.completeness_feedback,
-    },
-    ef.expressiveness_feedback && {
-      id: `${data.id}-expressiveness`,
-      title: '표현력 향상 가이드',
-      summary: ef.expressiveness_feedback,
-    },
-    ef.clarity_feedback && {
-      id: `${data.id}-clarity`,
-      title: '명료성 향상 가이드',
-      summary: ef.clarity_feedback,
-    },
-    ef.coherence_feedback && {
-      id: `${data.id}-coherence`,
-      title: '일관성 향상 가이드',
-      summary: ef.coherence_feedback,
-    },
-  ].filter(Boolean) as { id: string; title: string; summary: string }[];
+  const reads =
+    refData?.result?.map((r, i) => ({
+      id: `${derivedTopicId ?? 'topic'}-${i}`,
+      title: r.title,
+      thumbnailUrl: r.imageUrl,
+      href: r.url,
+    })) ?? [];
 
   return (
     <div className="pb-8">
@@ -75,7 +65,7 @@ export default function ResultAnalysis({ data }: ResultAnalysisProps) {
         </ul>
       </section>
 
-      <RelatedTopic items={reads} />
+      <RelatedTopic items={isLoading ? [] : reads} />
     </div>
   );
 }
