@@ -18,15 +18,15 @@ export default function WelcomePage() {
       'https://api.e-eum.site/api/v1/oauth2/authorization/google');
 
   const handleEmailLogin = () => {
-    navigate('/logInPage');
+    navigate('/signin');
   };
   const handleSignUp = () => {
-    navigate('/siginUpPage');
+    navigate('/signup');
   };
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [d1] = await Promise.all([import('@_characters/dog.json')]);
+      const [d1] = await Promise.all([import('@_characters/mbti1.json')]);
       if (!alive) return;
       setDog1(d1.default);
     })();

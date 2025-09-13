@@ -1,7 +1,7 @@
 import './App.css';
 import DefaultLayout from '@_layout/DefaultLayout';
 import DesignTest from '@_page/DesignTest';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from '@_layout/Header';
 import BottomNav from '@_components/layout/BottomNav';
 import WelcomePage from '@_page/WelcomePage';
@@ -24,11 +24,14 @@ import MyMBTI from '@_pageComponent/mypage/MyMBTI';
 import MyPoint from '@_pageComponent/mypage/MyPoint';
 import SignUpPage from '@_page/SignUpPage';
 import LogInPage from '@_page/LogInPage';
+import ProtectedRoute from '@_routes/ProtectedRoute';
 
 function App() {
   return (
     <>
       <Routes>
+        <Route path="/" element={<Navigate to="/welcome" replace />} />
+
         {/* 헤더/네비 x 페이지 */}
         <Route element={<DefaultLayout />}>
           <Route path="/welcome" element={<WelcomePage />} />
@@ -36,8 +39,14 @@ function App() {
 
         {/* 네비 x 헤더 x, 취소 버튼 o 뒤로 가기 o  */}
         <Route element={<DefaultLayout noPadding />}>
-          <Route path="/compose/topic/:id" element={<ComposePage />} />
-          <Route path="/paragraph" element={<ParagraphPage />} />
+          <Route
+            path="/compose/topic/:id"
+            element={<ProtectedRoute element={<ComposePage />} />}
+          />
+          <Route
+            path="/paragraph"
+            element={<ProtectedRoute element={<ParagraphPage />} />}
+          />
         </Route>
 
         {/* 네비 x, 헤더에 취소 버튼 있는 페이지 */}
@@ -46,26 +55,38 @@ function App() {
             <DefaultLayout noPadding header={<Header showBack showClose />} />
           }
         >
-          <Route path="/result" element={<ResultPage />} />
+          <Route
+            path="/result"
+            element={<ProtectedRoute element={<ResultPage />} />}
+          />
         </Route>
 
         {/* 네비 x 헤더 o 뒤로가기 o 취소 x 패딩 O */}
         <Route
           element={<DefaultLayout noPadding header={<Header showBack />} />}
         >
-          <Route path="/siginUpPage" element={<SignUpPage />} />
-          <Route path="/logInPage" element={<LogInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<LogInPage />} />
         </Route>
 
         {/* 헤더만 있는 페이지 (네비 패딩 x) */}
         <Route element={<DefaultLayout noPadding header={<Header />} />}>
-          <Route path="/compose/topicSelect" element={<TopicSelectPage />} />
-          <Route path="/gacha/:id" element={<ProductDetails />} />
+          <Route
+            path="/compose/topicSelect"
+            element={<ProtectedRoute element={<TopicSelectPage />} />}
+          />
+          <Route
+            path="/gacha/:id"
+            element={<ProtectedRoute element={<ProductDetails />} />}
+          />
         </Route>
 
         {/* 네비만 있는 페이지 */}
         <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
-          <Route path="/e-eum" element={<HomePage />} />
+          <Route
+            path="/e-eum"
+            element={<ProtectedRoute element={<HomePage />} />}
+          />
         </Route>
 
         {/* 헤더+네비 패딩 뒤로가기, 취소 버튼 있는 그룹 */}
@@ -90,7 +111,10 @@ function App() {
             />
           }
         >
-          <Route path="/history" element={<HistoryPage />} />
+          <Route
+            path="/history"
+            element={<ProtectedRoute element={<HistoryPage />} />}
+          />
         </Route>
         <Route
           element={
@@ -101,7 +125,10 @@ function App() {
             />
           }
         >
-          <Route path="/myPage" element={<MypagePage />} />
+          <Route
+            path="/mypage"
+            element={<ProtectedRoute element={<MypagePage />} />}
+          />
         </Route>
 
         {/* 헤더 o 네비 o 뒤로가기 o 취소 x 패딩 o */}
@@ -115,7 +142,10 @@ function App() {
         >
           <Route path="/gacha" element={<GachaPage />} />
 
-          <Route path="/mypage/mypoint" element={<MyPoint />} />
+          <Route
+            path="/mypage/mypoint"
+            element={<ProtectedRoute element={<MyPoint />} />}
+          />
         </Route>
 
         {/* 헤더에 이름 */}
@@ -127,7 +157,10 @@ function App() {
             />
           }
         >
-          <Route path="/mypage/purchase" element={<MyPurchaseHistory />} />
+          <Route
+            path="/mypage/purchase"
+            element={<ProtectedRoute element={<MyPurchaseHistory />} />}
+          />
         </Route>
         <Route
           element={
@@ -137,7 +170,10 @@ function App() {
             />
           }
         >
-          <Route path="/mypage/mbti" element={<MyMBTI />} />
+          <Route
+            path="/mypage/mbti"
+            element={<ProtectedRoute element={<MyMBTI />} />}
+          />
         </Route>
         {/* --------------------------------------------------------------- */}
 
@@ -149,7 +185,10 @@ function App() {
           <Route path="/loading" element={<LoadingPage />} />
         </Route>
         {/* 어드민 페이지 */}
-        <Route path="/admin" element={<AdminPage />} />
+        <Route
+          path="/admin"
+          element={<ProtectedRoute element={<AdminPage />} />}
+        />
       </Routes>
       <ModalProvider />
       <ToastProvider />

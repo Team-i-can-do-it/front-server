@@ -12,7 +12,7 @@ export default function Step3({ name }: Step3Props) {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const mod = await import('@_characters/dog.json');
+      const mod = await import('@_characters/mbti1.json');
       if (!alive) return;
       setDog(mod.default);
     })();

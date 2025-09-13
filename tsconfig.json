@@ -20,7 +20,9 @@
       "@_hooks/*": ["src/hooks/*"],
       "@_characters/*": ["src/assets/characters/*"],
       "@_utils/*": ["src/utils/*"],
-      "@_images/*": ["src/assets/images/*"]
+      "@_images/*": ["src/assets/images/*"],
+      "@_routes/*": ["src/routes/*"],
+      "@_constants/*": ["src/constants/*"]
     }
   }
 }
