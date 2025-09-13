@@ -60,11 +60,13 @@ export default function ResultSummary({ data }: ResultSummaryProps) {
   return (
     <section className="space-y-6">
       <ScoreCard score={score} />
+
       <MbtiCard
         lottieData={lottieData}
         mbitName={persona.title}
         summary={summary}
       />
+
       <MbtiTagCard tags={tags} axes={axes} />
     </section>
   );

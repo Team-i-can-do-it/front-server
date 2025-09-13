@@ -2,6 +2,7 @@ import './App.css';
 import DefaultLayout from '@_layout/DefaultLayout';
 import DesignTest from '@_page/DesignTest';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Header from '@_layout/Header';
 import BottomNav from '@_components/layout/BottomNav';
 import WelcomePage from '@_page/WelcomePage';
@@ -24,6 +25,7 @@ import MyMBTI from '@_pageComponent/mypage/MyMBTI';
 import MyPoint from '@_pageComponent/mypage/MyPoint';
 import SignUpPage from '@_page/SignUpPage';
 import LogInPage from '@_page/LogInPage';
+
 import ProtectedRoute from '@_routes/ProtectedRoute';
 
 function App() {
@@ -185,6 +187,7 @@ function App() {
           <Route path="/loading" element={<LoadingPage />} />
         </Route>
         {/* 어드민 페이지 */}
+
         <Route
           path="/admin"
           element={<ProtectedRoute element={<AdminPage />} />}

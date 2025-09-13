@@ -27,6 +27,7 @@ export default function WelcomePage() {
     let alive = true;
     (async () => {
       const [d1] = await Promise.all([import('@_characters/mbti1.json')]);
+
       if (!alive) return;
       setDog1(d1.default);
     })();
