@@ -1,56 +1,76 @@
 import VioletTag from '@_components/common/Tag';
 import { getDDay } from '@_utils/productUtils';
 import { isSoldout } from '@_utils/productUtils';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import BottomSheet from './BottomSheet';
 import useModalStore from '@_store/dialogStore';
 import { useToast } from '@_hooks/useToast';
+import { useAuthStore } from '@_store/authStore';
 
-const products = [
-  {
-    id: 1,
-    product_name: 'CU 모바일 상품권',
-    brand_name: 'CU',
-    discount: 10,
-    price: 2000,
-    img: '/images/gacha.svg',
-    expireDate: '2025-09-15',
-    status: 'active' as const,
-    count: 10,
-  },
-  {
-    id: 2,
-    product_name: '올리브영 모바일 상품권',
-    brand_name: '올리브영',
-    discount: 10,
-    price: 3000,
-    img: '/images/gacha.svg',
-    expireDate: '2025-09-30',
-    status: 'soldout' as const,
-    count: 10,
-  },
-  {
-    id: 3,
-    product_name: '도서문화상품권',
-    brand_name: '북앤라이프',
-    discount: 10,
-    price: 4000,
-    img: '/images/gacha.svg',
-    expireDate: '2025-09-12',
-    status: 'active' as const,
-    count: 10,
-  },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getGachaItem, type GachaDetail } from '@_api/GachaApiClient';
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const product = products.find((p) => p.id === Number(id));
-  if (!product) return <p className="p-6">상품을 찾을 수 없습니다.</p>;
+  const navigate = useNavigate();
+  const toast = useToast();
+  const clearAuth = useAuthStore((s) => s.clear);
+
+  const { data, isLoading, isError, error } = useQuery<GachaDetail>({
+    queryKey: ['point-shop', 'detail', id ?? ''],
+    queryFn: () => getGachaItem(id as string),
+    enabled: !!id,
+    staleTime: 60_000,
+    retry: 1,
+  });
+
+  const product = useMemo(() => {
+    if (!data || Object.keys(data).length === 0) return null;
+    return {
+      id: data.id,
+      product_name: data.name,
+      brand_name: data.brandName ?? '',
+      discount: data.discount ?? 0,
+      price: data.point,
+      img: data.imageUrl || '/images/gacha.svg',
+      expireDate: data.expireDate ?? '',
+      status:
+        (data.quantity ?? 0) > 0 ? ('active' as const) : ('soldout' as const),
+      count: data.quantity ?? 0,
+    };
+  }, [data]);
+
+  const [open, setOpen] = useState(false);
+
+  if (isLoading) {
+    return (
+      <main className="p-6">
+        <div className="h-40 bg-bg-10 animate-pulse rounded mb-4" />
+        <div className="h-6 w-28 bg-bg-10 animate-pulse rounded mb-2" />
+        <div className="h-6 w-40 bg-bg-10 animate-pulse rounded mb-2" />
+        <div className="h-10 w-56 bg-bg-10 animate-pulse rounded" />
+      </main>
+    );
+  }
+  if (isError) {
+    // @ts-ignore axios error guard
+    const status = error?.response?.status;
+    if (status === 401) {
+      clearAuth();
+      navigate('/welcome', { replace: true });
+      toast('로그인이 필요합니다.', 'error');
+      return null;
+    }
+    return (
+      <p className="p-6 text-status-danger">상품 정보를 불러오지 못했습니다.</p>
+    );
+  }
+  if (!product) {
+    return <p className="p-6">상품을 찾을 수 없습니다.</p>;
+  }
 
   const soldout = isSoldout(product);
-  const [open, setOpen] = useState(false);
-  const toast = useToast();
 
   const openPurchaseConfirm = () => {
     useModalStore.getState().open({
@@ -59,14 +79,12 @@ export default function ProductDetails() {
         <>
           <p>
             <span className="text-brand-violet-500 font-semibold">
-              {'(내 포인트 총액)'}
-              {/* {userPoint} */}P
+              {'(내 포인트 총액)'}P
             </span>
             를 사용하여 구매하시겠어요?
           </p>
           <p className="text-gray-500">
             결제후 잔액 {'(내 포인트 총액 - 상품금액)'}
-            {/* 결제 후 잔액 {userPoint - product.price}P */}
           </p>
         </>
       ),
@@ -75,15 +93,9 @@ export default function ProductDetails() {
       confirmText: '구매하기',
       onConfirm: async () => {
         try {
-          // 👉 결제 API 호출 자리
-          // const res = await purchaseAPI(product.id);
-          const success = true; // <- 임시 성공 플래그
-
-          if (success) {
-            openPurchaseComplete();
-          } else {
-            throw new Error('결제 실패');
-          }
+          const success = true;
+          if (success) openPurchaseComplete();
+          else throw new Error('결제 실패');
         } catch (err) {
           console.error('결제 실패:', err);
           toast('결제에 실패했습니다. 다시 시도해주세요.', 'error');

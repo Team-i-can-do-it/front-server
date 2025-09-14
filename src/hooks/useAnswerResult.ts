@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAnswerResult, type AnswerResult } from '@_api/ResultAPiClient';
+import { getAnswerResult, type AnswerResult } from '@/api/ResultApiClient';
 
 export function useAnswerResult(id: string) {
   return useQuery<AnswerResult>({

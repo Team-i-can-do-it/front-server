@@ -26,6 +26,21 @@ export default function MyPoint() {
   const navigate = useNavigate();
   const toast = useToast();
 
+  const histories = useMemo(() => {
+    const raw = ptData?.histories ?? [];
+
+    const idNum = (v: unknown) => {
+      const n = typeof v === 'number' ? v : Number(v);
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    return [...raw].sort((a, b) => {
+      const byDate = toTime(b.date) - toTime(a.date);
+      if (byDate !== 0) return byDate;
+      return idNum(b.id) - idNum(a.id);
+    });
+  }, [ptData?.histories]);
+
   if (mpLoading || ptLoading) {
     return (
       <main className="pt-[18px] pb-[92px] bg-white-base">
@@ -62,20 +77,6 @@ export default function MyPoint() {
   }
 
   const myPoint = mpData?.point ?? ptData?.point ?? 0;
-  const histories = useMemo(() => {
-    const raw = ptData?.histories ?? [];
-
-    const idNum = (v: unknown) => {
-      const n = typeof v === 'number' ? v : Number(v);
-      return Number.isFinite(n) ? n : 0;
-    };
-
-    return [...raw].sort((a, b) => {
-      const byDate = toTime(b.date) - toTime(a.date);
-      if (byDate !== 0) return byDate;
-      return idNum(b.id) - idNum(a.id);
-    });
-  }, [ptData?.histories]);
 
   return (
     <main className="pt-[18px] pb-[92px] bg-white-base">

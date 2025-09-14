@@ -9,7 +9,7 @@ import {
   fetchMonthlyAvg,
   fetchHistory,
   type HistoryListPage,
-} from '@_api/ResultAPiClient';
+} from '@/api/ResultApiClient';
 
 export function useMonthlyAvg(type: 'topic' | 'paragraph', year: number) {
   return useQuery({
@@ -25,7 +25,7 @@ export function useDailyScores(
   month: number,
 ) {
   return useQuery({
-    queryKey: ['history-daily', type, year, month],
+    queryKey: ['history', 'daily', type, year, month],
     queryFn: () => fetchDailyScores({ type, year, month }),
     staleTime: 5 * 60 * 1000,
   });

@@ -10,12 +10,10 @@ export default function WelcomePage() {
 
   const navigate = useNavigate();
   const handleNaverLogin = () =>
-    (window.location.href =
-      'https://api.e-eum.site/api/v1/oauth2/authorization/naver');
+    (window.location.href = 'https://api.e-eum.site/api/v1/oauth2/code/naver');
 
   const handleGoogleLogin = () =>
-    (window.location.href =
-      'https://api.e-eum.site/api/v1/oauth2/authorization/google');
+    (window.location.href = 'https://api.e-eum.site/api/v1/oauth2/code/google');
 
   const handleEmailLogin = () => {
     navigate('/signin');
