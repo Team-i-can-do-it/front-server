@@ -123,7 +123,7 @@ export default function MyPoint() {
                     ].join(' ')}
                   >
                     {item.amount > 0 ? '+' : ''}
-                    {item.amount.toLocaleString('ko-KR')}
+                    {item.amount.toLocaleString('ko-KR')}P
                   </p>
                   <p className="typo-label2-r-14 text-text-500">{item.type}</p>
                 </div>

@@ -21,7 +21,7 @@ function hasOAuthParams(search: string, hash: string) {
 
 export default function EumGate() {
   const { search, hash } = useLocation();
-  // 쿼리/해시에 콜백 파라미터 있으면 콜백 처리, 없으면 홈
+
   return hasOAuthParams(search, hash) ? (
     <OAuthLanding />
   ) : (
