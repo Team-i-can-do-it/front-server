@@ -37,7 +37,7 @@ export const MOCK_TOPICS: TopicCategory[] = [
     active: true,
   },
   {
-    id: 'society-politics',
+    id: 'social-politics',
     title: '사회·정치',
     subtitle: '사회 이슈와 정치적 관점을 나눠 말해요.',
     iconKey: 'society',

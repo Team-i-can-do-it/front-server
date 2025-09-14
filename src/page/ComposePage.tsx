@@ -13,6 +13,7 @@ import Header from '@_components/layout/Header';
 import LoadingPage from './LoadingPage';
 import { createAnswer } from '@_api/Answers';
 import { GetTopicCategory, type CategoryType } from '@_api/TopicApiClient';
+import type { AxiosError } from 'axios';
 
 export default function ComposePage() {
   const { id } = useParams(); // "/compose/topic/:id"
@@ -113,6 +114,20 @@ export default function ComposePage() {
         console.warn('예상치 못한 응답', res);
       }
     } catch (err) {
+      const e = err as AxiosError<any>;
+      const res = e.response;
+
+      console.error('[POST /writing ERR]');
+      console.log('baseURL:', (res?.config as any)?.baseURL);
+      console.log('url:', res?.config?.url);
+      console.log('method:', (res?.config as any)?.method);
+
+      console.log('status:', res?.status);
+      console.log('resp data:', res?.data); // 서버 에러 메시지(핵심)
+      console.log('req headers:', (res?.config as any)?.headers);
+      console.log('resp headers:', res?.headers);
+      console.groupEnd();
+
       console.error('글 저장 실패:', err);
       toast('글 저장에 실패하였습니다.', 'error');
     } finally {

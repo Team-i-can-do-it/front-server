@@ -7,7 +7,7 @@ import api from '@_api/ApiClient';
 import {
   normalizeAnswerResult,
   type AnswerResult,
-} from '@_api/ResultAPiClient';
+} from '@/api/ResultApiClient';
 
 type WordsResponse<T> = {
   status: number;

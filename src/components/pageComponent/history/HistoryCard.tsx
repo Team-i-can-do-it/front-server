@@ -107,11 +107,11 @@ export default memo(function HistoryCard({
         </div>
       </header>
 
-      <p className="typo-body3-r-14 text-gray-500 line-clamp-2 mb-2 pb-2">
+      <p className="typo-body3-r-14 text-gray-500 line-clamp-2 mb-2 pb-2 overflow-hidden text-ellipsis whitespace-nowrap">
         {item.preview}
       </p>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between ">
         <p className="typo-h2-sb-20 leading-none text-brand-violet-500">
           {String(item.score).padStart(2, '0')}점
         </p>

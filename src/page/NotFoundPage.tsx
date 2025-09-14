@@ -18,7 +18,7 @@ export default function NotFoundPage() {
   }, []);
 
   const handleGoHome = () => {
-    navigate('/e-eum');
+    navigate('/welcome');
   };
 
   return (

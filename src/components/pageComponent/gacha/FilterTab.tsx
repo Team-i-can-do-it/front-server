@@ -27,7 +27,7 @@ export default function FilterTab({
         onClick={() => setOpen((prev) => !prev)}
         className="flex items-center justify-end
         text-gray-700 typo-label2-r-14
-        w-40 py-2"
+        w-40 py-2 cursor-pointer"
       >
         {label}
         <IconBottom
@@ -41,7 +41,7 @@ export default function FilterTab({
       {open && (
         <ul
           className="absolute right-0 z-10 min-w-[120px]
-         bg-white border border-border-25 rounded-lg shadow-lg"
+         bg-white border border-border-25 rounded-lg shadow-lg cursor-pointer"
         >
           {OPTIONS.map((opt, idx) => {
             // 위치 따라 rounded 설정 변경해서 ui 깨짐 해결
@@ -56,7 +56,7 @@ export default function FilterTab({
                   }}
                   className={[
                     'w-full text-left px-3 py-2 typo-label2-r-14 transition-colors',
-                    'text-gray-700 hover:bg-violet-50 hover:text-gray-900',
+                    'text-gray-700 hover:bg-violet-50 hover:text-gray-900 cursor-pointer',
                     isFirst ? 'rounded-t-lg' : '',
                     isLast ? 'rounded-b-lg' : '',
                   ].join(' ')}

@@ -1,7 +1,7 @@
 export type ProductStatus = 'active' | 'soldout';
 
 export interface Product {
-  id: number;
+  id: number | string;
   product_name: string;
   brand_name: string;
   discount: number;

@@ -48,16 +48,24 @@ export const SignIn = async (
 };
 
 export const SocialCallback = async (provider: 'google' | 'naver') => {
-  const res = await ApiClient.get(`/auth/${provider}/callback`, {
+  const url = new URL(window.location.href);
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state') ?? undefined;
+
+  const redirect_uri = `${window.location.origin}/oauth/callback/${provider}`;
+
+  const res = await ApiClient.get(`/oauth2/code/${provider}`, {
+    params: { code, redirect_uri, state },
     withCredentials: true,
   });
+
   return parseAuthResponse(res);
 };
+
 export const GetMyProfile = async (): Promise<User> => {
-  const res = await ApiClient.get('/auth/me'); // 필요시 경로 변경
+  const res = await ApiClient.get('/auth/me');
   const body = res?.data?.result ?? res?.data ?? {};
   const raw = body?.user ?? body?.member ?? body;
-  // /me 응답에는 토큰이 없을 수 있으니 claims 없이 병합
   const merged = mergeUserFromBodyAndClaims(raw, null);
   return merged;
 };
