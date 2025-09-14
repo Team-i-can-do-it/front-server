@@ -11,7 +11,7 @@ import {
 
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
-import type { AnswerResult } from '@/api/ResultApiClient';
+import type { AnswerResult } from '@_api/ResultApiClient';
 
 type HistoryListTabProps = { type: 'topic' | 'paragraph' };
 
@@ -137,6 +137,13 @@ export default function HistoryListTab({ type }: HistoryListTabProps) {
       return { ...it, iconSrc };
     });
   }, [data, type, iconKeyById]);
+
+  useEffect(() => {
+    // 첫 페이지 미리보기
+    if (data?.pages?.length) {
+      console.log('[HistoryListTab]', { type, page0: data.pages[0] });
+    }
+  }, [data, type]);
 
   // 무한스크롤
   const bottomRef = useRef<HTMLDivElement | null>(null);

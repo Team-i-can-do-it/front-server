@@ -156,31 +156,64 @@ type Path = '/writing' | '/paragraph-completion';
 
 async function getPageFlex(
   path: Path,
-  page: number, // 0-based (프론트)
+  page: number,
   pageSize = 10,
   sort?: string,
 ) {
+  // ✅ 가장 표준적인 스프링 방식(0-based + size)을 1순위로!
   const tries = [
+    { page, size: pageSize, sort }, // 0-based + size ✅
+    { page: Math.max(1, page + 1), size: pageSize, sort }, // 1-based + size
+    { page, pageSize, sort }, // 0-based + pageSize(혹시 지원)
     { page: Math.max(1, page + 1), pageSize, sort }, // 1-based + pageSize
-    { page, size: pageSize, sort }, // 0-based + size
-    { page, size: pageSize }, // 0-based + size
-    { page: Math.max(1, page + 1), size: pageSize }, // 1-based + size
   ] as const;
 
+  const pickArray = (raw: any): any[] => {
+    const res = raw?.result ?? raw ?? {};
+    const cands = [
+      res?.content,
+      raw?.content,
+      res?.items,
+      raw?.items,
+      res?.results,
+      raw?.results,
+      Array.isArray(res) ? res : null,
+      Array.isArray(raw) ? raw : null,
+    ];
+    for (const c of cands) if (Array.isArray(c)) return c;
+    return [];
+  };
+
+  const pickNum = (v: any, fb = 0) =>
+    Number.isFinite(Number(v)) ? Number(v) : fb;
+
   let lastErr: unknown;
+
   for (const params of tries) {
     try {
       const { data } = await ApiClient.get(path, { params });
+
       const res = data?.result ?? data ?? {};
-      const content = Array.isArray(res.content) ? res.content : [];
-      const numberZero = Number(res.number ?? page);
-      const totalPages = Number(res.totalPages ?? 0);
+      const content = pickArray(data);
+      const numberZero = pickNum(res.number ?? data?.number, page);
+      const totalPages = pickNum(res.totalPages ?? data?.totalPages, 0);
       const last = totalPages
         ? numberZero >= totalPages - 1
         : content.length === 0;
+
+      const usedPagePlusOne =
+        typeof (params as any).page === 'number' &&
+        (params as any).page === page + 1;
+      const usedPageSize = 'pageSize' in params;
+      if (content.length === 0 && (usedPagePlusOne || usedPageSize)) {
+        // 다음 시도 계속
+        continue;
+      }
+
       return { content, numberZero, last };
     } catch (e) {
       lastErr = e;
+      // 에러면 다음 시도
     }
   }
   throw lastErr;
@@ -233,13 +266,12 @@ export async function fetchWritingPage(
 export async function fetchParagraphPage(
   page: number,
   pageSize = 10,
-  sort = 'createdAt,DESC',
 ): Promise<HistoryListPage> {
   const { content, numberZero, last } = await getPageFlex(
     '/paragraph-completion',
     page,
     pageSize,
-    sort,
+    undefined,
   );
   const items: AnswerResult[] = content.map((it: any) => {
     const created = pickCreatedAt(it);
@@ -314,7 +346,7 @@ export async function fetchDailyScores(params: {
     const pageRes =
       type === 'topic'
         ? await fetchWritingPage(page, PAGE_SIZE, SORT)
-        : await fetchParagraphPage(page, PAGE_SIZE, SORT);
+        : await fetchParagraphPage(page, PAGE_SIZE);
 
     const items = pageRes.items;
     if (!items.length) break;
@@ -346,7 +378,6 @@ export async function fetchDailyScores(params: {
     page += 1;
   }
 
-  // ✅ 전부 0이면 차트에서 목데이터 쓰도록 빈배열 반환
   if (!addedAny) return [];
 
   return sums.map((s, i) => (counts[i] ? Math.round(s / counts[i]) : 0));

@@ -27,12 +27,17 @@ import SignUpPage from '@_page/SignUpPage';
 import LogInPage from '@_page/LogInPage';
 
 import ProtectedRoute from '@_routes/ProtectedRoute';
+import OAuthRedirectPage from './page/OAuthRedirectPage';
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Navigate to="/welcome" replace />} />
+        <Route
+          path="/oauth/callback/:provider"
+          element={<OAuthRedirectPage />}
+        />
 
         {/* 헤더/네비 x 페이지 */}
         <Route element={<DefaultLayout />}>

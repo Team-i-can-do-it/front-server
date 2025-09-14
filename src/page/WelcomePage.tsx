@@ -9,11 +9,26 @@ export default function WelcomePage() {
   const [dog1, setDog1] = useState<object>();
 
   const navigate = useNavigate();
-  const handleNaverLogin = () =>
-    (window.location.href = 'https://api.e-eum.site/api/v1/oauth2/code/naver');
+  const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
 
-  const handleGoogleLogin = () =>
-    (window.location.href = 'https://api.e-eum.site/api/v1/oauth2/code/google');
+  const goOAuth = (p: 'google' | 'naver') => {
+    const redirect = `${window.location.origin}/oauth/callback/${p}`;
+    const state = (() => {
+      const a = new Uint8Array(16);
+      crypto.getRandomValues(a);
+      return Array.from(a)
+        .map((x) => x.toString(16).padStart(2, '0'))
+        .join('');
+    })();
+    sessionStorage.setItem('oauth_state', state);
+
+    window.location.href =
+      `${API_BASE}/oauth2/authorization/${p}` +
+      `?redirect_uri=${encodeURIComponent(redirect)}&state=${state}`;
+  };
+
+  const handleGoogleLogin = () => goOAuth('google');
+  const handleNaverLogin = () => goOAuth('naver');
 
   const handleEmailLogin = () => {
     navigate('/signin');
