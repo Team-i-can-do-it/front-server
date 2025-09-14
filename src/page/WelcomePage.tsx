@@ -12,19 +12,7 @@ export default function WelcomePage() {
   const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
 
   const goOAuth = (p: 'google' | 'naver') => {
-    const redirect = `${window.location.origin}/auth/${p}/callback`;
-    const state = (() => {
-      const a = new Uint8Array(16);
-      crypto.getRandomValues(a);
-      return Array.from(a)
-        .map((x) => x.toString(16).padStart(2, '0'))
-        .join('');
-    })();
-    sessionStorage.setItem('oauth_state', state);
-
-    window.location.href =
-      `${API_BASE}/oauth2/authorization/${p}` +
-      `?redirect_uri=${encodeURIComponent(redirect)}&state=${state}`;
+    window.location.href = `${API_BASE}/oauth2/authorization/${p}`;
   };
 
   const handleGoogleLogin = () => goOAuth('google');
