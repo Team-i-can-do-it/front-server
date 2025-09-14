@@ -1,10 +1,10 @@
-// ResultPage.tsx
 import ResultAnalysis from '@_components/pageComponent/result/ResultAnalysis';
 import ResultSummary from '@_components/pageComponent/result/ResultSummary';
 import { useSearchParams } from 'react-router-dom';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import LoadingPage from './LoadingPage';
 import { useAnswerResult, useParagraphResult } from '@_hooks/useResult';
+import FullscreenConfetti from '@/components/common/Confetti';
 
 type TabId = 'summary' | 'analysis';
 const TABS = [
@@ -94,7 +94,7 @@ export default function ResultPage() {
         className="mx-auto w-[min(100vw,390px)] px-6 pb-10"
         style={{ paddingTop: HEADER_H + TAB_H }}
       >
-        <Suspense fallback={<LoadingPage />}>
+        <Suspense>
           {type === 'paragraph' ? (
             <ParagraphResultBody id={id} active={active} />
           ) : (
@@ -107,27 +107,58 @@ export default function ResultPage() {
 }
 
 function WritingResultBody({ id, active }: { id: string; active: TabId }) {
-  const { data, isError } = useAnswerResult(id); // GET /writing/:id (suspense 훅)
-  if (isError || !data) {
-    return <ErrorBlock />;
-  }
-  return active === 'summary' ? (
-    <ResultSummary data={data} />
-  ) : (
-    <ResultAnalysis data={data} />
+  const { data, isError } = useAnswerResult(id);
+  // 결과가 성공적으로 로드되었을 때 한 번만 빵빠레
+  const [open, setOpen] = useState(true);
+  useEffect(() => {
+    if (!isError) {
+      const t = setTimeout(() => setOpen(false), 1600);
+      return () => clearTimeout(t);
+    }
+  }, [id, isError]);
+
+  if (isError || !data) return <ErrorBlock />;
+
+  return (
+    <>
+      <FullscreenConfetti open={open} onClose={() => setOpen(false)} />
+      {active === 'summary' ? (
+        <ResultSummary data={data} />
+      ) : (
+        <ResultAnalysis data={data} />
+      )}
+    </>
   );
 }
 
 function ParagraphResultBody({ id, active }: { id: string; active: TabId }) {
-  const { data, isPending, isError } = useParagraphResult(id); // GET /paragraph-completion/:id
-  if (isPending) return <LoadingPage />;
-  if (isError || !data) {
-    return <ErrorBlock />;
-  }
-  return active === 'summary' ? (
-    <ResultSummary data={data} />
-  ) : (
-    <ResultAnalysis data={data} />
+  const { data, isPending, isError } = useParagraphResult(id);
+  const [open, setOpen] = useState(false);
+  const ready = useMemo(
+    () => !isPending && !isError && !!data,
+    [isPending, isError, data],
+  );
+
+  useEffect(() => {
+    if (ready) {
+      setOpen(true);
+      const t = setTimeout(() => setOpen(false), 1600);
+      return () => clearTimeout(t);
+    }
+  }, [ready, id]);
+
+  // if (isPending) return <LoadingPage />;
+  if (isError || !data) return <ErrorBlock />;
+
+  return (
+    <>
+      <FullscreenConfetti open={open} onClose={() => setOpen(false)} />
+      {active === 'summary' ? (
+        <ResultSummary data={data} />
+      ) : (
+        <ResultAnalysis data={data} />
+      )}
+    </>
   );
 }
 
