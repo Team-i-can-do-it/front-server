@@ -120,7 +120,7 @@ function normalizeFeedback(src: any): Feedback {
 }
 
 /** 서버 원본 1건을 AnswerResult로 정규화 */
-function normalizeAnswerResult(raw: any): AnswerResult {
+export function normalizeAnswerResult(raw: any): AnswerResult {
   // 서버가 { result: {...} } 또는 곧장 {...}로 줄 수 있어 둘 다 수용
   const src = raw?.result ?? raw;
 

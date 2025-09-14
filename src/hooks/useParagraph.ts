@@ -1,7 +1,8 @@
 import {
   fetchParagraphWords,
-  requestParagraphFeedback,
+  // requestParagraphFeedback,
   submitParagraph,
+  type SubmitPCRequest,
 } from '@_api/Paragraph';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -15,13 +16,13 @@ export function useParagraphWords(count = 3) {
 
 export function useParagraphSubmit() {
   return useMutation({
-    mutationFn: (content: string) => submitParagraph(content),
+    mutationFn: (payload: SubmitPCRequest) => submitParagraph(payload),
   });
 }
 
-export function useParagraphFeedback() {
-  return useMutation({
-    mutationFn: ({ pcId, content }: { pcId: number; content: string }) =>
-      requestParagraphFeedback(pcId, content),
-  });
-}
+// export function useParagraphFeedback() {
+//   return useMutation({
+//     mutationFn: ({ pcId, content }: { pcId: number; content: string }) =>
+//       requestParagraphFeedback(pcId, content),
+//   });
+// }
