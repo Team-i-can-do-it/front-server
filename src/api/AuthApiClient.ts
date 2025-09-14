@@ -1,12 +1,39 @@
 import ApiClient from './ApiClient';
+import { mergeUserFromBodyAndClaims, parseJwtClaims } from '@_utils/jwt';
 
 export type AuthRequest = { name: string; email: string; password: string };
 export type User = { id: number; name: string; email: string } | null;
+
 export type SignInResult = {
   accessToken: string | null;
   user: User;
   expiresIn?: number | null;
 };
+
+function parseAuthResponse(res: any): SignInResult {
+  const headers = res?.headers ?? {};
+  const headerToken =
+    (headers['authorization'] as string | undefined)?.replace(
+      /^bearer\s+/i,
+      '',
+    ) ||
+    (headers['x-access-token'] as string | undefined) ||
+    null;
+
+  const body = res?.data?.result ?? res?.data ?? {};
+  const bodyToken: string | null = body?.accessToken ?? null;
+  const accessToken = bodyToken ?? headerToken ?? null;
+
+  const rawUserFromBody = body?.user ?? body?.member ?? body;
+  const claims = accessToken ? parseJwtClaims(accessToken) : null;
+  const merged = mergeUserFromBodyAndClaims(rawUserFromBody, claims);
+
+  const expiresIn =
+    Number(headers['x-access-token-expires-in'] ?? body?.expiresIn ?? 0) ||
+    null;
+
+  return { accessToken, user: merged, expiresIn };
+}
 
 // data(POST), params(GET) 차이
 export const SignUp = async (data: AuthRequest): Promise<void> => {
@@ -17,33 +44,20 @@ export const SignIn = async (
   data: Omit<AuthRequest, 'name'>,
 ): Promise<SignInResult> => {
   const res = await ApiClient.post('/auth/login', data);
+  return parseAuthResponse(res);
+};
 
-  // axios는 헤더 키를 소문자로 노멀라이즈함
-  const headers = res.headers ?? {};
-  // 예: Authorization: Bearer <token> 또는 X-Access-Token: <token>
-  const headerToken =
-    (headers['authorization'] as string | undefined)?.replace(
-      /^bearer\s+/i,
-      '',
-    ) ||
-    (headers['x-access-token'] as string | undefined) ||
-    null;
-
-  // 바디에도 올 수 있음: { accessToken, user, expiresIn } 또는 result 랩핑
-  const body = (res.data?.result ?? res.data) as any;
-  const bodyToken = (body?.accessToken as string | undefined) ?? null;
-
-  const accessToken = bodyToken ?? headerToken;
-
-  const user =
-    (body?.user as User) ??
-    // 혹시 다른 키로 오는 경우 대비
-    (body?.member as User) ??
-    null;
-
-  const expiresIn =
-    Number(headers['x-access-token-expires-in'] ?? body?.expiresIn ?? 0) ||
-    null;
-
-  return { accessToken, user, expiresIn };
+export const SocialCallback = async (provider: 'google' | 'naver') => {
+  const res = await ApiClient.get(`/auth/${provider}/callback`, {
+    withCredentials: true,
+  });
+  return parseAuthResponse(res);
+};
+export const GetMyProfile = async (): Promise<User> => {
+  const res = await ApiClient.get('/auth/me'); // 필요시 경로 변경
+  const body = res?.data?.result ?? res?.data ?? {};
+  const raw = body?.user ?? body?.member ?? body;
+  // /me 응답에는 토큰이 없을 수 있으니 claims 없이 병합
+  const merged = mergeUserFromBodyAndClaims(raw, null);
+  return merged;
 };

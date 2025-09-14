@@ -6,7 +6,7 @@ import avata from '@_icons/graphics/daily.svg';
 import useModalStore from '@_store/dialogStore';
 import { useToast } from '@_hooks/useToast';
 import { useMyPage } from '@_hooks/useMyPage';
-import { useAuthStore } from '@_store/authStore'; // 아래 주석 참고
+import { useAuthStore } from '@_store/authStore';
 
 const SCRAP_MOCK: ScrapItem[] = [
   { id: '1', title: '정보', subtitle: '나만의 블로그' },
