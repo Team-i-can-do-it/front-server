@@ -20,23 +20,70 @@ export default function HistoryPage() {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1); // 1~12
+
   // 선택 월의 일별 점수
   const { data: daily = [] } = useDailyScores(active, year, month);
 
+  // URL 파라미터 ↔ 내부 탭 동기화
   useEffect(() => {
     if (!params.get('tab')) setParams({ tab: 'topic' }, { replace: true });
     else setActive(tabParam);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabParam]);
-  // 차트
-  const chartWrapRef = useRef<HTMLDivElement>(null);
 
+  // 월 텍스트 / 해당 월의 일수
+  const monthText = useMemo(() => `${month}월`, [month]);
+  const daysInMonth = useMemo(
+    () => new Date(year, month, 0).getDate(),
+    [year, month],
+  );
+
+  // 차트 컨테이너 ref
+  const chartWrapRef = useRef<HTMLDivElement | null>(null);
+
+  // 목 데이터: 서버 데이터 없을 때 보이는 부드러운 곡선
+  const mockDaily = useMemo(
+    () =>
+      Array.from({ length: daysInMonth }, (_, i) => {
+        const t = (i + 1) / daysInMonth; // 0..1
+        const base = 65 + 25 * Math.sin(Math.PI * t); // 40~90대
+        const noise = (((i * 7 + month * 3) % 11) - 5) * 1.5; // -7.5..+7.5
+        const v = Math.round(base + noise);
+        return Math.max(5, Math.min(98, v));
+      }),
+    [daysInMonth, month],
+  );
+
+  // 서버 데이터가 있으면 사용, 없으면 목데이터
+  const chartValues = (daily?.length ?? 0) > 0 ? daily : mockDaily;
+
+  // 사이즈/데이터 로그 (필요시 꺼도 됨)
   useEffect(() => {
     const el = chartWrapRef.current;
     if (el) {
       const r = el.getBoundingClientRect();
-      console.debug('[HistoryPage] chart wrapper size', r.width, r.height);
+      console.log('[HistoryPage] chart wrapper size', r.width, r.height);
     }
   }, [active, year, month]);
+
+  useEffect(() => {
+    console.log('[HistoryPage] daily', {
+      tab: active,
+      year,
+      month,
+      len: daily?.length,
+      head: daily?.slice(0, 10),
+    });
+  }, [active, year, month, daily]);
+
+  useEffect(() => {
+    console.log(
+      '[HistoryPage] chartValues len',
+      chartValues.length,
+      chartValues.slice(0, 7),
+    );
+    (window as any).chartValues = chartValues;
+  }, [chartValues]);
 
   const onTab = (id: TabId) => {
     if (id === active) return;
@@ -55,42 +102,11 @@ export default function HistoryPage() {
     setMonth(d.getMonth() + 1);
   };
 
-  const monthText = useMemo(() => `${month}월`, [month]);
-
-  // 그래프 더미데이터
-  const daysInMonth = useMemo(
-    () => new Date(year, month, 0).getDate(),
-    [year, month],
-  );
-
-  // 목 데이터: 40~95 사이에서 완만한 곡선 + 약간의 요일 노이즈
-  const mockDaily = useMemo(
-    () =>
-      Array.from({ length: daysInMonth }, (_, i) => {
-        const t = (i + 1) / daysInMonth; // 0..1
-        const base = 65 + 25 * Math.sin(Math.PI * t); // 40~90대
-        const noise = (((i * 7 + month * 3) % 11) - 5) * 1.5; // -7.5..+7.5
-        const v = Math.round(base + noise);
-        return Math.max(5, Math.min(98, v));
-      }),
-    [daysInMonth, month],
-  );
-
-  const chartValues = (daily?.length ?? 0) > 0 ? daily! : mockDaily;
-
-  useEffect(() => {
-    console.debug(
-      '[HistoryPage] chartValues len',
-      chartValues.length,
-      chartValues.slice(0, 7),
-    );
-    (window as any).chartValues = chartValues; // 필요하면 전역으로 붙여서 콘솔에서 확인
-  }, [chartValues]);
-
   return (
-    <main className="min-h-[100dvh] w-[min(100vw,390px)] ">
-      <section className="px-6 pb-10 pt-5">
+    <main className="min-h-[100dvh] w-[min(100vw,390px)]">
+      <section className="px-6 pb-10 pt-5" ref={chartWrapRef}>
         <p className="typo-h3-sb-18 mb-3">내 성장 리포트</p>
+
         {/* 상단 월 네비 + 일별 차트 */}
         <div className="mb-2 flex items-center justify-center gap-1">
           <button
@@ -109,10 +125,11 @@ export default function HistoryPage() {
             <IconRight className="w-6 h-6 cursor-pointer text-icon-200 [&_*]:fill-current [&_*]:stroke-current" />
           </button>
         </div>
+
         <BarChart
+          key={`chart-${active}-${year}-${month}`}
           values={chartValues}
           visibleCount={7}
-          onBarClick={(i) => console.log(`${i + 1}일 막대 클릭`)}
           className="mb-6"
         />
 

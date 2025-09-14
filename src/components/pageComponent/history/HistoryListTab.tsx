@@ -11,7 +11,7 @@ import {
 
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
-import type { HistoryListResponse, AnswerResult } from '@_api/ResultAPiClient';
+import type { AnswerResult } from '@_api/ResultAPiClient';
 
 type HistoryListTabProps = { type: 'topic' | 'paragraph' };
 
@@ -91,10 +91,6 @@ const MOCK_BY_TYPE: Record<HistoryListTabProps['type'], HistoryCardVM[]> = {
     },
   ],
 };
-const extractItems = (page: any) => {
-  const raw = page?.items ?? page?.result?.items ?? page?.data?.items ?? [];
-  return Array.isArray(raw) ? raw : [];
-};
 
 export default function HistoryListTab({ type }: HistoryListTabProps) {
   const navigate = useNavigate();
@@ -127,8 +123,9 @@ export default function HistoryListTab({ type }: HistoryListTabProps) {
 
   // 카드 VM + 아이콘 주입
   const items = useMemo<HistoryCardVM[]>(() => {
-    const pages: HistoryListResponse[] = data?.pages ?? [];
-    const list = pages.flatMap((p) => extractItems(p).map(toCardVM));
+    const pages = (data?.pages ?? []) as Array<{ items: AnswerResult[] }>;
+    const list = pages.flatMap((p) => p.items.map(toCardVM));
+
     const base = list.length ? list : MOCK_BY_TYPE[type];
 
     return base.map((it) => {
@@ -140,22 +137,6 @@ export default function HistoryListTab({ type }: HistoryListTabProps) {
       return { ...it, iconSrc };
     });
   }, [data, type, iconKeyById]);
-
-  //    백엔드연결시 코드
-  //     const raw =
-  //       (page as any)?.items ??
-  //       (page as any)?.result?.items ??
-  //       (page as any)?.data?.items ??
-  //       [];
-
-  //     if (!Array.isArray(raw)) {
-  //       console.warn('[HistoryListTab] page has no items array', { idx, page });
-  //       return [];
-  //     }
-
-  //     return raw.map(toCardVM);
-  //   });
-  // }, [data]);
 
   // 무한스크롤
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -188,7 +169,12 @@ export default function HistoryListTab({ type }: HistoryListTabProps) {
         <ul className="space-y-3">
           {items.map((it) => (
             <li key={it.id}>
-              <HistoryCard item={it} onClick={() => navigate('/')} />
+              <HistoryCard
+                item={it}
+                onClick={() =>
+                  navigate(`/result?id=${it.id}&type=${type}&tab=summary`)
+                }
+              />
             </li>
           ))}
         </ul>

@@ -1,15 +1,15 @@
 import {
-  fetchDailyScores,
-  fetchHistoryList,
-  fetchMonthlyAvg,
-  type HistoryListResponse,
-} from '@_api/ResultAPiClient';
-import {
   useInfiniteQuery,
-  useQuery,
   type InfiniteData,
   type QueryKey,
+  useQuery,
 } from '@tanstack/react-query';
+import {
+  fetchDailyScores,
+  fetchMonthlyAvg,
+  fetchHistory,
+  type HistoryListPage,
+} from '@_api/ResultAPiClient';
 
 export function useMonthlyAvg(type: 'topic' | 'paragraph', year: number) {
   return useQuery({
@@ -33,16 +33,19 @@ export function useDailyScores(
 
 export function useHistoryInfinite(type: 'topic' | 'paragraph') {
   return useInfiniteQuery<
-    HistoryListResponse, // TQueryFnData = "페이지 한 장" 타입
+    HistoryListPage, // 한 페이지
     Error,
-    InfiniteData<HistoryListResponse, string | null>, // TData = InfiniteData<페이지, 커서>
+    InfiniteData<HistoryListPage, number>, // 무한 데이터
     QueryKey,
-    string | null // TPageParam
+    number // pageParam
   >({
-    queryKey: ['history', type],
-    initialPageParam: null,
-    queryFn: ({ pageParam }) =>
-      fetchHistoryList({ type, cursor: pageParam, limit: 10 }),
-    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    queryKey: ['history', type] as const,
+    initialPageParam: 0, // 0-based로 시작
+    queryFn: ({ pageParam }) => fetchHistory(type, pageParam, 10),
+    getNextPageParam: (last) =>
+      last.last === false && typeof last.page === 'number'
+        ? last.page + 1
+        : undefined,
+    staleTime: 60_000,
   });
 }

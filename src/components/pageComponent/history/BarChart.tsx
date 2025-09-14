@@ -128,17 +128,16 @@ export default function BarChart({
   const innerWidth = Math.max(values.length, visibleCount) * CELL_W;
   const CHART_H = 213;
 
-  // // 값이 바뀔 때 강제 리마운트(초기 렌더 크기 문제 회피)
-  // const remountKey = useMemo(() => {
-  //   const head = values[0] ?? 0;
-  //   const tail = values[values.length - 1] ?? 0;
-  //   // 여기서 백틱(`) 빠져있던거만 고쳐줌
-  //   return `bar-${values.length}-${head}-${tail}`;
-  // }, [values]);
+  const remountKey = useMemo(() => {
+    const head = values[0] ?? 0;
+    const tail = values[values.length - 1] ?? 0;
+    return `bar-${values.length}-${head}-${tail}`;
+  }, [values]);
 
   const [isReady, setIsReady] = useState(false);
   useEffect(() => {
-    setTimeout(() => setIsReady(true), 100);
+    const id = setTimeout(() => setIsReady(true), 50);
+    return () => clearTimeout(id);
   }, []);
 
   return (
@@ -159,7 +158,11 @@ export default function BarChart({
           className="shrink-0"
           style={{ width: innerWidth, height: CHART_H }}
         >
-          {isReady ? <Bar data={data} options={options} /> : <div>Loading</div>}
+          {isReady ? (
+            <Bar key={remountKey} data={data} options={options} />
+          ) : (
+            <div>Loading</div>
+          )}
         </div>
       </div>
     </section>

@@ -4,6 +4,19 @@ import { useMyPage } from '@_hooks/useMyPage';
 import { useToast } from '@_hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@_store/authStore';
+import { useMemo } from 'react';
+
+function toTime(s: string): number {
+  if (!s) return 0;
+  const parsed = Date.parse(s);
+  if (!Number.isNaN(parsed)) return parsed;
+
+  const norm = s.replace(/[./]/g, '-').replace(/-(\d)(?=-|$)/g, '-0$1');
+  const m = norm.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m)
+    return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime();
+  return 0;
+}
 
 export default function MyPoint() {
   const { data: mpData, isLoading: mpLoading, isError: mpError } = useMyPage();
@@ -49,7 +62,20 @@ export default function MyPoint() {
   }
 
   const myPoint = mpData?.point ?? ptData?.point ?? 0;
-  const histories = ptData?.histories ?? [];
+  const histories = useMemo(() => {
+    const raw = ptData?.histories ?? [];
+
+    const idNum = (v: unknown) => {
+      const n = typeof v === 'number' ? v : Number(v);
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    return [...raw].sort((a, b) => {
+      const byDate = toTime(b.date) - toTime(a.date);
+      if (byDate !== 0) return byDate;
+      return idNum(b.id) - idNum(a.id);
+    });
+  }, [ptData?.histories]);
 
   return (
     <main className="pt-[18px] pb-[92px] bg-white-base">

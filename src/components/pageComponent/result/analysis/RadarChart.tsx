@@ -92,7 +92,7 @@ export default function RadarChart({
 
   return (
     <section className={['w-full', className].filter(Boolean).join(' ')}>
-      <h2 className="typo-h4-sb-16 mb-5">{name}님의 말하기 평가</h2>
+      <h2 className="typo-h4-sb-16 mb-5">{name}사용자의 말하기 평가</h2>
       <div className="w-full h-64 mb-5">
         <Radar data={data} options={options} />
       </div>

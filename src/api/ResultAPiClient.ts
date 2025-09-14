@@ -1,13 +1,13 @@
-// src/api/ResultApiClient.ts (혹은 형이 두신 경로에 맞게)
+// src/api/ResultApiClient.ts
 import ApiClient from './ApiClient';
 
 /* =========================
- *  공통 타입 (정규화된 형태)
+ *  타입
  * ========================= */
 export type MbtiScore = {
-  expression_style: number; // 보통 -50~+50 (서버 정책에 따름)
-  content_format: number; // 보통 -50~+50
-  tone_of_voice: number; // 보통 -50~+50
+  expression_style: number; // -50~+50
+  content_format: number; // -50~+50
+  tone_of_voice: number; // -50~+50
 };
 
 export type Evaluation = {
@@ -32,41 +32,50 @@ export type Feedback = {
   evaluation_feedback?: EvaluationFeedback;
   overall_feedback: string;
   overall_score: number; // 0~100
-  createdAt?: string; // ISO
+  createdAt?: string;
 };
 
 export type AnswerResult = {
-  id: number | string; // 64-bit 대비 string 가능
+  id: number | string;
   content: string;
   topic: string;
   feedback: Feedback;
-  createdAt: string; // ISO
+  createdAt: string;
 };
 
-export type AnswerResultResponse = {
-  status: number;
-  message: string;
-  result: unknown; // 서버 원본은 유연하게 받고 아래 normalizer로 변환
+export type HistoryListPage = {
+  items: AnswerResult[];
+  page?: number;
+  last?: boolean;
+  nextCursor?: string | null;
+};
+
+export type MonthlyAvgResponse = {
+  year: number;
+  monthlyAverages: number[];
 };
 
 /* =========================
  *  유틸
  * ========================= */
+
+const pickScore = (it: any) =>
+  it?.score ?? it?.overallScore ?? it?.average ?? 0;
+
+const pickCreatedAt = (it: any) =>
+  it?.createdAt ?? it?.created_at ?? it?.createdDate ?? it?.date ?? null;
+
 const clamp100 = (n: unknown) => {
   const v = Number(n);
   if (!Number.isFinite(v)) return 0;
   return Math.max(0, Math.min(100, v));
 };
-
 const toStr = (v: unknown) => (v == null ? '' : String(v));
 
 /* =========================
- *   Normalizers (서버 원본 → 정규화 타입)
- * - 서버가 mbtiScore/mbti, evaluation_feedback/evaluationFeedback 등
- *   이름이 다를 때도 안전히 수용
+ *  Normalizers
  * ========================= */
 function normalizeMbtiScore(src: any): MbtiScore {
-  // 서버가 feedback.mbtiScore 또는 feedback.mbti 로 내려줄 수 있음
   const raw = src?.mbtiScore ?? src?.mbti ?? {};
   return {
     expression_style: Number(raw.expression_style ?? 0),
@@ -89,7 +98,6 @@ function normalizeEvaluation(src: any): Evaluation {
 function normalizeEvaluationFeedback(src: any): EvaluationFeedback | undefined {
   const fb =
     src?.evaluation_feedback ?? src?.evaluationFeedback ?? src ?? undefined;
-
   if (!fb) return undefined;
   return {
     substance_feedback: toStr(fb.substance_feedback ?? fb.substanceFeedback),
@@ -105,10 +113,8 @@ function normalizeEvaluationFeedback(src: any): EvaluationFeedback | undefined {
 }
 
 function normalizeFeedback(src: any): Feedback {
-  const createdAt = src?.createdAt ?? src?.created_at ?? undefined;
-
   const overall_score = clamp100(src?.overall_score ?? src?.overallScore);
-
+  const createdAt = src?.createdAt ?? src?.created_at ?? undefined;
   return {
     mbtiScore: normalizeMbtiScore(src),
     evaluation: normalizeEvaluation(src?.evaluation),
@@ -119,26 +125,21 @@ function normalizeFeedback(src: any): Feedback {
   };
 }
 
-/** 서버 원본 1건을 AnswerResult로 정규화 */
+/** 서버 원본 1건 → AnswerResult */
 export function normalizeAnswerResult(raw: any): AnswerResult {
-  // 서버가 { result: {...} } 또는 곧장 {...}로 줄 수 있어 둘 다 수용
   const src = raw?.result ?? raw;
-
   const id = src?.id ?? src?.answerId ?? '';
   const content = toStr(src?.content ?? src?.text);
   const topic = toStr(src?.topic ?? src?.title ?? '');
   const createdAt = toStr(src?.createdAt ?? src?.created_at ?? '');
-
-  // feedback 혹은 result.mbti/evaluation 등으로 오는 경우를 모두 수용
   const feedbackSrc = src?.feedback ?? {
-    mbtiScore: src?.result?.mbti ?? undefined,
-    evaluation: src?.result?.evaluation ?? undefined,
-    evaluation_feedback: src?.result?.evaluation_feedback ?? undefined,
-    overall_feedback: src?.result?.overall_feedback ?? undefined,
-    overall_score: src?.result?.overall_score ?? undefined,
-    createdAt: src?.result?.createdAt ?? undefined,
+    mbtiScore: src?.result?.mbti,
+    evaluation: src?.result?.evaluation,
+    evaluation_feedback: src?.result?.evaluation_feedback,
+    overall_feedback: src?.result?.overall_feedback,
+    overall_score: src?.result?.overall_score,
+    createdAt: src?.result?.createdAt,
   };
-
   return {
     id: typeof id === 'number' ? id : String(id),
     content,
@@ -149,43 +150,211 @@ export function normalizeAnswerResult(raw: any): AnswerResult {
 }
 
 /* =========================
- * 통계 API
+ * 공용 페이지 페처 (파라미터 호환)
  * ========================= */
+type Path = '/writing' | '/paragraph-completion';
 
-/** 일별 평균 점수 (length = 그 달의 일수, 빈 날은 0) */
+async function getPageFlex(
+  path: Path,
+  page: number, // 0-based (프론트)
+  pageSize = 10,
+  sort?: string,
+) {
+  const tries = [
+    { page: Math.max(1, page + 1), pageSize, sort }, // 1-based + pageSize
+    { page, size: pageSize, sort }, // 0-based + size
+    { page, size: pageSize }, // 0-based + size
+    { page: Math.max(1, page + 1), size: pageSize }, // 1-based + size
+  ] as const;
+
+  let lastErr: unknown;
+  for (const params of tries) {
+    try {
+      const { data } = await ApiClient.get(path, { params });
+      const res = data?.result ?? data ?? {};
+      const content = Array.isArray(res.content) ? res.content : [];
+      const numberZero = Number(res.number ?? page);
+      const totalPages = Number(res.totalPages ?? 0);
+      const last = totalPages
+        ? numberZero >= totalPages - 1
+        : content.length === 0;
+      return { content, numberZero, last };
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
+/* =========================
+ * 타입별 페이지 → HistoryListPage
+ * ========================= */
+export async function fetchWritingPage(
+  page: number,
+  pageSize = 10,
+  sort = 'createdAt,DESC',
+): Promise<HistoryListPage> {
+  const { content, numberZero, last } = await getPageFlex(
+    '/writing',
+    page,
+    pageSize,
+    sort,
+  );
+  const items: AnswerResult[] = content.map((it: any) => {
+    const created = pickCreatedAt(it);
+    return {
+      id: it.id,
+      content: '',
+      topic: String(it.topic ?? ''),
+      createdAt: created ? String(created) : '',
+      feedback: {
+        mbtiScore: {
+          expression_style: Number(it.expressionStyle ?? 0),
+          content_format: Number(it.contentFormat ?? 0),
+          tone_of_voice: Number(it.toneOfVoice ?? 0),
+        },
+        evaluation: {
+          substance: 0,
+          completeness: 0,
+          expressiveness: 0,
+          clarity: 0,
+          coherence: 0,
+        },
+        evaluation_feedback: undefined,
+        overall_feedback: String(it.summary ?? ''),
+        overall_score: Number(pickScore(it)),
+        createdAt: created ? String(created) : '',
+      },
+    };
+  });
+  return { items, page: numberZero, last, nextCursor: null };
+}
+
+export async function fetchParagraphPage(
+  page: number,
+  pageSize = 10,
+  sort = 'createdAt,DESC',
+): Promise<HistoryListPage> {
+  const { content, numberZero, last } = await getPageFlex(
+    '/paragraph-completion',
+    page,
+    pageSize,
+    sort,
+  );
+  const items: AnswerResult[] = content.map((it: any) => {
+    const created = pickCreatedAt(it);
+    return {
+      id: it.id,
+      content: '',
+      topic: Array.isArray(it.words) ? it.words.join(', ') : '',
+      createdAt: created ? String(created) : '',
+      feedback: {
+        mbtiScore: {
+          expression_style: Number(it.expressionStyle ?? 0),
+          content_format: Number(it.contentFormat ?? 0),
+          tone_of_voice: Number(it.toneOfVoice ?? 0),
+        },
+        evaluation: {
+          substance: 0,
+          completeness: 0,
+          expressiveness: 0,
+          clarity: 0,
+          coherence: 0,
+        },
+        evaluation_feedback: undefined,
+        overall_feedback: String(it.summary ?? ''),
+        overall_score: Number(pickScore(it)),
+        createdAt: created ? String(created) : '',
+      },
+    };
+  });
+  return { items, page: numberZero, last, nextCursor: null };
+}
+
+/* =========================
+ * 통합 히스토리
+ * ========================= */
+export async function fetchHistory(
+  type: 'topic' | 'paragraph',
+  pageParam: number | string = 0,
+  size = 10,
+): Promise<HistoryListPage> {
+  const page = typeof pageParam === 'number' ? pageParam : 0;
+  return type === 'topic'
+    ? fetchWritingPage(page, size)
+    : fetchParagraphPage(page, size);
+}
+
+/* =========================
+ * 일별 평균 (페이지에서 직접 계산)
+ * ========================= */
 export async function fetchDailyScores(params: {
   type: 'topic' | 'paragraph';
   year: number;
   month: number; // 1~12
 }): Promise<number[]> {
   const { type, year, month } = params;
-  const { data } = await ApiClient.get('/results/stat/daily', {
-    params: { type, year, month },
-  });
 
-  const daysInMonth = new Date(year, month, 0).getDate(); // month가 1~12일 때 OK
-  const out = Array<number>(daysInMonth).fill(0);
+  // UTC 기준
+  const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const sums = Array<number>(days).fill(0);
+  const counts = Array<number>(days).fill(0);
 
-  const items = data?.items ?? data?.result?.items ?? data?.data?.items ?? [];
+  const monthStartUTC = Date.UTC(year, month - 1, 1, 0, 0, 0, 0);
+  const monthEndUTC = Date.UTC(year, month, 0, 23, 59, 59, 999);
 
-  for (const it of items) {
-    const d = Number(it?.day);
-    const v = clamp100(it?.avg);
-    if (Number.isFinite(d) && d >= 1 && d <= daysInMonth) {
-      out[d - 1] = v;
+  let page = 0;
+  const PAGE_SIZE = 50;
+  const MAX_PAGES = 20;
+  const SORT = 'createdAt,DESC';
+
+  let addedAny = false; // 실제로 count를 1번이라도 늘렸는지
+
+  while (page < MAX_PAGES) {
+    const pageRes =
+      type === 'topic'
+        ? await fetchWritingPage(page, PAGE_SIZE, SORT)
+        : await fetchParagraphPage(page, PAGE_SIZE, SORT);
+
+    const items = pageRes.items;
+    if (!items.length) break;
+
+    let minTimeThisPage = Number.POSITIVE_INFINITY;
+
+    for (const it of items) {
+      const t = Date.parse(it.createdAt);
+      if (!Number.isFinite(t)) continue;
+      if (t < minTimeThisPage) minTimeThisPage = t;
+
+      if (t >= monthStartUTC && t <= monthEndUTC) {
+        const dUTC = new Date(t);
+        const idx = dUTC.getUTCDate() - 1; // 0~days-1
+        if (idx >= 0 && idx < days) {
+          const raw = (it.feedback?.overall_score ??
+            (it as any).score ??
+            0) as number;
+          const score = clamp100(raw);
+          sums[idx] += score;
+          counts[idx] += 1;
+          addedAny = true;
+        }
+      }
     }
+
+    if (pageRes.last) break;
+    if (minTimeThisPage < monthStartUTC && addedAny) break; // 월 범위 끝
+    page += 1;
   }
-  return out;
+
+  // ✅ 전부 0이면 차트에서 목데이터 쓰도록 빈배열 반환
+  if (!addedAny) return [];
+
+  return sums.map((s, i) => (counts[i] ? Math.round(s / counts[i]) : 0));
 }
 
-/** 월별 평균 점수 응답 */
-export type MonthlyAvgResponse = {
-  year: number;
-  /** 1~12월 12개(없으면 0) */
-  monthlyAverages: number[];
-};
-
-/** 월별 평균 점수 (없거나 짧으면 12개로 보정) */
+/* =========================
+ * 월별 평균 (서버 집계)
+ * ========================= */
 export async function fetchMonthlyAvg({
   type,
   year,
@@ -196,29 +365,63 @@ export async function fetchMonthlyAvg({
   const { data } = await ApiClient.get('/results/stat/monthly', {
     params: { type, year },
   });
-
   const yearOut = Number(
     data?.year ?? data?.result?.year ?? data?.data?.year ?? year,
   );
-
   const arrRaw: unknown[] =
     data?.monthlyAverages ??
     data?.result?.monthlyAverages ??
     data?.data?.monthlyAverages ??
     data?.items ??
     [];
-
-  // 12개로 맞추고 0~100 클램프
   const monthlyAverages = Array.from({ length: 12 }, (_, i) =>
     clamp100(arrRaw[i] ?? 0),
   );
-
   return { year: yearOut, monthlyAverages };
 }
 
 /* =========================
- * 히스토리 목록 (커서 기반)
+ * 결과 단건 조회
  * ========================= */
+export async function getAnswerResult(
+  id: string | number,
+  type: 'topic' | 'paragraph' = 'topic',
+) {
+  if (type === 'topic') {
+    const { data } = await ApiClient.get(`/writing/${id}`);
+    return normalizeAnswerResult(data);
+  } else {
+    const { data } = await ApiClient.get(`/paragraph-completion/${id}`);
+    return normalizeAnswerResult(data);
+  }
+}
+
+/* =========================
+ * (옵션) 커서 기반 API 호환
+ * ========================= */
+function normalizeListPage(raw: any): HistoryListPage {
+  const data = raw?.result ?? raw?.data ?? raw;
+  const itemsRaw =
+    data?.items ?? raw?.items ?? raw?.content ?? raw?.results ?? [];
+  const items: AnswerResult[] = (Array.isArray(itemsRaw) ? itemsRaw : []).map(
+    (r: any) => normalizeAnswerResult(r),
+  );
+  const page = data?.page ?? raw?.page ?? data?.number ?? raw?.number;
+  const totalPages =
+    data?.totalPages ?? raw?.totalPages ?? data?.pageTotal ?? raw?.pageTotal;
+  const lastExplicit =
+    data?.last ??
+    raw?.last ??
+    (totalPages != null && page != null ? page >= totalPages - 1 : undefined);
+  const nextCursor = data?.nextCursor ?? raw?.nextCursor ?? null;
+  return {
+    items,
+    page: typeof page === 'number' ? page : undefined,
+    last: typeof lastExplicit === 'boolean' ? lastExplicit : undefined,
+    nextCursor,
+  };
+}
+
 export type HistoryListResponse = {
   items: AnswerResult[];
   nextCursor?: string | null;
@@ -233,30 +436,9 @@ export async function fetchHistoryList({
   cursor?: string | null;
   limit?: number;
 }): Promise<HistoryListResponse> {
-  // TODO: 백엔드 실제 엔드포인트에 맞추세요.
-  // 예: /results/history?type=topic&cursor=xxx&limit=10
   const { data } = await ApiClient.get('/results/history', {
     params: { type, cursor, limit },
   });
-
-  const src = data?.result ?? data ?? {};
-
-  const itemsRaw = src.items ?? data?.items ?? data?.data?.items ?? [];
-
-  const items: AnswerResult[] = itemsRaw.map((r: any) =>
-    normalizeAnswerResult(r),
-  );
-
-  const nextCursor =
-    src.nextCursor ?? data?.nextCursor ?? data?.data?.nextCursor ?? null;
-
-  return { items, nextCursor };
-}
-
-/* =========================
- * 결과 단건 조회
- * ========================= */
-export async function getAnswerResult(id: string | number) {
-  const { data } = await ApiClient.get(`/writing/${id}`);
-  return normalizeAnswerResult(data);
+  const page = normalizeListPage(data);
+  return { items: page.items, nextCursor: page.nextCursor ?? null };
 }
