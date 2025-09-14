@@ -9,7 +9,7 @@ import {
   fetchMonthlyAvg,
   fetchHistory,
   type HistoryListPage,
-} from '@/api/ResultApiClient';
+} from '@/api/ResultAPiClients';
 
 export function useMonthlyAvg(type: 'topic' | 'paragraph', year: number) {
   return useQuery({

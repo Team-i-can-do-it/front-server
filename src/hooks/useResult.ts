@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getAnswerResult, type AnswerResult } from '@/api/ResultApiClient'; // ★ APi 오타 금지
+import { getAnswerResult, type AnswerResult } from '@/api/ResultAPiClients'; // ★ APi 오타 금지
 import { useQuery } from '@tanstack/react-query';
 import { getParagraphDetail } from '@_api/Paragraph';
 

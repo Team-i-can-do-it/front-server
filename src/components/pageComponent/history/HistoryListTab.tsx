@@ -11,7 +11,7 @@ import {
 
 import makingSentences from '@_icons/graphics/makingSentences.svg';
 import { useNavigate } from 'react-router-dom';
-import type { AnswerResult } from '@_api/ResultApiClient';
+import type { AnswerResult } from '@/api/ResultAPiClients';
 
 type HistoryListTabProps = { type: 'topic' | 'paragraph' };
 

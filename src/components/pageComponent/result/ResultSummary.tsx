@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import MbtiCard from './summary/MbtiCard';
 import ScoreCard from './summary/ScoreCard';
 import MbtiTagCard from './summary/MbtiTagCard';
-import type { AnswerResult } from '@/api/ResultApiClient';
+import type { AnswerResult } from '@/api/ResultAPiClients';
 import { pickPersona, chooseSide, type Traits } from '@_utils/mbti';
 import { MBTI_LOTTIES } from '@_constants/mbti/lottieMap';
 

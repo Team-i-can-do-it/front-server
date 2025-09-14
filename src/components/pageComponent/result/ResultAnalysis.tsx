@@ -1,7 +1,8 @@
 import RadarChart from './analysis/RadarChart';
 import DetailCard from './analysis/DetailCard';
 import RelatedTopic from './analysis/RelatedTopic';
-import type { AnswerResult } from '@_api/ResultApiClient';
+import type { AnswerResult } from '@/api/ResultAPiClients';
+
 import { useAuthStore } from '@/store/authStore';
 import { useParams } from 'react-router-dom';
 import { useReferenceMaterials } from '@/hooks/useReferenceMaterials';
