@@ -47,25 +47,27 @@ export const SignIn = async (
   return parseAuthResponse(res);
 };
 
-export const SocialCallback = async (provider: 'google' | 'naver') => {
-  const url = new URL(window.location.href);
-  const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state') ?? undefined;
-
-  const redirect_uri = `${window.location.origin}/oauth/callback/${provider}`;
-
-  const res = await ApiClient.get(`/oauth2/code/${provider}`, {
-    params: { code, redirect_uri, state },
-    withCredentials: true,
-  });
-
-  return parseAuthResponse(res);
-};
-
 export const GetMyProfile = async (): Promise<User> => {
-  const res = await ApiClient.get('/auth/me');
-  const body = res?.data?.result ?? res?.data ?? {};
-  const raw = body?.user ?? body?.member ?? body;
-  const merged = mergeUserFromBodyAndClaims(raw, null);
-  return merged;
+  // 백엔드가 제공 중인 스펙:
+  // GET /member/myPage -> { status, message, result: { name, point, mbtiId, mbtiName } }
+  const res = await ApiClient.get('/member/myPage');
+  const result = res?.data?.result ?? {};
+  // 최소한의 유저 객체 구성 (이메일/ID는 JWT에서 병합 가능)
+  const claims = (() => {
+    try {
+      const token = localStorage.getItem(
+        (import.meta.env.VITE_ACCESS_TOKEN as string) ?? 'access_token',
+      );
+      return token ? parseJwtClaims(token) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const user: User = {
+    id: Number(claims?.sub) || 0,
+    name: result?.name || claims?.name || '',
+    email: claims?.email || '',
+  };
+  return user;
 };
