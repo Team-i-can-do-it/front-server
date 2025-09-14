@@ -1,46 +1,95 @@
-import { useState } from 'react';
-import mbti1 from '@_images/mbti1.png';
+import { useEffect, useMemo } from 'react';
+import {
+  MBTI_IMAGES,
+  MBTI_NAMES,
+  ALL_CODES,
+  type MbtiCode,
+} from '@_constants/mbti/imageMap';
+import { useMyMbti } from '@_hooks/useMyMbti';
+import { useAuthStore } from '@_store/authStore';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@_hooks/useToast';
 
-type Item = {
-  id: string;
-  name: string;
-  img: string;
-  locked?: boolean;
-};
-
-const items: Item[] = [
-  { id: '1', name: '말썽쟁이 치와와', img: mbti1, locked: false }, // 최신(선택 가능)
-  { id: '2', name: '수다쟁이 푸들', img: mbti1, locked: true },
-  { id: '3', name: '똑똑한 치와와', img: mbti1, locked: true },
-  { id: '4', name: '논리왕 푸들', img: mbti1, locked: true },
-  { id: '5', name: '몽상하는 고양이', img: mbti1, locked: true },
-  { id: '6', name: '사색하는 고양이', img: mbti1, locked: true },
-  { id: '7', name: '도도한 고양이', img: mbti1, locked: true },
-  { id: '8', name: '현명한 고양이', img: mbti1, locked: true },
-];
+type Item = { id: MbtiCode; name: string; img: string; locked?: boolean };
 
 export default function MyMBTI() {
-  // "가장 최근 받은" = unlock된 것 중 첫 번째라고 가정
-  const latestId = items.find((it) => !it.locked)?.id ?? undefined;
+  const { data, isLoading, isError, error } = useMyMbti();
+  const clearAuth = useAuthStore((s) => s.clear);
+  const navigate = useNavigate();
+  const toast = useToast();
 
-  // 대표 MBTI (초기값: 최신 항목)
-  const [repId, _setRepId] = useState<string | undefined>(latestId);
-  const rep = items.find((it) => it.id === repId)!;
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.groupCollapsed('[VIEW] MyMBTI data snapshot');
+      console.log('data:', data);
+      console.log('isLoading:', isLoading, 'isError:', isError);
+      console.log('error:', error);
+      console.groupEnd();
+    }
+  }, [data, isLoading, isError, error]);
+
+  const owned = data?.owned ?? [];
+  const latest = data?.latest;
+  const representative = data?.representative;
+
+  const items: Item[] = useMemo(
+    () =>
+      ALL_CODES.map((code) => ({
+        id: code,
+        name: MBTI_NAMES[code],
+        img: MBTI_IMAGES[code],
+        locked: !owned.includes(code),
+      })),
+    [owned],
+  );
+
+  const repId: MbtiCode | undefined = useMemo(
+    () => representative ?? latest ?? owned[0],
+    [representative, latest, owned],
+  );
+
+  const rep = repId ? items.find((it) => it.id === repId) : undefined;
+  const latestId = latest ?? owned[0];
+
+  if (isError) {
+    // @ts-ignore axios 가드
+    const status = error?.response?.status;
+    if (status === 401) {
+      clearAuth();
+      navigate('/welcome', { replace: true });
+      toast('로그인이 필요합니다.', 'error');
+      return null;
+    }
+    return (
+      <div className="p-6 text-status-danger">
+        MBTI 정보를 불러오지 못했습니다.
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col mt-9 mb-20">
-      <TopSection rep={rep} latestId={latestId} />
-      <BottomSection />
+      {isLoading ? (
+        <div className="p-6">
+          <div className="animate-pulse h-20 bg-bg-10 rounded mb-4" />
+          <div className="animate-pulse h-40 bg-bg-10 rounded" />
+        </div>
+      ) : (
+        <>
+          <TopSection rep={rep} latestId={latestId} />
+          <BottomSection items={items} />
+        </>
+      )}
     </div>
   );
 }
 
-function TopSection({ rep, latestId }: { rep: Item; latestId?: string }) {
+function TopSection({ rep, latestId }: { rep?: Item; latestId?: MbtiCode }) {
   return (
     <div className="flex flex-col items-center gap-4 border-b border-border-25">
       <div className="typo-h4-sb-16 text-text-900">나의 대표 mbti</div>
-      <div className="w-[90px] h-[90px] rounded-full overflow-hidden">
-        {latestId ? (
+      <div className="w-[90px] h-[90px] rounded-full overflow-hidden flex items-center justify-center bg-icon-25">
+        {latestId && rep ? (
           <img
             src={rep.img}
             alt={rep.name}
@@ -52,7 +101,7 @@ function TopSection({ rep, latestId }: { rep: Item; latestId?: string }) {
       </div>
       <div className="flex flex-col items-center gap-2 mb-9">
         <p className="typo-label3-m-16 text-brand-violet-500">
-          {latestId ? rep.name : 'MBTI가 없습니다.'}
+          {latestId && rep ? rep.name : 'MBTI가 없습니다.'}
         </p>
         <p className="typo-label3-m-14 text-text-200">
           최근 받은 mbti만 대표 mbti로 설정할 수 있어요
@@ -62,22 +111,16 @@ function TopSection({ rep, latestId }: { rep: Item; latestId?: string }) {
   );
 }
 
-function BottomSection() {
-  // 첫 줄 2개만 추출
+function BottomSection({ items }: { items: Item[] }) {
   const firstRow = items.slice(0, 2);
-  // 나머지
   const rest = items.slice(2);
-
   return (
     <div className="flex flex-col items-center gap-8 mt-9 w-full">
-      {/* 첫 줄: 2개만, 가운데 정렬 */}
       <ul className="flex justify-center gap-x-10 w-full max-w-[420px]">
         {firstRow.map((item) => (
           <MbtiCard key={item.id} item={item} />
         ))}
       </ul>
-
-      {/* 나머지 줄: 3열 그리드 */}
       <ul className="grid grid-cols-3 gap-x-10 gap-y-12 w-full max-w-[420px]">
         {rest.map((item) => (
           <MbtiCard key={item.id} item={item} />
@@ -113,7 +156,6 @@ function MbtiCard({ item }: { item: Item }) {
   );
 }
 
-// 심플 자물쇠 아이콘
 function LockIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
