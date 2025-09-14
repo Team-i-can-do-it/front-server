@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import IconCheck from '@_icons/common/icon-check.svg?react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
-import { SignIn } from '@_api/AuthApiClient';
+import { GetMyProfile, SignIn } from '@_api/AuthApiClient';
 import { useAuthStore } from '@_store/authStore';
 
 export default function LogInPage() {
@@ -57,6 +57,15 @@ export default function LogInPage() {
 
       // 토큰이 헤더에만 있어도 위에서 추출되어 들어옴
       useAuthStore.getState().setAuth(user ?? null, accessToken ?? null);
+      try {
+        // 2차 하이드레이션: /me에서 정확한 프로필로 덮어쓰기
+        const profile = await GetMyProfile();
+        if (profile) {
+          useAuthStore.getState().setAuth(profile, accessToken ?? null);
+        }
+      } catch (e) {
+        console.warn('/me 프로필 하이드레이션 실패:', e);
+      }
 
       toast('로그인이 성공적으로 완료되었습니다.', 'success');
       navigate('/e-eum');

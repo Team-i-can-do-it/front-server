@@ -6,7 +6,6 @@ export type MyPageResponse = {
   result: {
     name: string;
     point: number;
-    // 백엔드가 64-bit 쓰면 문자열이 안전함 (JS 정밀도 이슈)
     mbtiId: number | string;
     mbtiName: string;
   };

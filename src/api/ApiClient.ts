@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 import { useAuthStore } from '@_store/authStore';
+import { mergeUserFromBodyAndClaims, parseJwtClaims } from '@_utils/jwt';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 const REFRESH_PATH = '/auth/refresh';
@@ -14,10 +15,25 @@ const ApiClient: AxiosInstance = axios.create({
   },
 });
 
+// rehydrate 전에 요청이 나가더라도 토큰을 붙이기 위한 폴백
+function getPersistedToken(): string | null {
+  try {
+    const raw = localStorage.getItem('auth'); // zustand persist 기본 키
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed?.state?.accessToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // 1) 요청: 토큰 주입
 ApiClient.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const token = useAuthStore.getState().accessToken ?? getPersistedToken();
+  if (token) {
+    config.headers = config.headers ?? {};
+    (config.headers as any).Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
@@ -41,18 +57,23 @@ ApiClient.interceptors.response.use(
     original._retry = true;
 
     try {
-      // 같은 인스턴스로 호출(정확한 baseURL/withCredentials 유지)
       const { data } = await ApiClient.post(REFRESH_PATH, null, {
         withCredentials: true,
       });
 
-      const newToken = data?.result?.accessToken ?? data?.accessToken ?? null;
-      const newUser = data?.result?.user ?? data?.user ?? null;
+      const body = data?.result ?? data ?? {};
+      const newToken = body?.accessToken ?? null;
+
+      // body에 user가 없거나 email만 있어도 토큰 클레임으로 보강
+      const rawUser = body?.user ?? body?.member ?? body;
+      const claims = newToken ? parseJwtClaims(newToken) : null;
+      const mergedUser = mergeUserFromBodyAndClaims(
+        rawUser ?? useAuthStore.getState().user,
+        claims,
+      );
 
       if (newToken) {
-        useAuthStore
-          .getState()
-          .setAuth(newUser ?? useAuthStore.getState().user, newToken);
+        useAuthStore.getState().setAuth(mergedUser, newToken);
         original.headers = original.headers ?? {};
         original.headers.Authorization = `Bearer ${newToken}`;
       }

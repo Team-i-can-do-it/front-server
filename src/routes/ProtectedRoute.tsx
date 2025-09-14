@@ -57,8 +57,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
 
   const isAuthenticated: boolean = !!getAccessToken();
 
-  // 인증되지 않은 경우 "/signin"으로 리다이렉트
-  return isAuthenticated ? element : <Navigate to="/signin" />;
+  // 인증되지 않은 경우 "/"으로 리다이렉트
+  return isAuthenticated ? element : <Navigate to="/welcome" />;
 };
 
 export default ProtectedRoute;
