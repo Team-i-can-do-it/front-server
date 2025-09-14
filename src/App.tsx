@@ -28,6 +28,7 @@ import LogInPage from '@_page/LogInPage';
 
 import ProtectedRoute from '@_routes/ProtectedRoute';
 import EumGate from './page/EumGate';
+import OAuthLanding from './page/OAuthLanding';
 
 function App() {
   return (
@@ -43,6 +44,8 @@ function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/welcome" element={<WelcomePage />} />
         </Route>
+
+        <Route path="/oauth/landing" element={<OAuthLanding />} />
 
         {/* 네비 x 헤더 x, 취소 버튼 o 뒤로 가기 o  */}
         <Route element={<DefaultLayout noPadding />}>
