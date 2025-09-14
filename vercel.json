@@ -1,3 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" },
+    {
+      "source": "/login/oauth2/:path*",
+      "destination": "https://api.e-eum.site/login/oauth2/:path*"
+    }
+  ]
 }
