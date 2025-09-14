@@ -2,7 +2,6 @@ import ResultAnalysis from '@_components/pageComponent/result/ResultAnalysis';
 import ResultSummary from '@_components/pageComponent/result/ResultSummary';
 import { useSearchParams } from 'react-router-dom';
 import { Suspense, useEffect, useMemo, useState } from 'react';
-import LoadingPage from './LoadingPage';
 import { useAnswerResult, useParagraphResult } from '@_hooks/useResult';
 import FullscreenConfetti from '@/components/common/Confetti';
 
