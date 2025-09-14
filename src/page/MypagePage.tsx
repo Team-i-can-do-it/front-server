@@ -8,6 +8,15 @@ import { useToast } from '@_hooks/useToast';
 import { useMyPage } from '@_hooks/useMyPage';
 import { useAuthStore } from '@_store/authStore';
 
+import { useMemberMbti } from '@_hooks/useMemberMbti';
+import {
+  MBTI_IMAGES,
+  MBTI_NAMES,
+  ALL_CODES,
+  type MbtiCode,
+} from '@_constants/mbti/imageMap';
+import { useMyMbti } from '@/hooks/useMyMbti';
+
 const SCRAP_MOCK: ScrapItem[] = [
   { id: '1', title: '정보', subtitle: '나만의 블로그' },
   { id: '2', title: '정보', subtitle: '나만의 블로그' },
@@ -21,12 +30,22 @@ export default function MypagePage() {
   const toast = useToast();
   const clearAuth = useAuthStore((s) => s.clear);
 
-  const { data, isLoading, isError, error } = useMyPage();
+  const { isLoading, isError, error } = useMyPage();
 
-  const name = data?.name ?? '이음';
-  const mbtiFromServer = data?.mbtiName ?? '나만의 mbti를 찾아보세요';
-  const mbti = mbtiFromServer;
-  const point = data?.point ?? 0;
+  const { data: myPage } = useMyPage();
+  const { data: myMbti } = useMyMbti();
+
+  const name = myPage?.name ?? '이음';
+  const point = myPage?.point ?? 0;
+
+  const latestCode: MbtiCode | undefined =
+    myMbti?.latest ?? myMbti?.representative ?? myMbti?.owned?.[0];
+
+  const mbtiNameForDisplay = latestCode
+    ? MBTI_NAMES[latestCode]
+    : '나만의 mbti를 찾아보세요';
+
+  const avatarSrc = latestCode ? MBTI_IMAGES[latestCode] : avata;
 
   const handleLogout = () => {
     open({
@@ -84,10 +103,16 @@ export default function MypagePage() {
       <div className="flex flex-col items-center justify-between bg-bg-10">
         {/* 아바타 */}
         <div className="flex flex-col items-center gap-3 pb-8">
-          <img src={avata} className="rounded-full h-[90px] w-[90px]" />
+          <img
+            src={avatarSrc}
+            alt={mbtiNameForDisplay}
+            className="rounded-full h-[90px] w-[90px] object-cover bg-white"
+          />
           <div className="flex flex-col items-center gap-1">
             <p className="typo-h3-sb-18">{name}</p>
-            <p className="typo-label3-m-14 text-brand-violet-500">{mbti}</p>
+            <p className="typo-label3-m-14 text-brand-violet-500">
+              {mbtiNameForDisplay}
+            </p>
           </div>
         </div>
         <div className="flex items-center justify-between pb-6 w-full px-6">

@@ -146,7 +146,6 @@ function ParagraphResultBody({ id, active }: { id: string; active: TabId }) {
     }
   }, [ready, id]);
 
-  // if (isPending) return <LoadingPage />;
   if (isError || !data) return <ErrorBlock />;
 
   return (

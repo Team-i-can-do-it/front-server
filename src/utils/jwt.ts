@@ -2,7 +2,7 @@ export function parseJwtClaims(token: string): Record<string, any> | null {
   try {
     const [, payload] = token.split('.');
     if (!payload) return null;
-    // base64url -> string
+
     const pad = '='.repeat((4 - (payload.length % 4)) % 4);
     const b64 = payload.replace(/-/g, '+').replace(/_/g, '/') + pad;
     const bin = atob(b64);
@@ -18,29 +18,21 @@ export function parseJwtClaims(token: string): Record<string, any> | null {
   }
 }
 
-// 반환 타입을 "User | null" 형태로 딱 맞추자
 export function mergeUserFromBodyAndClaims(
   bodyUser: any,
   claims: Record<string, any> | null,
 ): { id: number; name: string; email: string } | null {
-  // body, claims에서 id 후보를 수집
   let id: number | null =
     bodyUser?.id ??
     bodyUser?.userId ??
     bodyUser?.memberId ??
     (typeof claims?.userId === 'number' ? claims!.userId : null) ??
     (typeof claims?.memberId === 'number' ? claims!.memberId : null) ??
-    // sub가 "123" 같은 숫자 문자열이면 파싱
     (claims?.sub && !Number.isNaN(Number(claims.sub))
       ? Number(claims.sub)
       : null);
 
-  const name =
-    bodyUser?.name ??
-    bodyUser?.nickname ??
-    bodyUser?.username ??
-    claims?.name ??
-    '';
+  const name = bodyUser?.name ?? '';
 
   const email = bodyUser?.email ?? bodyUser?.userEmail ?? claims?.email ?? '';
 
