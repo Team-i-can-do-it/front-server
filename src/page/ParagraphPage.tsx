@@ -3,13 +3,14 @@ import EditorArea from '@_components/pageComponent/paragraph/EditorArea';
 import MicPanel from '@_components/pageComponent/paragraph/MicPanel';
 import SubmitBar from '@_components/pageComponent/paragraph/SubmitBar';
 import ParagraphTopicBar from '@_components/pageComponent/paragraph/ParagraphTopicBar';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSTT } from '@_hooks/useSTT';
-import { useParagraphFeedback, useParagraphSubmit } from '@_hooks/useParagraph';
+import { useParagraphSubmit } from '@_hooks/useParagraph';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@_hooks/useToast';
 import { useConfirmExitHandlers } from '@_hooks/useExitConfirm';
 import Header from '@_components/layout/Header';
+import LoadingPage from './LoadingPage';
 
 export default function ParagraphPage() {
   const [answer, setAnswer] = useState('');
@@ -20,13 +21,17 @@ export default function ParagraphPage() {
 
   const trimmed = answer.trim();
   const isDisabled = trimmed.length === 0;
-  const isLengthInvalid = trimmed.length < 10 || trimmed.length > 600;
+  const isLengthInvalid = trimmed.length < 100 || trimmed.length > 600;
 
   const isDirty = answer.trim().length > 0;
   const { onBack, onClose } = useConfirmExitHandlers(isDirty);
 
   const [count, setCount] = useState(3);
   const submitUiDisabled = count > 0;
+
+  const [words, setWords] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const submittingRef = useRef(false);
 
   const {
     isSupported,
@@ -40,7 +45,7 @@ export default function ParagraphPage() {
 
   // 제출/피드백 뮤테이션
   const submitMutation = useParagraphSubmit();
-  const feedbackMutation = useParagraphFeedback();
+  //const feedbackMutation = useParagraphFeedback();
 
   useEffect(() => {
     if (isRecording) setAnswer(speechText);
@@ -53,6 +58,26 @@ export default function ParagraphPage() {
 
   // 제출 및 입력 x시 비활성화
   const handleSubmit = useCallback(async () => {
+    setIsLoading(true);
+    if (submittingRef.current) return; // 중복 클릭 방지
+    // 단어 포함되어야 제출가능
+    const missing = words.filter((w) => !trimmed.includes(w));
+    if (missing.length > 0) {
+      toast(`제시된 단어를 모두 사용해야 제출할 수 있어요.`, 'info');
+      return;
+    }
+    console.log('[handleSubmit] submit payload =', {
+      content: trimmed,
+      words,
+    });
+    console.log(
+      '[submit payload body]',
+      JSON.stringify({
+        content: trimmed,
+        words,
+      }),
+    );
+
     if (isLengthInvalid) {
       toast('글쓰기는 100자 이상 600자 미만으로 작성해 주세요.', 'info');
       return;
@@ -60,12 +85,17 @@ export default function ParagraphPage() {
     if (isDisabled) return;
 
     try {
-      console.log('제출:', trimmed);
-      // 내용 제출
-      const pcId = await submitMutation.mutateAsync(trimmed);
+      submittingRef.current = true;
+
+      // 1) 제출 (content + words)
+      const pcId = await submitMutation.mutateAsync({
+        content: trimmed,
+        words, // ← TopicBar에서 받은 3개 단어
+      });
+      console.log('[handleSubmit] pcId =', pcId);
 
       // 피드백 요청
-      await feedbackMutation.mutateAsync({ pcId, content: trimmed });
+      //await feedbackMutation.mutateAsync({ pcId, content: trimmed });
 
       stop();
       reset();
@@ -75,10 +105,15 @@ export default function ParagraphPage() {
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
-      navigate(`/result/paragraph/${pcId}`);
+      navigate(`/result?id=${pcId}&type=paragraph&tab=summary`, {
+        replace: true,
+      });
     } catch (err) {
       console.error(err);
       toast('제출에 실패했어요. 잠시 후 다시 시도해 주세요.', 'info');
+    } finally {
+      setIsLoading(false);
+      submittingRef.current = false;
     }
   }, [
     isDisabled,
@@ -89,7 +124,6 @@ export default function ParagraphPage() {
     toast,
     navigate,
     submitMutation,
-    feedbackMutation,
   ]);
 
   const openMicPanel = () => {
@@ -110,53 +144,62 @@ export default function ParagraphPage() {
   return (
     <section>
       <Header showBack showClose onBack={onBack} onClose={onClose} />
-      <div>
-        <ParagraphTopicBar count={3} onChangeWords={() => {}} />
-        <EditorArea
-          value={answer}
-          onChange={handleEditorChange}
-          highlight={{ lastSentence: 8 }}
-          spinnerCount={count}
-          setSpinnerCount={setCount}
-        />
-      </div>
+      {isLoading ? (
+        <LoadingPage />
+      ) : (
+        <>
+          <div>
+            <ParagraphTopicBar
+              count={3}
+              onChangeWords={(next) => setWords(next)}
+            />
+            <EditorArea
+              value={answer}
+              onChange={handleEditorChange}
+              highlight={{ lastSentence: 8 }}
+              spinnerCount={count}
+              setSpinnerCount={setCount}
+            />
+          </div>
 
-      <div>
-        {micOpen ? (
-          <MicPanel
-            onTextInput={closeMicPanelToKeyboard}
-            value={answer}
-            onSubmit={handleSubmit}
-            isRecording={isRecording}
-            onToggleRecording={toggleRecording}
-          />
-        ) : confirmOpen ? (
-          <ConfirmBar
-            value={answer}
-            textCount={answer.length}
-            onTextInput={() => setConfirmOpen(false)}
-            onSubmit={() => {
-              handleSubmit();
-            }}
-          />
-        ) : (
-          <SubmitBar
-            submitUiDisabled={submitUiDisabled}
-            submitDisabled={isDisabled || isLengthInvalid}
-            onConfirm={() => setConfirmOpen(true)}
-            onInvalid={() => {
-              isLengthInvalid;
-              toast(
-                '글쓰기는 100자 이상 600자 미만으로 작성해 주세요.',
-                'info',
-              );
-            }}
-            onRecordClick={openMicPanel}
-            value={answer}
-            onChange={handleEditorChange}
-          />
-        )}
-      </div>
+          <div>
+            {micOpen ? (
+              <MicPanel
+                onTextInput={closeMicPanelToKeyboard}
+                value={answer}
+                onSubmit={handleSubmit}
+                isRecording={isRecording}
+                onToggleRecording={toggleRecording}
+              />
+            ) : confirmOpen ? (
+              <ConfirmBar
+                value={answer}
+                textCount={answer.length}
+                onTextInput={() => setConfirmOpen(false)}
+                onSubmit={() => {
+                  handleSubmit();
+                }}
+              />
+            ) : (
+              <SubmitBar
+                submitUiDisabled={submitUiDisabled}
+                submitDisabled={isDisabled || isLengthInvalid}
+                onConfirm={() => setConfirmOpen(true)}
+                onInvalid={() => {
+                  isLengthInvalid;
+                  toast(
+                    '글쓰기는 100자 이상 600자 미만으로 작성해 주세요.',
+                    'info',
+                  );
+                }}
+                onRecordClick={openMicPanel}
+                value={answer}
+                onChange={handleEditorChange}
+              />
+            )}
+          </div>
+        </>
+      )}
     </section>
   );
 }

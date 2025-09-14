@@ -4,40 +4,69 @@
 // - 피드백:   POST /paragraph-completion/{id}/feedback { content }
 
 import api from '@_api/ApiClient';
+import {
+  normalizeAnswerResult,
+  type AnswerResult,
+} from '@_api/ResultAPiClient';
 
-export type WordsResponse = {
+type WordsResponse<T> = {
   status: number;
   message: string;
-  data: { words: string[] };
+  result: T;
+};
+export type SubmitPCRequest = {
+  content: string;
+  words: string[];
 };
 
+// 단어 조회
 export async function fetchParagraphWords(count = 3) {
-  const { data } = await api.get<WordsResponse>(`/paragraph-completion/words`, {
-    params: { count },
-  });
-  return data.data.words ?? [];
+  const { data } = await api.get<WordsResponse<string[]>>(
+    `/paragraph-completion/words`,
+    {
+      params: { count },
+    },
+  );
+  return data.result ?? [];
 }
 
-export type SubmitPCResponse = {
-  status: number;
-  message: string;
-  data: { pc_id: number };
-};
-
-export async function submitParagraph(content: string) {
-  const { data } = await api.post<SubmitPCResponse>(
-    `/paragraph-completion`,
-    { content },
-    { headers: { Accept: 'application/json' } },
+// 제출
+export async function submitParagraph(req: SubmitPCRequest) {
+  const { data } = await api.post<WordsResponse<{ id: number }>>(
+    '/paragraph-completion',
+    req,
+    {
+      headers: { Accept: 'application/json' },
+    },
   );
-  return data.data.pc_id;
+  return data.result.id;
 }
 
-export async function requestParagraphFeedback(pcId: number, content: string) {
-  const { data } = await api.post<SubmitPCResponse>(
-    `/paragraph-completion/${pcId}/feedback`,
-    { content },
-    { headers: { Accept: 'application/json' } },
-  );
-  return data.data.pc_id; // 서버 예시상 동일 형태 반환
+// export async function requestParagraphFeedback(id: number, content: string) {
+//   const { data } = await api.post<WordsResponse<{ id: number }>>(
+//     `/paragraph-completion/${id}`,
+//     { content },
+//     { headers: { Accept: 'application/json' } },
+//   );
+//   return data.result.id;
+// }
+
+// export async function getParagraphDetail(id: number) {
+//   const { data } = await api.get<{
+//     status: number;
+//     message: string;
+//     result: {
+//       id: number;
+//       content: string;
+//       topic: string;
+//       feedback: any;
+//       createdAt: string;
+//     };
+//   }>(`/paragraph-completion/${id}`);
+//   return data;
+// }
+
+export async function getParagraphDetail(id: number): Promise<AnswerResult> {
+  const { data } = await api.get(`/paragraph-completion/${id}`);
+  return normalizeAnswerResult(data);
 }

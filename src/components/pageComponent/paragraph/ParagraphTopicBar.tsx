@@ -45,8 +45,14 @@ export default function SentenceTopicBar({
   const isMock = isFetching || words.length === 0;
   const displayedWords = isMock ? MOCK_WORDS : words;
 
+  // 단어 바뀔 때 마다 부모 전달
+  useEffect(() => {
+    if (displayedWords.length > 0) {
+      onChangeWords?.(displayedWords);
+    }
+  }, [displayedWords, onChangeWords]);
+
   const refresh = async () => {
-    // 1) 클릭 즉시 피드백
     toast('새 단어를 불러오는 중…', 'info');
 
     try {

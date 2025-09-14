@@ -39,7 +39,7 @@ export default function ComposePage() {
   const submittingRef = useRef(false);
 
   // categoryData
-  // topic, title, description
+  // topic, title, descriptio
   const {
     isSupported,
     isRecording,
