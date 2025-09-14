@@ -27,15 +27,17 @@ import SignUpPage from '@_page/SignUpPage';
 import LogInPage from '@_page/LogInPage';
 
 import ProtectedRoute from '@_routes/ProtectedRoute';
-
-import OAuthLanding from './page/OAuthLanding';
+import EumGate from './page/EumGate';
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Navigate to="/welcome" replace />} />
-        <Route path="/e-eum" element={<OAuthLanding />} />
+
+        <Route element={<DefaultLayout noPadding bottomNav={<BottomNav />} />}>
+          <Route path="/e-eum" element={<EumGate />} />
+        </Route>
 
         {/* 헤더/네비 x 페이지 */}
         <Route element={<DefaultLayout />}>
