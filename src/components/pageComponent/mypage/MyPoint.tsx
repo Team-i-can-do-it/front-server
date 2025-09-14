@@ -6,18 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@_store/authStore';
 
 export default function MyPoint() {
-  const {
-    data: mpData,
-    isLoading: mpLoading,
-    isError: mpError,
-    error: mpErr,
-  } = useMyPage();
-  const {
-    data: ptData,
-    isLoading: ptLoading,
-    isError: ptError,
-    error: ptErr,
-  } = useMyPoint();
+  const { data: mpData, isLoading: mpLoading, isError: mpError } = useMyPage();
+  const { data: ptData, isLoading: ptLoading, isError: ptError } = useMyPoint();
 
   const clearAuth = useAuthStore((s) => s.clear);
   const navigate = useNavigate();

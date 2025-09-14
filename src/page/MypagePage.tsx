@@ -8,11 +8,9 @@ import { useToast } from '@_hooks/useToast';
 import { useMyPage } from '@_hooks/useMyPage';
 import { useAuthStore } from '@_store/authStore';
 
-import { useMemberMbti } from '@_hooks/useMemberMbti';
 import {
   MBTI_IMAGES,
   MBTI_NAMES,
-  ALL_CODES,
   type MbtiCode,
 } from '@_constants/mbti/imageMap';
 import { useMyMbti } from '@/hooks/useMyMbti';
