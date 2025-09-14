@@ -38,6 +38,10 @@ function App() {
           path="/oauth/callback/:provider"
           element={<OAuthRedirectPage />}
         />
+        <Route
+          path="/auth/:provider/callback"
+          element={<OAuthRedirectPage />}
+        />
 
         {/* 헤더/네비 x 페이지 */}
         <Route element={<DefaultLayout />}>

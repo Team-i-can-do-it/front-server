@@ -12,7 +12,7 @@ export default function WelcomePage() {
   const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
 
   const goOAuth = (p: 'google' | 'naver') => {
-    const redirect = `${window.location.origin}/oauth/callback/${p}`;
+    const redirect = `${window.location.origin}/auth/${p}/callback`;
     const state = (() => {
       const a = new Uint8Array(16);
       crypto.getRandomValues(a);
