@@ -97,3 +97,77 @@ export async function buyGachaItem(itemId: string, phone?: string) {
     throw err; // 상위(onError)에서 처리
   }
 }
+/* =========================
+   구매 내역 조회
+   서버 응답: /pointShop/pointHistory
+   {
+     "status": ...,
+     "message": "...",
+     "result": [
+       { "createdAt": "2025-09-14T21:32:15.983Z", "name": "string", "imageUrl": "string", "point": 1234, "number": "string" }
+     ]
+   }
+   ========================= */
+export type PurchaseHistory = {
+  id: string; // 합성 id (createdAt+idx) 또는 서버 제공 id
+  date: string; // YYYY-MM-DD
+  productName: string; // name -> productName
+  brandName: string; // name에서 첫 토큰 추출
+  price: number; // point의 절대값 (표시는 화면에서 - 처리)
+  phoneNumber: string; // number 원본
+  imageUrl?: string;
+};
+
+// 서버 타입
+type PurchaseHistoryRaw = {
+  createdAt: string;
+  name: string;
+  imageUrl?: string;
+  point: number;
+  number: string;
+};
+
+function toYMD(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+// 예: "올리브영 모바일 상품권 (1만원)" -> "올리브영"
+function extractBrand(name: string): string {
+  const m = String(name)
+    .trim()
+    .match(/^[^\s(［\[]+/);
+  return m ? m[0] : '';
+}
+
+function mapRawToHistory(r: PurchaseHistoryRaw, idx: number): PurchaseHistory {
+  const date = toYMD(r.createdAt);
+  const productName = r.name ?? '';
+  const brandName = extractBrand(productName);
+  const price = Math.abs(Number(r.point) || 0); // 내부는 양수로 유지
+  return {
+    id: `${r.createdAt}-${idx}`,
+    date,
+    productName,
+    brandName,
+    price,
+    phoneNumber: r.number ?? '',
+    imageUrl: r.imageUrl,
+  };
+}
+
+export async function getPurchaseHistory(): Promise<PurchaseHistory[]> {
+  const { data } = await ApiClient.get<BaseResponse<PurchaseHistoryRaw[]>>(
+    '/pointShop/pointHistory',
+  );
+
+  const list = Array.isArray(data?.result) ? data.result : [];
+  // 최신순 정렬
+  return list
+    .map(mapRawToHistory)
+    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+}
