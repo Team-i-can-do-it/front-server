@@ -7,7 +7,6 @@ import useModalStore from '@_store/dialogStore';
 import { useToast } from '@_hooks/useToast';
 import { useMyPage } from '@_hooks/useMyPage';
 import { useAuthStore } from '@_store/authStore';
-
 import {
   MBTI_IMAGES,
   MBTI_NAMES,

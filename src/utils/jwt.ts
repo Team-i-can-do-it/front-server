@@ -3,6 +3,7 @@ export function parseJwtClaims(token: string): Record<string, any> | null {
     const [, payload] = token.split('.');
     if (!payload) return null;
 
+
     const pad = '='.repeat((4 - (payload.length % 4)) % 4);
     const b64 = payload.replace(/-/g, '+').replace(/_/g, '/') + pad;
     const bin = atob(b64);
@@ -18,21 +19,26 @@ export function parseJwtClaims(token: string): Record<string, any> | null {
   }
 }
 
+
 export function mergeUserFromBodyAndClaims(
   bodyUser: any,
   claims: Record<string, any> | null,
 ): { id: number; name: string; email: string } | null {
+
   let id: number | null =
     bodyUser?.id ??
     bodyUser?.userId ??
     bodyUser?.memberId ??
     (typeof claims?.userId === 'number' ? claims!.userId : null) ??
     (typeof claims?.memberId === 'number' ? claims!.memberId : null) ??
+
     (claims?.sub && !Number.isNaN(Number(claims.sub))
       ? Number(claims.sub)
       : null);
 
+
   const name = bodyUser?.name ?? '';
+
 
   const email = bodyUser?.email ?? bodyUser?.userEmail ?? claims?.email ?? '';
 
