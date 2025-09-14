@@ -1,32 +1,46 @@
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@_store/authStore';
 
 export default function OAuthLanding() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const setAuth = useAuthStore((s) => s.setAuth);
 
   useEffect(() => {
-    // URL에서 accessToken만 추출합니다.
-    const accessToken = searchParams.get('accessToken');
+    // ProtectedRoute와 동일한 키를 사용 (환경변수 우선)
+    const TOKEN_KEY =
+      (import.meta.env.VITE_ACCESS_TOKEN as string) || 'access_token';
 
-    // refreshToken은 이제 URL에 없으므로 확인하지 않습니다.
+    // 백엔드가 붙여주는 쿼리 키 지원 (accessToken | token 둘 다 허용)
+    const accessToken =
+      searchParams.get('accessToken') || searchParams.get('token');
+
     if (accessToken) {
-      console.log('로그인 성공! Access Token을 저장합니다.');
-      localStorage.setItem('accessToken', accessToken);
+      try {
+        // 1) 로컬 저장 (키 통일 중요)
+        localStorage.setItem(TOKEN_KEY, accessToken);
 
-      // refreshToken은 서버에 안전하게 보관되므로 프론트에서는 저장하지 않습니다.
-      // 혹시 로컬 스토리지에 남아있을 수 있는 이전 refreshToken은 정리해주는 것이 좋습니다.
-      localStorage.removeItem('refreshToken');
-
-      // '/home' 이나 실제 홈페이지 경로로 수정하세요.
-      // App.jsx 라우터 설정을 보니 '/e-eum'이 홈 페이지인 것 같습니다.
-      navigate('/e-eum', { replace: true });
-    } else {
-      console.error('URL에서 Access Token을 찾을 수 없습니다.');
-      navigate('/welcome', { replace: true });
+        // 2) axios 기본 Authorization 헤더 즉시 세팅
+        //    (useAuthStore.setAuth가 ApiClient.defaults.headers.Authorization까지 잡아줌)
+        setAuth(null, accessToken);
+      } finally {
+        // 3) 토큰쿼리 지우면서 홈으로
+        navigate('/e-eum', { replace: true });
+      }
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 이 페이지는 한번만 실행되므로 의존성 배열을 비워둡니다.
+
+    // 혹시 잘못 들어온 경우 (code/state만 들어온 경우) → 환영 페이지로
+    if (searchParams.get('code') && searchParams.get('state')) {
+      // 이 경우는 백엔드가 받아야 정상 플로우 (콜백 URL 설정 확인 필요)
+      navigate('/welcome', { replace: true });
+      return;
+    }
+
+    // 기본 폴백
+    navigate('/welcome', { replace: true });
+  }, [navigate, searchParams, setAuth]);
 
   return <div>로그인 처리 중입니다...</div>;
 }
